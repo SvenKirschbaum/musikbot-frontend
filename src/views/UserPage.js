@@ -176,178 +176,182 @@ class UserPage extends Component {
                 </Modal>
                 <Container fluid className="userpage">
                     <Row>
-                        <Col xl={3}>
+                        <Col xl={3} xs={12}>
                             <Card className="usercard profilepic">
                                 <Card.Body>
                                     <GravatarIMG animate={true} size="250">{this.state.user.gravatarId}</GravatarIMG>
                                 </Card.Body>
                             </Card>
                         </Col>
-                        <Col>
-                            <Card className="usercard">
-                                <Card.Body>
-                                    <Card.Title>Allgemein</Card.Title>
-                                    <table>
-                                        <tbody>
-                                            <TransitionGroup component={null} exit={false}>
-                                                {(!this.state.user.guest) &&
-                                                    <CSSTransition key="id" timeout={300} classNames="fade">
-                                                        <tr>
-                                                            <td>ID:</td>
-                                                            <td>{this.state.user.id}</td>
-                                                        </tr>
-                                                    </CSSTransition>
-                                                }
-                                                <CSSTransition key="username" timeout={300} classNames="fade">
-                                                    <tr>
-                                                        <td>Username:</td>
-                                                        <td>
-                                                            {this.state.user.name}
-                                                            {(this.context.user.admin && !this.state.user.guest) &&
-                                                                <span href="#" className="changelink" onClick={(e) => this.showedit("username",e)}>(Ändern)</span>
-                                                            }
-                                                        </td>
-                                                    </tr>
-                                                </CSSTransition>
-                                                {(!this.state.user.guest) && (this.context.user.admin || (this.state.user.id === this.context.user.id)) &&
-                                                    <CSSTransition key="email" timeout={300} classNames="fade">
-                                                        <tr>
-                                                            <td>Email:</td>
-                                                            <td>
-                                                                {this.state.user.email}
-                                                                <span href="#" className="changelink" onClick={(e) => this.showedit("email",e)}>(Ändern)</span>
-                                                            </td>
-                                                        </tr>
-                                                    </CSSTransition>
-                                                }
-                                                {(!this.state.user.guest) && (this.context.user.admin || (this.state.user.id === this.context.user.id)) &&
-                                                    <CSSTransition key="password" timeout={300} classNames="fade">
-                                                        <tr>
-                                                            <td>Passwort:</td>
-                                                            <td>
-                                                                ******
-                                                                <span href="#" className="changelink" onClick={(e) => this.showedit("password",e)}>(Ändern)</span>
-                                                            </td>
-                                                        </tr>
-                                                    </CSSTransition>
-                                                }
-                                                {(!this.state.user.guest) &&
-                                                    <CSSTransition key="admin" timeout={300} classNames="fade">
-                                                        <tr>
-                                                            <td>Admin:</td>
-                                                            <td>
-                                                                {this.state.user.admin ? "Ja" : "Nein"}
-                                                                {this.context.user.admin &&
-                                                                    <span href="#" className="changelink" onClick={(e) => this.showedit("admin",e)}>(Ändern)</span>
-                                                                }
-                                                            </td>
-                                                        </tr>
-                                                    </CSSTransition>
-                                                }
-                                                <CSSTransition key="wuensche" timeout={300} classNames="fade">
-                                                    <tr>
-                                                        <td>Wünsche:</td>
-                                                        <td>{this.state.user.wuensche}</td>
-                                                    </tr>
-                                                </CSSTransition>
-                                                <CSSTransition key="skipped" timeout={300} classNames="fade">
-                                                    <tr>
-                                                        <td>Davon übersprungen:</td>
-                                                        <td>{this.state.user.skipped}</td>
-                                                    </tr>
-                                                </CSSTransition>
-                                            </TransitionGroup>
-                                        </tbody>
-                                    </table>
-                                </Card.Body>
-                            </Card>
-                            <Card className="usercard">
-                                <Card.Body>
-                                    <Card.Title>Zuletzt gewünscht:</Card.Title>
-                                    <table>
-                                        <thead>
-                                            <tr>
-                                                <th>Nr.</th>
-                                                <th>Titel</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <TransitionGroup component={null} exit={false}>
-                                                {this.state.user.recent.map(
-                                                    (entry,key) => (
-                                                        <CSSTransition key={key} timeout={300} classNames="fade">
-                                                            <tr key={key}>
-                                                                <td>{entry.id}</td>
-                                                                <td><a href={entry.link}>{entry.title}</a></td>
+                        <Col xl={9} xs={12}>
+                            <Row>
+                                <Col className="usercardcol">
+                                    <Card className="usercard">
+                                        <Card.Body>
+                                            <Card.Title>Allgemein</Card.Title>
+                                            <table>
+                                                <tbody>
+                                                    <TransitionGroup component={null} exit={false}>
+                                                        {(!this.state.user.guest) &&
+                                                            <CSSTransition key="id" timeout={300} classNames="fade">
+                                                                <tr>
+                                                                    <td>ID:</td>
+                                                                    <td>{this.state.user.id}</td>
+                                                                </tr>
+                                                            </CSSTransition>
+                                                        }
+                                                        <CSSTransition key="username" timeout={300} classNames="fade">
+                                                            <tr>
+                                                                <td>Username:</td>
+                                                                <td>
+                                                                    {this.state.user.name}
+                                                                    {(this.context.user.admin && !this.state.user.guest) &&
+                                                                        <span href="#" className="changelink" onClick={(e) => this.showedit("username",e)}>(Ändern)</span>
+                                                                    }
+                                                                </td>
                                                             </tr>
                                                         </CSSTransition>
-                                                    )
-                                                )}
-                                            </TransitionGroup>
-                                        </tbody>
-                                    </table>
-                                </Card.Body>
-                            </Card>
-                        </Col>
-                        <Col>
-                            <Card className="usercard">
-                                <Card.Body>
-                                    <Card.Title>Am meisten gewünscht:</Card.Title>
-                                    <table>
-                                        <thead>
-                                        <tr>
-                                            <th>Nr.</th>
-                                            <th>Titel</th>
-                                            <th>Anzahl</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                            <TransitionGroup component={null} exit={false}>
-                                                {this.state.user.mostwished.map(
-                                                    (entry,key) => (
-                                                        <CSSTransition key={key} timeout={300} classNames="fade">
-                                                            <tr key={key}>
-                                                                <td>{key+1}.</td>
-                                                                <td><a href={entry.link}>{entry.title}</a></td>
-                                                                <td>{entry.count}</td>
+                                                        {(!this.state.user.guest) && (this.context.user.admin || (this.state.user.id === this.context.user.id)) &&
+                                                            <CSSTransition key="email" timeout={300} classNames="fade">
+                                                                <tr>
+                                                                    <td>Email:</td>
+                                                                    <td>
+                                                                        {this.state.user.email}
+                                                                        <span href="#" className="changelink" onClick={(e) => this.showedit("email",e)}>(Ändern)</span>
+                                                                    </td>
+                                                                </tr>
+                                                            </CSSTransition>
+                                                        }
+                                                        {(!this.state.user.guest) && (this.context.user.admin || (this.state.user.id === this.context.user.id)) &&
+                                                            <CSSTransition key="password" timeout={300} classNames="fade">
+                                                                <tr>
+                                                                    <td>Passwort:</td>
+                                                                    <td>
+                                                                        ******
+                                                                        <span href="#" className="changelink" onClick={(e) => this.showedit("password",e)}>(Ändern)</span>
+                                                                    </td>
+                                                                </tr>
+                                                            </CSSTransition>
+                                                        }
+                                                        {(!this.state.user.guest) &&
+                                                            <CSSTransition key="admin" timeout={300} classNames="fade">
+                                                                <tr>
+                                                                    <td>Admin:</td>
+                                                                    <td>
+                                                                        {this.state.user.admin ? "Ja" : "Nein"}
+                                                                        {this.context.user.admin &&
+                                                                            <span href="#" className="changelink" onClick={(e) => this.showedit("admin",e)}>(Ändern)</span>
+                                                                        }
+                                                                    </td>
+                                                                </tr>
+                                                            </CSSTransition>
+                                                        }
+                                                        <CSSTransition key="wuensche" timeout={300} classNames="fade">
+                                                            <tr>
+                                                                <td>Wünsche:</td>
+                                                                <td>{this.state.user.wuensche}</td>
                                                             </tr>
                                                         </CSSTransition>
-                                                    )
-                                                )}
-                                            </TransitionGroup>
-                                        </tbody>
-                                    </table>
-                                </Card.Body>
-                            </Card>
-                            <Card className="usercard">
-                                <Card.Body>
-                                    <Card.Title>Am meisten geskippt:</Card.Title>
-                                    <table>
-                                        <thead>
-                                        <tr>
-                                            <th>Nr.</th>
-                                            <th>Titel</th>
-                                            <th>Anzahl</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                            <TransitionGroup component={null} exit={false}>
-                                                {this.state.user.mostskipped.map(
-                                                    (entry,key) => (
-                                                        <CSSTransition key={key} timeout={300} classNames="fade">
-                                                            <tr key={key}>
-                                                                <td>{key+1}.</td>
-                                                                <td><a href={entry.link}>{entry.title}</a></td>
-                                                                <td>{entry.count}</td>
+                                                        <CSSTransition key="skipped" timeout={300} classNames="fade">
+                                                            <tr>
+                                                                <td>Davon übersprungen:</td>
+                                                                <td>{this.state.user.skipped}</td>
                                                             </tr>
                                                         </CSSTransition>
-                                                    )
-                                                )}
-                                            </TransitionGroup>
-                                        </tbody>
-                                    </table>
-                                </Card.Body>
-                            </Card>
+                                                    </TransitionGroup>
+                                                </tbody>
+                                            </table>
+                                        </Card.Body>
+                                    </Card>
+                                    <Card className="usercard">
+                                        <Card.Body>
+                                            <Card.Title>Zuletzt gewünscht:</Card.Title>
+                                            <table>
+                                                <thead>
+                                                    <tr>
+                                                        <th>Nr.</th>
+                                                        <th>Titel</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <TransitionGroup component={null} exit={false}>
+                                                        {this.state.user.recent.map(
+                                                            (entry,key) => (
+                                                                <CSSTransition key={key} timeout={300} classNames="fade">
+                                                                    <tr key={key}>
+                                                                        <td>{entry.id}</td>
+                                                                        <td><a href={entry.link}>{entry.title}</a></td>
+                                                                    </tr>
+                                                                </CSSTransition>
+                                                            )
+                                                        )}
+                                                    </TransitionGroup>
+                                                </tbody>
+                                            </table>
+                                        </Card.Body>
+                                    </Card>
+                                </Col>
+                                <Col className="usercardcol">
+                                    <Card className="usercard">
+                                        <Card.Body>
+                                            <Card.Title>Am meisten gewünscht:</Card.Title>
+                                            <table>
+                                                <thead>
+                                                <tr>
+                                                    <th>Nr.</th>
+                                                    <th>Titel</th>
+                                                    <th>Anzahl</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <TransitionGroup component={null} exit={false}>
+                                                        {this.state.user.mostwished.map(
+                                                            (entry,key) => (
+                                                                <CSSTransition key={key} timeout={300} classNames="fade">
+                                                                    <tr key={key}>
+                                                                        <td>{key+1}.</td>
+                                                                        <td><a href={entry.link}>{entry.title}</a></td>
+                                                                        <td>{entry.count}</td>
+                                                                    </tr>
+                                                                </CSSTransition>
+                                                            )
+                                                        )}
+                                                    </TransitionGroup>
+                                                </tbody>
+                                            </table>
+                                        </Card.Body>
+                                    </Card>
+                                    <Card className="usercard">
+                                        <Card.Body>
+                                            <Card.Title>Am meisten geskippt:</Card.Title>
+                                            <table>
+                                                <thead>
+                                                <tr>
+                                                    <th>Nr.</th>
+                                                    <th>Titel</th>
+                                                    <th>Anzahl</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <TransitionGroup component={null} exit={false}>
+                                                        {this.state.user.mostskipped.map(
+                                                            (entry,key) => (
+                                                                <CSSTransition key={key} timeout={300} classNames="fade">
+                                                                    <tr key={key}>
+                                                                        <td>{key+1}.</td>
+                                                                        <td><a href={entry.link}>{entry.title}</a></td>
+                                                                        <td>{entry.count}</td>
+                                                                    </tr>
+                                                                </CSSTransition>
+                                                            )
+                                                        )}
+                                                    </TransitionGroup>
+                                                </tbody>
+                                            </table>
+                                        </Card.Body>
+                                    </Card>
+                                </Col>
+                            </Row>
                         </Col>
                     </Row>
                 </Container>
