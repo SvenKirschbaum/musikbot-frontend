@@ -347,7 +347,7 @@ class Home extends Component {
                                      onSkip={this.sendSkip}/>}
                     <Playlist onDragStart={this.onDragStart} onDragEnd={this.onDragEnd} AuthState={this.context}
                               onDelete={this.sendDelete} songs={this.state.playlist}/>
-                    <BottomControl onShuffle={this.sendShuffle}/>
+                    <BottomControl onShuffle={this.sendShuffle} admin={this.context.user && this.context.user.admin}/>
                     <AddSong handlefetchError={this.handlefetchError} sendSong={this.sendSong} buttontext="Abschicken"/>
                 </main>
             </Container>
@@ -468,7 +468,11 @@ function BottomControl(props) {
                 <Col className="BottomControl" xl={{span: 9}} lg={{span: 10}} md={{span: 11}} xs={{span: 11}}>
                     <Row noGutters={false}>
                         <Col xs={{span: 6}}><Link to="/archiv">Zum Archiv</Link></Col>
-                        <Col xs={{span: 6}}><Button onClick={props.onShuffle}>Shuffle</Button></Col>
+                        <Col xs={{span: 6}}>
+                            {props.admin &&
+                                <Button onClick={props.onShuffle}>Shuffle</Button>
+                            }
+                        </Col>
                     </Row>
                 </Col>
             </Row>
