@@ -203,7 +203,7 @@ class UserPage extends Component {
                                                         <td>Username:</td>
                                                         <td>
                                                             {this.state.user.name}
-                                                            {this.context.user.admin &&
+                                                            {(this.context.user.admin && !this.state.user.guest) &&
                                                                 <span href="#" className="changelink" onClick={(e) => this.showedit("username",e)}>(Ändern)</span>
                                                             }
                                                         </td>
