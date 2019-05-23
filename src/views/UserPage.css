@@ -51,3 +51,6 @@
 .usercard .card-body {
     overflow: hidden;
 }
+.profilepic .card-body {
+    height: 290px;
+}

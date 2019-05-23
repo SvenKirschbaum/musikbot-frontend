@@ -179,7 +179,14 @@ class UserPage extends Component {
                         <Col xl={3} xs={12}>
                             <Card className="usercard profilepic">
                                 <Card.Body>
-                                    <GravatarIMG animate={true} size="250">{this.state.user.gravatarId}</GravatarIMG>
+                                    <CSSTransition
+                                        in={this.state.user.gravatarId !== undefined}
+                                        timeout={300}
+                                        classNames="fade"
+                                        unmountOnExit
+                                    >
+                                        <GravatarIMG size="250">{this.state.user.gravatarId}</GravatarIMG>
+                                    </CSSTransition>
                                 </Card.Body>
                             </Card>
                         </Col>
