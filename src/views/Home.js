@@ -37,6 +37,8 @@ class Home extends Component {
         this.statebuffer = null;
         this.isdragging = false;
         this.updateinflight = false;
+        this.failcount = 0;
+        this.updateinterval = 8000;
 
         this.addAlert = this.addAlert.bind(this);
         this.removeAlert = this.removeAlert.bind(this);
@@ -56,7 +58,7 @@ class Home extends Component {
 
     componentDidMount() {
         this.update();
-        this.intervalId = setInterval(this.update, 8000);
+        this.intervalId = setInterval(this.update, this.updateinterval);
     }
 
     componentWillUnmount() {
@@ -72,21 +74,24 @@ class Home extends Component {
             method: 'GET',
             headers: headers
         })
-            .then((res) => {
-                if (!res.ok) throw Error(res.statusText);
-                return res;
-            })
-            .then(res => res.json())
-            .then(response => {
-                if (response.songtitle === null) response.songtitle = "Kein Song";
-                if (this.updateinflight) return;
-                if (this.isdragging) {
-                    this.statebuffer = response;
-                } else {
-                    this.setState(response);
-                }
-            })
-            .catch(reason => {
+        .then((res) => {
+            if (!res.ok) throw Error(res.statusText);
+            return res;
+        })
+        .then(res => res.json())
+        .then(response => {
+            if (response.songtitle === null) response.songtitle = "Kein Song";
+            if (this.updateinflight) return;
+            if (this.isdragging) {
+                this.statebuffer = response;
+            } else {
+                this.setState(response);
+            }
+            this.failcount = 0;
+        })
+        .catch(reason => {
+            this.failcount++;
+            if((3*60*1000) < this.failcount*this.updateinterval) {
                 clearInterval(this.intervalId);
                 this.addAlert({
                     id: Math.random().toString(36),
@@ -95,7 +100,8 @@ class Home extends Component {
                     text: 'Beim Aktualisieren der Playlist ist ein Fehler aufgetreten. Das automatische Aktualisieren wurde deaktiviert. Bitte lade die Seite neu, um es wieder zu aktivieren. \n\n' + reason,
                     autoclose: false
                 });
-            });
+            }
+        });
     }
 
     addAlert(alert) {
