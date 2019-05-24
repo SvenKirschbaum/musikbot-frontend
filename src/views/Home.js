@@ -37,7 +37,7 @@ class Home extends Component {
         this.statebuffer = null;
         this.isdragging = false;
         this.updateinflight = false;
-        this.failcount = 0;
+        this.failcount = 5000;
         this.updateinterval = 8000;
 
         this.addAlert = this.addAlert.bind(this);
