@@ -112,7 +112,7 @@ class UserPage extends Component {
             });
     }
 
-    showedit(type,e) {
+    showedit(type) {
         if (type === "username") {
             this.setState({modalvalue: this.state.user.name});
         } else if (type === "email") {
@@ -142,7 +142,7 @@ class UserPage extends Component {
             if (!res.ok) throw Error(res.statusText);
             return res;
         })
-        .then((res) => {
+        .then(() => {
             this.addAlert({
                 id: Math.random().toString(36),
                 type: 'success',
@@ -182,7 +182,7 @@ class UserPage extends Component {
                         <Modal.Title>Edit: {this.state.modaltype}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <input className="modalinput" type={this.state.modaltype === "password" ? "password" : "text"} value={this.state.modalvalue} onChange={this.handleChange}></input>
+                        <input className="modalinput" type={this.state.modaltype === "password" ? "password" : "text"} value={this.state.modalvalue} onChange={this.handleChange} />
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="secondary" onClick={this.handleClose}>
@@ -232,7 +232,7 @@ class UserPage extends Component {
                                                                 <td>
                                                                     {this.state.user.name}
                                                                     {(this.context.user.admin && !this.state.user.guest) &&
-                                                                        <span href="#" className="changelink" onClick={(e) => this.showedit("username",e)}>(Ändern)</span>
+                                                                        <span className="changelink" onClick={(e) => this.showedit("username",e)}>(Ändern)</span>
                                                                     }
                                                                 </td>
                                                             </tr>
@@ -243,7 +243,7 @@ class UserPage extends Component {
                                                                     <td>Email:</td>
                                                                     <td>
                                                                         {this.state.user.email}
-                                                                        <span href="#" className="changelink" onClick={(e) => this.showedit("email",e)}>(Ändern)</span>
+                                                                        <span className="changelink" onClick={(e) => this.showedit("email",e)}>(Ändern)</span>
                                                                     </td>
                                                                 </tr>
                                                             </CSSTransition>
@@ -254,7 +254,7 @@ class UserPage extends Component {
                                                                     <td>Passwort:</td>
                                                                     <td>
                                                                         ******
-                                                                        <span href="#" className="changelink" onClick={(e) => this.showedit("password",e)}>(Ändern)</span>
+                                                                        <span className="changelink" onClick={(e) => this.showedit("password",e)}>(Ändern)</span>
                                                                     </td>
                                                                 </tr>
                                                             </CSSTransition>
@@ -266,7 +266,7 @@ class UserPage extends Component {
                                                                     <td>
                                                                         {this.state.user.admin ? "Ja" : "Nein"}
                                                                         {this.context.user.admin &&
-                                                                            <span href="#" className="changelink" onClick={(e) => this.showedit("admin",e)}>(Ändern)</span>
+                                                                            <span className="changelink" onClick={(e) => this.showedit("admin",e)}>(Ändern)</span>
                                                                         }
                                                                     </td>
                                                                 </tr>
