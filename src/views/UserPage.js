@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import Container from 'react-bootstrap/Container';
+import { withRouter } from "react-router";
 
 import AuthenticationContext from '../components/AuthenticationContext';
 import Header from '../components/Header';
@@ -45,7 +46,23 @@ class UserPage extends Component {
     }
 
     componentDidMount() {
-        this.load();
+        this.load(this.props.match.params.name);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.setState({
+            alerts: [],
+            user: {
+                recent: [],
+                mostwished: [],
+                mostskipped: [],
+                guest: true,
+            },
+            modaltype: "",
+            modalvalue: "",
+            showmodal: false,
+        });
+        this.load((nextProps.match.params.name));
     }
 
     addAlert(alert) {
@@ -68,11 +85,11 @@ class UserPage extends Component {
         }
     }
 
-    load() {
+    load(username) {
         let headers = new Headers();
         headers.append("Content-Type", "application/json");
         if (this.context.token) headers.append("Authorization", "Bearer " + this.context.token);
-        fetch("/api/v2/user/" + this.props.match.params.name, {
+        fetch("/api/v2/user/" + username, {
             method: 'GET',
             headers: headers
         })
@@ -367,4 +384,4 @@ class UserPage extends Component {
     }
 }
 
-export default UserPage;
+export default withRouter(UserPage);
