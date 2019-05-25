@@ -50,19 +50,21 @@ class UserPage extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        this.setState({
-            alerts: [],
-            user: {
-                recent: [],
-                mostwished: [],
-                mostskipped: [],
-                guest: true,
-            },
-            modaltype: "",
-            modalvalue: "",
-            showmodal: false,
-        });
-        this.load((nextProps.match.params.name));
+        if(this.props.match.params.name !== nextProps.match.params.name) {
+            this.setState({
+                alerts: [],
+                user: {
+                    recent: [],
+                    mostwished: [],
+                    mostskipped: [],
+                    guest: true,
+                },
+                modaltype: "",
+                modalvalue: "",
+                showmodal: false,
+            });
+            this.load((nextProps.match.params.name));
+        }
     }
 
     addAlert(alert) {
@@ -153,7 +155,7 @@ class UserPage extends Component {
             if(this.state.user.id === this.context.user.id) {
                 this.context.reload();
             }
-            this.load();
+            this.load(this.props.match.params.name);
         })
         .catch(reason => {
             this.addAlert({
