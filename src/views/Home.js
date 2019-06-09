@@ -29,7 +29,7 @@ class Home extends Component {
             status: 'Loading...',
             songtitle: 'Loading...',
             songlink: null,
-            duration: 0,
+            playlistdauer: 0,
             playlist: [],
             alerts: []
         };
@@ -347,7 +347,7 @@ class Home extends Component {
                 <Header/>
                 <main>
                     <Status state={this.state.status} title={this.state.songtitle} link={this.state.songlink}
-                            duration={this.state.duration}/>
+                            duration={this.state.playlistdauer}/>
                     {this.context.user && this.context.user.admin &&
                     <ControlElements onStart={this.sendStart} onPause={this.sendPause} onStop={this.sendStop}
                                      onSkip={this.sendSkip}/>}
