@@ -11,6 +11,7 @@ import { CSSTransition } from 'react-transition-group';
 import AuthenticationContext from './AuthenticationContext';
 
 import Clock from './Clock.js';
+import Version from './Version.js';
 
 import reactlogo from '../res/react.png';
 import spotifylogo from '../res/spotify.svg';
@@ -26,6 +27,7 @@ class BaseLayout extends Component {
                 >
                     This website uses cookies to ensure you get the best experience on our website. <a className="cookielink" href="https://cookiesandyou.com/">Learn more</a>
                 </CookieConsent>
+                <Version />
                 {this.props.children}
                 <Footer></Footer>
             </div>

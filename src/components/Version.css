@@ -1,0 +1,14 @@
+.version {
+    list-style: none;
+    padding: 0;
+    margin: 10px;
+    position: fixed;
+    right: 0;
+    font-size: 0.75rem;
+    color: #BDBDBD;
+    font-weight: normal;
+    opacity: 0.6;
+    user-select: none;
+    text-align: right;
+    line-height: 0.75rem;
+}
