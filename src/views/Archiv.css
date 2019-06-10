@@ -43,3 +43,6 @@
 .page-link:focus {
     box-shadow: none;
 }
+.song-skipped {
+    text-decoration: line-through;
+}

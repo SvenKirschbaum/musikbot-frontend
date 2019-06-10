@@ -147,8 +147,12 @@ function Archivlist(props) {
 }
 
 function Song(props) {
+    let className = "song";
+    if(props.skipped) {
+        className += " song-skipped";
+    }
     return (
-        <tr className="song">
+        <tr className={className}>
             <td className="d-none d-sm-table-cell">{ props.id }</td>
             <td className=""><span className="d-none d-sm-inline"><Moment format="DD.MM.YYYY">{ props.playedAt }</Moment> - </span><Moment format="HH:mm:ss">{ props.playedAt }</Moment></td>
             <td className="d-none d-sm-inline-flex author"><GravatarIMG>{ props.gravatarId }</GravatarIMG><Link to={`/users/${props.authorLink}`}>{ props.author }</Link></td>
