@@ -18,6 +18,7 @@ import DragFixedCell from "../components/DragFixedCell";
 
 import './Home.css';
 import {FaTrashAlt} from 'react-icons/fa';
+import SockJsClient from 'react-stomp';
 
 class Home extends Component {
 
@@ -36,9 +37,7 @@ class Home extends Component {
 
         this.statebuffer = null;
         this.isdragging = false;
-        this.updateinflight = false;
-        this.failcount = 5000;
-        this.updateinterval = 8000;
+        this.clientRef = null;
 
         this.addAlert = this.addAlert.bind(this);
         this.removeAlert = this.removeAlert.bind(this);
@@ -52,56 +51,16 @@ class Home extends Component {
         this.sendSort = this.sendSort.bind(this);
         this.onDragStart = this.onDragStart.bind(this);
         this.onDragEnd = this.onDragEnd.bind(this);
-        this.update = this.update.bind(this);
         this.handlefetchError = this.handlefetchError.bind(this);
+        this.parseUpdate = this.parseUpdate.bind(this);
     }
 
-    componentDidMount() {
-        this.update();
-        this.intervalId = setInterval(this.update, this.updateinterval);
-    }
-
-    componentWillUnmount() {
-        clearInterval(this.intervalId);
-    }
-
-    update() {
-        if (this.updateinflight) return;
-        let headers = new Headers();
-        headers.append("Content-Type", "application/json");
-        if (this.context.token) headers.append("Authorization", "Bearer " + this.context.token);
-        fetch("/api/status", {
-            method: 'GET',
-            headers: headers
-        })
-        .then((res) => {
-            if (!res.ok) throw Error(res.statusText);
-            return res;
-        })
-        .then(res => res.json())
-        .then(response => {
-            if (response.songtitle === null) response.songtitle = "Kein Song";
-            if (this.updateinflight) return;
-            if (this.isdragging) {
-                this.statebuffer = response;
-            } else {
-                this.setState(response);
-            }
-            this.failcount = 0;
-        })
-        .catch(reason => {
-            this.failcount++;
-            if((3*60*1000) < this.failcount*this.updateinterval) {
-                clearInterval(this.intervalId);
-                this.addAlert({
-                    id: Math.random().toString(36),
-                    type: 'danger',
-                    head: 'Fehler beim Aktualisieren der Playlist',
-                    text: 'Beim Aktualisieren der Playlist ist ein Fehler aufgetreten. Das automatische Aktualisieren wurde deaktiviert. Bitte lade die Seite neu, um es wieder zu aktivieren. \n\n' + reason,
-                    autoclose: false
-                });
-            }
-        });
+    parseUpdate(response) {
+        if (this.isdragging) {
+            this.statebuffer = response;
+        } else {
+            this.setState(response);
+        }
     }
 
     addAlert(alert) {
@@ -125,7 +84,6 @@ class Home extends Component {
     }
 
     sendStart() {
-        this.updateinflight = true;
         let headers = new Headers();
         headers.append("Content-Type", "application/json");
         if (this.context.token) headers.append("Authorization", "Bearer " + this.context.token);
@@ -138,14 +96,9 @@ class Home extends Component {
             .catch(reason => {
                 this.handlefetchError(reason);
             })
-            .finally(() => {
-                this.updateinflight = false;
-                this.update();
-            });
     }
 
     sendPause() {
-        this.updateinflight = true;
         let headers = new Headers();
         headers.append("Content-Type", "application/json");
         if (this.context.token) headers.append("Authorization", "Bearer " + this.context.token);
@@ -158,14 +111,9 @@ class Home extends Component {
             .catch(reason => {
                 this.handlefetchError(reason);
             })
-            .finally(() => {
-                this.updateinflight = false;
-                this.update();
-            });
     }
 
     sendStop() {
-        this.updateinflight = true;
         let headers = new Headers();
         headers.append("Content-Type", "application/json");
         if (this.context.token) headers.append("Authorization", "Bearer " + this.context.token);
@@ -178,14 +126,9 @@ class Home extends Component {
             .catch(reason => {
                 this.handlefetchError(reason);
             })
-            .finally(() => {
-                this.updateinflight = false;
-                this.update();
-            });
     }
 
     sendSkip() {
-        this.updateinflight = true;
         let headers = new Headers();
         headers.append("Content-Type", "application/json");
         if (this.context.token) headers.append("Authorization", "Bearer " + this.context.token);
@@ -198,14 +141,9 @@ class Home extends Component {
             .catch(reason => {
                 this.handlefetchError(reason);
             })
-            .finally(() => {
-                this.updateinflight = false;
-                this.update();
-            });
     }
 
     sendShuffle() {
-        this.updateinflight = true;
         let headers = new Headers();
         headers.append("Content-Type", "application/json");
         if (this.context.token) headers.append("Authorization", "Bearer " + this.context.token);
@@ -218,14 +156,9 @@ class Home extends Component {
             .catch(reason => {
                 this.handlefetchError(reason);
             })
-            .finally(() => {
-                this.updateinflight = false;
-                this.update();
-            });
     }
 
     sendDelete(id, lock) {
-        this.updateinflight = true;
         let headers = new Headers();
         headers.append("Content-Type", "application/json");
         if (this.context.token) headers.append("Authorization", "Bearer " + this.context.token);
@@ -238,14 +171,9 @@ class Home extends Component {
             .catch(reason => {
                 this.handlefetchError(reason);
             })
-            .finally(() => {
-                this.updateinflight = false;
-                this.update();
-            });
     }
 
     sendSong(url) {
-        this.updateinflight = true;
         let headers = new Headers();
         headers.append("Content-Type", "text/plain");
         if (this.context.token) headers.append("Authorization", "Bearer " + this.context.token);
@@ -271,10 +199,6 @@ class Home extends Component {
             .catch(reason => {
                 this.handlefetchError(reason);
             })
-            .finally(() => {
-                this.updateinflight = false;
-                this.update();
-            });
     }
 
     handlefetchError(e) {
@@ -319,7 +243,6 @@ class Home extends Component {
     }
 
     sendSort(prev, id) {
-        this.updateinflight = true;
         let headers = new Headers();
         headers.append("Content-Type", "text/plain");
         if (this.context.token) headers.append("Authorization", "Bearer " + this.context.token);
@@ -331,13 +254,9 @@ class Home extends Component {
             if (!res.ok) throw Error(res.statusText);
 
         })
-            .catch(reason => {
-                this.handlefetchError(reason);
-            })
-            .finally(() => {
-                this.updateinflight = false;
-                this.update();
-            });
+        .catch(reason => {
+            this.handlefetchError(reason);
+        })
     }
 
     render() {
@@ -356,6 +275,13 @@ class Home extends Component {
                     <BottomControl onShuffle={this.sendShuffle} admin={this.context.user && this.context.user.admin}/>
                     <AddSong handlefetchError={this.handlefetchError} sendSong={this.sendSong} buttontext="Abschicken"/>
                 </main>
+                <SockJsClient
+                    url={`/api/sock`}
+                    topics={['/user/queue/state','/topic/state']}
+                    onMessage={(message) => this.parseUpdate(message)}
+                    onConnect={() => this.clientRef.sendMessage("/app/state")}
+                    ref={(client) => { this.clientRef = client }}
+                />
             </Container>
         );
     }
