@@ -24,24 +24,23 @@ class AppRouter extends Component {
             this.state = {
                 loggedin: loadstate.loggedin,
                 user: {},
-                token: loadstate.token
+                token: loadstate.token,
+                loading: true,
             };
+            this.loadUser();
         }
         else {
             this.state = {
                 loggedin: false,
                 user: {},
-                token: null
+                token: null,
+                loading: false,
             };
         }
 
         this.login = this.login.bind(this);
         this.logout = this.logout.bind(this);
         this.loadUser = this.loadUser.bind(this);
-    }
-
-    componentDidMount() {
-        if(this.state.loggedin) this.loadUser();
     }
 
     login(username, password) {
@@ -78,12 +77,25 @@ class AppRouter extends Component {
     }
 
     logout() {
+        let headers = new Headers();
+        headers.append("Content-Type", "application/json");
+        headers.append("Authorization", "Bearer " + this.state.token);
+        fetch("/api/v2/logout", {
+            method: 'POST',
+            headers: headers
+        })
+        .catch((res) => {
+            console.error("Error logging out" + res);
+        });
+
+
         this.loggedin = false;
         this.user = null;
         this.setState({
             loggedin: false,
             user: {},
-            token: null
+            token: null,
+            loading: false,
         });
         localStorage.removeItem('loginstate');
     }
@@ -99,36 +111,44 @@ class AppRouter extends Component {
         .then((res) => res.json())
         .then((res) => {
             this.setState({
-                user: res
+                user: res,
+                loading: false
             });
         })
         .catch((res) => {
-           console.error("Error loading user" + res);
+           console.warn("Error loading user, the token probably timed out" + res);
+           this.logout();
         });
     }
 
     render() {
-        return (
-            <Router>
-                <AuthenticationContext.Provider value={{ ...this.state, login: this.login, logout: this.logout, reload: this.loadUser}}>
-                    <BaseLayout>
-                        <Switch>
-                            <Route path="/" exact component={Home} />
-                            <Route path="/songs" component={Songs} />
-                            <Route path="/archiv/:page?" component={Archiv} />
-                            <Route path="/token" component={Token} />
-                            <Route path="/debug" component={Debug} />
-                            <Route path="/log" component={Log} />
-                            <Route path="/gapcloser" component={Gapcloser} />
-                            <Route path="/statistik" component={Stats} />
-                            <Route path="/import" component={Playlist} />
-                            <Route path="/users/:name" component={UserPage} />
-                            <Route component={NoMatch} />
-                        </Switch>
-                    </BaseLayout>
-                </AuthenticationContext.Provider>
-            </Router>
-        );
+        if(!this.state.loading) {
+            return (
+                <Router>
+                    <AuthenticationContext.Provider
+                        value={{...this.state, login: this.login, logout: this.logout, reload: this.loadUser}}>
+                        <BaseLayout>
+                            <Switch>
+                                <Route path="/" exact component={Home}/>
+                                <Route path="/songs" component={Songs}/>
+                                <Route path="/archiv/:page?" component={Archiv}/>
+                                <Route path="/token" component={Token}/>
+                                <Route path="/debug" component={Debug}/>
+                                <Route path="/log" component={Log}/>
+                                <Route path="/gapcloser" component={Gapcloser}/>
+                                <Route path="/statistik" component={Stats}/>
+                                <Route path="/import" component={Playlist}/>
+                                <Route path="/users/:name" component={UserPage}/>
+                                <Route component={NoMatch}/>
+                            </Switch>
+                        </BaseLayout>
+                    </AuthenticationContext.Provider>
+                </Router>
+            );
+        }
+        else {
+            return "Loading...";
+        }
     }
 }
 export {AuthenticationContext as AuthState};
