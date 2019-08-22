@@ -15,6 +15,7 @@ import './UserPage.css';
 import GravatarIMG from "../components/GravatarIMG";
 import {TransitionGroup} from "react-transition-group";
 import CSSTransition from "react-transition-group/CSSTransition";
+import QuickAdd from "../components/QuickAdd";
 
 class UserPage extends Component {
 
@@ -253,6 +254,7 @@ class UserPage extends Component {
                                                 <thead>
                                                     <tr>
                                                         <th>Nr.</th>
+                                                        <th className="idcolumn"></th>
                                                         <th>Titel</th>
                                                     </tr>
                                                 </thead>
@@ -263,6 +265,7 @@ class UserPage extends Component {
                                                                 <CSSTransition key={key} timeout={300} classNames="fade">
                                                                     <tr key={key}>
                                                                         <td>{entry.id}</td>
+                                                                        <td><QuickAdd>{entry.link}</QuickAdd></td>
                                                                         <td><a href={entry.link}>{entry.title}</a></td>
                                                                     </tr>
                                                                 </CSSTransition>
@@ -282,6 +285,7 @@ class UserPage extends Component {
                                                 <thead>
                                                 <tr>
                                                     <th>Nr.</th>
+                                                    <th className="idcolumn"></th>
                                                     <th>Titel</th>
                                                     <th>Anzahl</th>
                                                 </tr>
@@ -293,6 +297,7 @@ class UserPage extends Component {
                                                                 <CSSTransition key={key} timeout={300} classNames="fade">
                                                                     <tr key={key}>
                                                                         <td>{key+1}.</td>
+                                                                        <td><QuickAdd>{entry.link}</QuickAdd></td>
                                                                         <td><a href={entry.link}>{entry.title}</a></td>
                                                                         <td>{entry.count}</td>
                                                                     </tr>
@@ -311,6 +316,7 @@ class UserPage extends Component {
                                                 <thead>
                                                 <tr>
                                                     <th>Nr.</th>
+                                                    <th className="idcolumn"></th>
                                                     <th>Titel</th>
                                                     <th>Anzahl</th>
                                                 </tr>
@@ -322,6 +328,7 @@ class UserPage extends Component {
                                                                 <CSSTransition key={key} timeout={300} classNames="fade">
                                                                     <tr key={key}>
                                                                         <td>{key+1}.</td>
+                                                                        <td><QuickAdd>{entry.link}</QuickAdd></td>
                                                                         <td><a href={entry.link}>{entry.title}</a></td>
                                                                         <td>{entry.count}</td>
                                                                     </tr>

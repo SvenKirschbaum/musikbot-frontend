@@ -7,6 +7,7 @@ import Card from 'react-bootstrap/Card'
 
 import GlobalContext from '../components/GlobalContext';
 import Header from '../components/Header';
+import QuickAdd from "../components/QuickAdd";
 
 import './Stats.css';
 import CSSTransition from "react-transition-group/CSSTransition";
@@ -59,6 +60,7 @@ class Stats extends Component {
                         (entry,key) => (
                             <tr key={key}>
                                 <td className="idcolumn">{key+1}.</td>
+                                <td><QuickAdd>{entry.link}</QuickAdd></td>
                                 <td><a href={entry.link}>{entry.title}</a></td>
                                 <td>{entry.count}</td>
                             </tr>
@@ -67,6 +69,7 @@ class Stats extends Component {
                     header={
                         <tr>
                             <th className="idcolumn">Nr.</th>
+                            <th className="idcolumn"></th>
                             <th>Titel</th>
                             <th>Anzahl</th>
                         </tr>
@@ -75,6 +78,7 @@ class Stats extends Component {
                         (entry,key) => (
                             <tr key={key}>
                                 <td className="idcolumn">{key+1}.</td>
+                                <td><QuickAdd>{entry.link}</QuickAdd></td>
                                 <td><a href={entry.link}>{entry.title}</a></td>
                                 <td>{entry.count}</td>
                             </tr>
@@ -83,6 +87,7 @@ class Stats extends Component {
                     header={
                         <tr>
                             <th className="idcolumn">Nr.</th>
+                            <th className="idcolumn"></th>
                             <th>Titel</th>
                             <th>Anzahl</th>
                         </tr>

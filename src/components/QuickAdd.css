@@ -1,0 +1,10 @@
+.quickadd {
+    cursor: pointer;
+    text-align: center;
+}
+.quickadd > * {
+    visibility: hidden;
+}
+.quickadd:hover > * {
+    visibility: visible;
+}
