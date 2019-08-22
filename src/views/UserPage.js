@@ -2,9 +2,8 @@ import React, {Component} from 'react';
 import Container from 'react-bootstrap/Container';
 import { withRouter } from "react-router";
 
-import AuthenticationContext from '../components/AuthenticationContext';
+import GlobalContext from '../components/GlobalContext';
 import Header from '../components/Header';
-import Alerts from '../components/Alerts';
 
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -19,12 +18,11 @@ import CSSTransition from "react-transition-group/CSSTransition";
 
 class UserPage extends Component {
 
-    static contextType = AuthenticationContext;
+    static contextType = GlobalContext;
 
     constructor(props) {
         super(props);
         this.state = {
-            alerts: [],
             user: {
                 recent: [],
                 mostwished: [],
@@ -36,8 +34,6 @@ class UserPage extends Component {
             showmodal: false,
         };
 
-        this.addAlert=this.addAlert.bind(this);
-        this.removeAlert=this.removeAlert.bind(this);
         this.load = this.load.bind(this);
         this.showedit = this.showedit.bind(this);
         this.handleClose = this.handleClose.bind(this);
@@ -52,7 +48,6 @@ class UserPage extends Component {
     componentWillReceiveProps(nextProps) {
         if(this.props.match.params.name !== nextProps.match.params.name) {
             this.setState({
-                alerts: [],
                 user: {
                     recent: [],
                     mostwished: [],
@@ -67,33 +62,10 @@ class UserPage extends Component {
         }
     }
 
-    addAlert(alert) {
-        var alerts = [...this.state.alerts];
-        alerts.push(alert);
-        this.setState({alerts: alerts});
-    }
-
-    removeAlert(id) {
-        var alerts = [...this.state.alerts]; // make a separate copy of the array
-        let index = -1;
-        for (const [key, value] of Object.entries(alerts)) {
-            if(value.id === id) {
-                index = key;
-            }
-        }
-        if (index !== -1) {
-            alerts.splice(index, 1);
-            this.setState({alerts: alerts});
-        }
-    }
-
     load(username) {
-        let headers = new Headers();
-        headers.append("Content-Type", "application/json");
-        if (this.context.token) headers.append("Authorization", "Bearer " + this.context.token);
         fetch("/api/v2/user/" + username, {
             method: 'GET',
-            headers: headers
+            headers: this.context.defaultHeaders
         })
             .then((res) => {
                 if (!res.ok) throw Error(res.statusText);
@@ -102,13 +74,7 @@ class UserPage extends Component {
             .then((res) => res.json())
             .then(value => this.setState({user: value}))
             .catch(reason => {
-                this.addAlert({
-                    id: Math.random().toString(36),
-                    type: 'danger',
-                    head: 'Es ist ein Fehler aufgetreten',
-                    text: reason.message,
-                    autoclose: false
-                });
+                this.context.handleException(reason);
             });
     }
 
@@ -131,11 +97,9 @@ class UserPage extends Component {
 
     handleSave() {
         this.handleClose();
-        let headers = new Headers();
-        if (this.context.token) headers.append("Authorization", "Bearer " + this.context.token);
         fetch("/api/v2/user/"+this.state.user.id+"/"+this.state.modaltype, {
             method: 'POST',
-            headers: headers,
+            headers: this.context.defaultHeaders,
             body: this.state.modalvalue
         })
         .then((res) => {
@@ -143,7 +107,7 @@ class UserPage extends Component {
             return res;
         })
         .then(() => {
-            this.addAlert({
+            this.context.addAlert({
                 id: Math.random().toString(36),
                 type: 'success',
                 head: 'Änderung durchgeführt',
@@ -158,13 +122,7 @@ class UserPage extends Component {
             this.load(this.props.match.params.name);
         })
         .catch(reason => {
-            this.addAlert({
-                id: Math.random().toString(36),
-                type: 'danger',
-                head: 'Es ist ein Fehler aufgetreten',
-                text: reason.message,
-                autoclose: false
-            });
+            this.context.handleException(reason);
         });
     }
 
@@ -175,7 +133,6 @@ class UserPage extends Component {
     render() {
         return (
             <Container fluid className="h-100 d-flex flex-column">
-                <Alerts onClose={this.removeAlert}>{this.state.alerts}</Alerts>
                 <Header />
                 <Modal show={this.state.showmodal} onHide={this.handleClose}>
                     <Modal.Header closeButton>

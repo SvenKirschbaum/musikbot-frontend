@@ -8,7 +8,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { CSSTransition } from 'react-transition-group';
 
-import AuthenticationContext from './AuthenticationContext';
+import GlobalContext from './GlobalContext';
 
 import Clock from './Clock.js';
 import Version from './Version.js';
@@ -16,8 +16,11 @@ import Version from './Version.js';
 import reactlogo from '../res/react.png';
 import spotifylogo from '../res/spotify.svg';
 import GravatarIMG from "./GravatarIMG";
+import Alerts from "./Alerts";
 
 class BaseLayout extends Component {
+    static contextType = GlobalContext;
+
     render() {
         return (
             <div>
@@ -28,6 +31,7 @@ class BaseLayout extends Component {
                     This website uses cookies to ensure you get the best experience on our website. <a className="cookielink" href="https://cookiesandyou.com/">Learn more</a>
                 </CookieConsent>
                 <Version />
+                <Alerts onClose={this.context.removeAlert}>{this.context.alerts}</Alerts>
                 {this.props.children}
                 <Footer></Footer>
             </div>
@@ -37,7 +41,7 @@ class BaseLayout extends Component {
 
 class Footer extends Component {
 
-    static contextType = AuthenticationContext;
+    static contextType = GlobalContext;
 
     constructor(props) {
         super(props);
@@ -66,11 +70,11 @@ class Footer extends Component {
                     <AMenu AuthState={this.context} onItemClick={() => this.setState({ isMenuOpen: false })}></AMenu>
                 </CSSTransition>
                 <footer className="d-flex flex-row justify-content-between">
-                    
+
                     <LoginFooter AuthState={this.context} onLogin={() => this.setState({isPaneOpen: true})} onMenu={() => this.setState({isMenuOpen: !this.state.isMenuOpen})}></LoginFooter>
 
                     <Link to="/statistik">Statistik</Link>
-            
+
                     <span>
                         <a href="https://datenschutz.elite12.de/">Impressum<span className="d-none d-sm-inline">/Disclaimer/Datenschutz</span></a>
 

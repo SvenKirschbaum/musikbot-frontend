@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 
 import './Version.css';
-import AuthenticationContext from "./AuthenticationContext";
+import GlobalContext from "./GlobalContext";
 
 class Version extends Component {
 
-    static contextType = AuthenticationContext;
+    static contextType = GlobalContext;
 
     constructor(props) {
         super(props);
@@ -17,12 +17,9 @@ class Version extends Component {
     }
 
     componentDidMount() {
-        let headers = new Headers();
-        headers.append("Content-Type", "application/json");
-        if (this.context.token) headers.append("Authorization", "Bearer " + this.context.token);
         fetch("/api/version", {
             method: 'GET',
-            headers: headers
+            headers: this.context.defaultHeaders
         })
         .then((res) => {
             if (!res.ok) throw Error(res.statusText);

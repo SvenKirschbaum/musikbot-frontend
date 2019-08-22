@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import AuthenticationContext from "./AuthenticationContext";
+import GlobalContext from "./GlobalContext";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Autosuggest from "react-autosuggest";
@@ -10,7 +10,7 @@ import './AddSong.css';
 
 class AddSong extends Component {
 
-    static contextType = AuthenticationContext;
+    static contextType = GlobalContext;
 
     _cache = {};
 
@@ -66,8 +66,8 @@ class AddSong extends Component {
         }
 
         this.waitfor = value;
-        let headers = new Headers();
-        if(this.context.token) headers.append("Authorization", "Bearer " + this.context.token);
+        let headers = new Headers(this.context.defaultHeaders);
+        headers.set("Content-Type","text/plain");
         fetch("/api/v2/search/", {
             method: 'POST',
             headers: headers,

@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
 import Container from 'react-bootstrap/Container';
 
-import AuthenticationContext from '../components/AuthenticationContext';
+import GlobalContext from '../components/GlobalContext';
 import Header from '../components/Header';
-import Alerts from '../components/Alerts';
 
 import './Songs.css';
 import {FaTrashAlt} from "react-icons/fa";
@@ -11,17 +10,14 @@ import AddSong from "../components/AddSong";
 
 class Songs extends Component {
 
-    static contextType = AuthenticationContext;
+    static contextType = GlobalContext;
 
     constructor(props) {
         super(props);
         this.state = {
-            alerts: [],
             songs: []
         };
 
-        this.addAlert=this.addAlert.bind(this);
-        this.removeAlert=this.removeAlert.bind(this);
         this.load=this.load.bind(this);
         this.sendDelete=this.sendDelete.bind(this);
         this.sendSong=this.sendSong.bind(this);
@@ -32,12 +28,9 @@ class Songs extends Component {
     }
 
     load() {
-        let headers = new Headers();
-        headers.append("Content-Type", "application/json");
-        if(this.context.token) headers.append("Authorization", "Bearer " + this.context.token);
         fetch("/api/v2/lockedsongs", {
             method: 'GET',
-            headers: headers
+            headers: this.context.defaultHeaders
         })
         .then((res) => {
             if(!res.ok) throw Error(res.statusText);
@@ -50,62 +43,28 @@ class Songs extends Component {
             });
         })
         .catch(reason => {
-            this.addAlert({
-                id: Math.random().toString(36),
-                type: 'danger',
-                head: 'Es ist ein Fehler aufgetreten',
-                text: reason.message,
-                autoclose: false
-            });
+            this.context.handleException(reason);
         });
     }
 
-    addAlert(alert) {
-        var alerts = [...this.state.alerts];
-        alerts.push(alert);
-        this.setState({alerts: alerts});
-    }
 
-    removeAlert(id) {
-        var alerts = [...this.state.alerts]; // make a separate copy of the array
-        let index = -1;
-        for (const [key, value] of Object.entries(alerts)) {
-            if(value.id === id) {
-                index = key;
-            }
-        }
-        if (index !== -1) {
-            alerts.splice(index, 1);
-            this.setState({alerts: alerts});
-        }
-    }
 
     sendDelete(id) {
-        let headers = new Headers();
-        headers.append("Content-Type", "application/json");
-        if (this.context.token) headers.append("Authorization", "Bearer " + this.context.token);
         fetch("/api/v2/lockedsongs/" + id, {
             method: 'DELETE',
-            headers: headers
+            headers: this.context.defaultHeaders
         }).then((res) => {
             if (!res.ok) throw Error(res.statusText);
             this.load();
         })
         .catch(reason => {
-            this.addAlert({
-                id: Math.random().toString(36),
-                type: 'danger',
-                head: 'Es ist ein Fehler aufgetreten',
-                text: reason.message,
-                autoclose: false
-            });
+            this.context.handleException(reason);
         });
     }
 
     sendSong(url) {
-        let headers = new Headers();
-        headers.append("Content-Type", "text/plain");
-        if (this.context.token) headers.append("Authorization", "Bearer " + this.context.token);
+        let headers = new Headers(this.context.defaultHeaders);
+        headers.set("Content-Type", "text/plain");
         fetch("/api/v2/lockedsongs", {
             method: 'POST',
             body: url,
@@ -118,7 +77,7 @@ class Songs extends Component {
         .then((res) => {
             let type = res.success ? 'success' : 'danger';
             if (res.warn && res.success) type = 'warning';
-            this.addAlert({
+            this.context.addAlert({
                 id: Math.random().toString(36),
                 type: type,
                 text: res.message,
@@ -126,13 +85,7 @@ class Songs extends Component {
             });
         })
         .catch(reason => {
-            this.addAlert({
-                id: Math.random().toString(36),
-                type: 'danger',
-                head: 'Es ist ein Fehler aufgetreten',
-                text: reason.message,
-                autoclose: false
-            });
+            this.context.handleException(reason);
         })
         .finally(() => {
             this.load();
@@ -142,7 +95,6 @@ class Songs extends Component {
     render() {
         return (
             <Container fluid className="lockedsongs">
-                <Alerts onClose={this.removeAlert}>{this.state.alerts}</Alerts>
                 <Header />
                 <SongList data={this.state.songs} onDelete={this.sendDelete} />
                 <AddSong sendSong={this.sendSong} buttontext="Sperren" />

@@ -1,9 +1,8 @@
 import React, {Component} from "react";
-import AuthenticationContext from "../components/AuthenticationContext";
+import GlobalContext from "../components/GlobalContext";
 import Container from "react-bootstrap/Container";
 
 import './Playlist.css';
-import Alerts from "../components/Alerts";
 import Header from "../components/Header";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
@@ -12,13 +11,12 @@ import TransitionGroup from "react-transition-group/TransitionGroup";
 import CSSTransition from "react-transition-group/CSSTransition";
 
 class Playlist extends Component {
-    static contextType = AuthenticationContext;
+    static contextType = GlobalContext;
 
     constructor(props) {
         super(props);
 
         this.state = {
-            alerts: [],
             url: "",
             songs: [],
             checkboxes: [],
@@ -27,31 +25,9 @@ class Playlist extends Component {
         };
 
         this.onCheckbox = this.onCheckbox.bind(this);
-        this.removeAlert = this.removeAlert.bind(this);
-        this.addAlert = this.addAlert.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
         this.handleLoad = this.handleLoad.bind(this);
-    }
-
-    addAlert(alert) {
-        var alerts = [...this.state.alerts];
-        alerts.push(alert);
-        this.setState({alerts: alerts});
-    }
-
-    removeAlert(id) {
-        var alerts = [...this.state.alerts]; // make a separate copy of the array
-        let index = -1;
-        for (const [key, value] of Object.entries(alerts)) {
-            if(value.id === id) {
-                index = key;
-            }
-        }
-        if (index !== -1) {
-            alerts.splice(index, 1);
-            this.setState({alerts: alerts});
-        }
     }
 
     handleInputChange(event) {
@@ -66,17 +42,13 @@ class Playlist extends Component {
 
     handleLoad(e) {
         e.preventDefault();
-
-        let headers = new Headers();
-        headers.append("Content-Type", "application/json");
-        if(this.context.token) headers.append("Authorization", "Bearer " + this.context.token);
         fetch("/api/v2/playlist?url=" + encodeURIComponent(this.state.url), {
             method: 'GET',
-            headers: headers
+            headers: this.context.defaultHeaders
         })
         .then((res) => {
             if(res.status === 404) {
-                this.addAlert({
+                this.context.addAlert({
                     id: Math.random().toString(36),
                     type: 'danger',
                     text: "Playlist nicht gefunden",
@@ -90,23 +62,14 @@ class Playlist extends Component {
         })
         .catch(reason => {
             console.log(reason);
-            this.addAlert({
-                id: Math.random().toString(36),
-                type: 'danger',
-                head: 'Es ist ein Fehler aufgetreten',
-                text: reason.message,
-                autoclose: false
-            });
+            this.context.handleException(reason);
         });
     }
 
     onSubmit() {
-        let headers = new Headers();
-        headers.append("Content-Type", "application/json");
-        if(this.context.token) headers.append("Authorization", "Bearer " + this.context.token);
         fetch("/api/v2/playlist", {
             method: 'POST',
-            headers: headers,
+            headers: this.context.defaultHeaders,
             body: JSON.stringify(this.state.songs.filter((value,index) => this.state.checkboxes[index]))
         })
         .then((res) => {
@@ -128,7 +91,7 @@ class Playlist extends Component {
 
             let note = (<ul>{results}</ul>);
 
-            this.addAlert({
+            this.context.addAlert({
                 id: Math.random().toString(36),
                 type: 'info',
                 head: 'Playlist importiert',
@@ -138,13 +101,7 @@ class Playlist extends Component {
         })
         .catch(reason => {
             console.log(reason);
-            this.addAlert({
-                id: Math.random().toString(36),
-                type: 'danger',
-                head: 'Es ist ein Fehler aufgetreten',
-                text: reason.message,
-                autoclose: false
-            });
+            this.context.handleException(reason);
         });
     }
 
@@ -157,7 +114,6 @@ class Playlist extends Component {
     render() {
         return (
             <Container fluid>
-                <Alerts onClose={this.removeAlert}>{this.state.alerts}</Alerts>
                 <Header />
                 <Row className="justify-content-center space-bottom">
                     <Col xl={{span: 9}} lg={{span: 10}} md={{span: 11}} xs={{span: 11}}>

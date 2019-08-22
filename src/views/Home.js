@@ -9,11 +9,10 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 
-import AuthenticationContext from '../components/AuthenticationContext';
+import GlobalContext from '../components/GlobalContext';
 import GravatarIMG from "../components/GravatarIMG";
 import AddSong from "../components/AddSong";
 import Header from "../components/Header";
-import Alerts from "../components/Alerts";
 import DragFixedCell from "../components/DragFixedCell";
 
 import './Home.css';
@@ -22,7 +21,7 @@ import SockJsClient from 'react-stomp';
 
 class Home extends Component {
 
-    static contextType = AuthenticationContext;
+    static contextType = GlobalContext;
 
     constructor(props) {
         super(props);
@@ -31,16 +30,13 @@ class Home extends Component {
             songtitle: 'Loading...',
             songlink: null,
             playlistdauer: 0,
-            playlist: [],
-            alerts: []
+            playlist: []
         };
 
         this.statebuffer = null;
         this.isdragging = false;
         this.clientRef = null;
 
-        this.addAlert = this.addAlert.bind(this);
-        this.removeAlert = this.removeAlert.bind(this);
         this.sendStart = this.sendStart.bind(this);
         this.sendPause = this.sendPause.bind(this);
         this.sendStop = this.sendStop.bind(this);
@@ -51,7 +47,6 @@ class Home extends Component {
         this.sendSort = this.sendSort.bind(this);
         this.onDragStart = this.onDragStart.bind(this);
         this.onDragEnd = this.onDragEnd.bind(this);
-        this.handlefetchError = this.handlefetchError.bind(this);
         this.parseUpdate = this.parseUpdate.bind(this);
     }
 
@@ -63,120 +58,81 @@ class Home extends Component {
         }
     }
 
-    addAlert(alert) {
-        var alerts = [...this.state.alerts];
-        alerts.push(alert);
-        this.setState({alerts: alerts});
-    }
-
-    removeAlert(id) {
-        var alerts = [...this.state.alerts]; // make a separate copy of the array
-        let index = -1;
-        for (const [key, value] of Object.entries(alerts)) {
-            if (value.id === id) {
-                index = key;
-            }
-        }
-        if (index !== -1) {
-            alerts.splice(index, 1);
-            this.setState({alerts: alerts});
-        }
-    }
-
     sendStart() {
-        let headers = new Headers();
-        headers.append("Content-Type", "application/json");
-        if (this.context.token) headers.append("Authorization", "Bearer " + this.context.token);
         fetch("/api/control/start", {
             method: 'POST',
-            headers: headers
+            headers: this.context.defaultHeaders
         }).then((res) => {
             if (!res.ok) throw Error(res.statusText);
         })
             .catch(reason => {
-                this.handlefetchError(reason);
+                this.context.handleException(reason);
             })
     }
 
     sendPause() {
-        let headers = new Headers();
-        headers.append("Content-Type", "application/json");
-        if (this.context.token) headers.append("Authorization", "Bearer " + this.context.token);
         fetch("/api/control/pause", {
             method: 'POST',
-            headers: headers
+            headers: this.context.defaultHeaders
         }).then((res) => {
             if (!res.ok) throw Error(res.statusText);
         })
             .catch(reason => {
-                this.handlefetchError(reason);
+                this.context.handleException(reason);
             })
     }
 
     sendStop() {
-        let headers = new Headers();
-        headers.append("Content-Type", "application/json");
-        if (this.context.token) headers.append("Authorization", "Bearer " + this.context.token);
         fetch("/api/control/stop", {
             method: 'POST',
-            headers: headers
+            headers: this.context.defaultHeaders
         }).then((res) => {
             if (!res.ok) throw Error(res.statusText);
         })
             .catch(reason => {
-                this.handlefetchError(reason);
+                this.context.handleException(reason);
             })
     }
 
     sendSkip() {
-        let headers = new Headers();
-        headers.append("Content-Type", "application/json");
-        if (this.context.token) headers.append("Authorization", "Bearer " + this.context.token);
         fetch("/api/control/skip", {
             method: 'POST',
-            headers: headers
+            headers: this.context.defaultHeaders
         }).then((res) => {
             if (!res.ok) throw Error(res.statusText);
         })
             .catch(reason => {
-                this.handlefetchError(reason);
+                this.context.handleException(reason);
             })
     }
 
     sendShuffle() {
-        let headers = new Headers();
-        headers.append("Content-Type", "application/json");
-        if (this.context.token) headers.append("Authorization", "Bearer " + this.context.token);
         fetch("/api/control/shuffle", {
             method: 'POST',
-            headers: headers
+            headers: this.context.defaultHeaders
         }).then((res) => {
             if (!res.ok) throw Error(res.statusText);
         })
             .catch(reason => {
-                this.handlefetchError(reason);
+                this.context.handleException(reason);
             })
     }
 
     sendDelete(id, lock) {
-        let headers = new Headers();
-        headers.append("Content-Type", "application/json");
-        if (this.context.token) headers.append("Authorization", "Bearer " + this.context.token);
         fetch("/api/v2/songs/" + id + (lock ? "?lock=true" : ""), {
             method: 'DELETE',
-            headers: headers
+            headers: this.context.defaultHeaders
         }).then((res) => {
             if (!res.ok) throw Error(res.statusText);
         })
             .catch(reason => {
-                this.handlefetchError(reason);
+                this.context.handleException(reason);
             })
     }
 
     sendSong(url) {
-        let headers = new Headers();
-        headers.append("Content-Type", "text/plain");
-        if (this.context.token) headers.append("Authorization", "Bearer " + this.context.token);
+        let headers = new Headers(this.context.defaultHeaders);
+        headers.set("Content-Type", "text/plain");
         fetch("/api/v2/songs", {
             method: 'POST',
             body: url,
@@ -189,7 +145,7 @@ class Home extends Component {
             .then((res) => {
                 let type = res.success ? 'success' : 'danger';
                 if (res.warn && res.success) type = 'warning';
-                this.addAlert({
+                this.context.addAlert({
                     id: Math.random().toString(36),
                     type: type,
                     text: res.message,
@@ -197,18 +153,8 @@ class Home extends Component {
                 });
             })
             .catch(reason => {
-                this.handlefetchError(reason);
+                this.context.handleException(reason);
             })
-    }
-
-    handlefetchError(e) {
-        this.addAlert({
-            id: Math.random().toString(36),
-            type: 'danger',
-            head: 'Es ist ein Fehler aufgetreten',
-            text: e.message,
-            autoclose: false
-        });
     }
 
     onDragStart(start, provided) {
@@ -243,9 +189,8 @@ class Home extends Component {
     }
 
     sendSort(prev, id) {
-        let headers = new Headers();
-        headers.append("Content-Type", "text/plain");
-        if (this.context.token) headers.append("Authorization", "Bearer " + this.context.token);
+        let headers = new Headers(this.context.defaultHeaders);
+        headers.set("Content-Type", "text/plain");
         fetch("/api/v2/songs/" + id, {
             method: 'PUT',
             headers: headers,
@@ -255,14 +200,13 @@ class Home extends Component {
 
         })
         .catch(reason => {
-            this.handlefetchError(reason);
+            this.context.handleException(reason);
         })
     }
 
     render() {
         return (
             <Container fluid>
-                <Alerts onClose={this.removeAlert}>{this.state.alerts}</Alerts>
                 <Header/>
                 <main>
                     <Status state={this.state.status} title={this.state.songtitle} link={this.state.songlink}
@@ -273,7 +217,7 @@ class Home extends Component {
                     <Playlist onDragStart={this.onDragStart} onDragEnd={this.onDragEnd} AuthState={this.context}
                               onDelete={this.sendDelete} songs={this.state.playlist}/>
                     <BottomControl onShuffle={this.sendShuffle} admin={this.context.user && this.context.user.admin}/>
-                    <AddSong handlefetchError={this.handlefetchError} sendSong={this.sendSong} buttontext="Abschicken"/>
+                    <AddSong handlefetchError={this.context.handleException} sendSong={this.sendSong} buttontext="Abschicken"/>
                 </main>
                 <SockJsClient
                     url={`/api/sock`}

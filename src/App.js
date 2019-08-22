@@ -12,13 +12,17 @@ import Gapcloser from './views/Gapcloser';
 import Stats from './views/Stats';
 import Playlist from './views/Playlist';
 import UserPage from './views/UserPage';
-import AuthenticationContext from './components/AuthenticationContext';
+import GlobalContext from './components/GlobalContext';
 
 
 class AppRouter extends Component {
 
     constructor(props) {
         super(props);
+
+        this.defaultHeaders = new Headers();
+        this.defaultHeaders.append("Content-Type", "application/json");
+
         let loadstate = JSON.parse(localStorage.getItem('loginstate'));
         if(loadstate) {
             this.state = {
@@ -26,7 +30,9 @@ class AppRouter extends Component {
                 user: {},
                 token: loadstate.token,
                 loading: true,
+                alerts: []
             };
+            this.defaultHeaders.append("Authorization", "Bearer " + this.state.token);
             this.loadUser();
         }
         else {
@@ -35,21 +41,55 @@ class AppRouter extends Component {
                 user: {},
                 token: null,
                 loading: false,
+                alerts: []
             };
         }
+
+        this.addAlert = this.addAlert.bind(this);
+        this.removeAlert = this.removeAlert.bind(this);
+
+        this.handleException = this.handleException.bind(this);
 
         this.login = this.login.bind(this);
         this.logout = this.logout.bind(this);
         this.loadUser = this.loadUser.bind(this);
     }
 
+    addAlert(alert) {
+        var alerts = [...this.state.alerts];
+        alerts.push(alert);
+        this.setState({alerts: alerts});
+    }
+
+    removeAlert(id) {
+        var alerts = [...this.state.alerts]; // make a separate copy of the array
+        let index = -1;
+        for (const [key, value] of Object.entries(alerts)) {
+            if (value.id === id) {
+                index = key;
+            }
+        }
+        if (index !== -1) {
+            alerts.splice(index, 1);
+            this.setState({alerts: alerts});
+        }
+    }
+
+    handleException(e) {
+        this.addAlert({
+            id: Math.random().toString(36),
+            type: 'danger',
+            head: 'Es ist ein Fehler aufgetreten',
+            text: e.message,
+            autoclose: false
+        });
+    }
+
     login(username, password) {
         return new Promise((resolve,reject) => {
-            let headers = new Headers();
-            headers.append("Content-Type", "application/json");
             fetch("/api/v2/login", {
                 method: 'POST',
-                headers: headers,
+                headers: this.defaultHeaders,
                 body: JSON.stringify({
                     'username': username,
                     'password': password
@@ -66,6 +106,7 @@ class AppRouter extends Component {
                             loggedin: true,
                             token: response.token
                         }));
+                        this.defaultHeaders.append("Authorization", "Bearer " + response.token);
                         this.loadUser();
                         resolve();
                     }
@@ -77,12 +118,9 @@ class AppRouter extends Component {
     }
 
     logout() {
-        let headers = new Headers();
-        headers.append("Content-Type", "application/json");
-        headers.append("Authorization", "Bearer " + this.state.token);
         fetch("/api/v2/logout", {
             method: 'POST',
-            headers: headers
+            headers: this.defaultHeaders
         })
         .catch((res) => {
             console.error("Error logging out" + res);
@@ -97,16 +135,14 @@ class AppRouter extends Component {
             token: null,
             loading: false,
         });
+        this.defaultHeaders.delete("Authorization");
         localStorage.removeItem('loginstate');
     }
 
     loadUser() {
-        let headers = new Headers();
-        headers.append("Content-Type", "application/json");
-        headers.append("Authorization", "Bearer " + this.state.token);
         fetch("/api/v2/user/self", {
             method: 'GET',
-            headers: headers
+            headers: this.defaultHeaders
         })
         .then((res) => res.json())
         .then((res) => {
@@ -125,8 +161,18 @@ class AppRouter extends Component {
         if(!this.state.loading) {
             return (
                 <Router>
-                    <AuthenticationContext.Provider
-                        value={{...this.state, login: this.login, logout: this.logout, reload: this.loadUser}}>
+                    <GlobalContext.Provider
+                        value={{
+                            ...this.state,
+                            defaultHeaders: this.defaultHeaders,
+                            login: this.login,
+                            logout: this.logout,
+                            reload: this.loadUser,
+                            alerts: this.state.alerts,
+                            addAlert: this.addAlert,
+                            removeAlert: this.removeAlert,
+                            handleException: this.handleException,
+                        }}>
                         <BaseLayout>
                             <Switch>
                                 <Route path="/" exact component={Home}/>
@@ -142,7 +188,7 @@ class AppRouter extends Component {
                                 <Route component={NoMatch}/>
                             </Switch>
                         </BaseLayout>
-                    </AuthenticationContext.Provider>
+                    </GlobalContext.Provider>
                 </Router>
             );
         }
@@ -151,5 +197,5 @@ class AppRouter extends Component {
         }
     }
 }
-export {AuthenticationContext as AuthState};
+export {GlobalContext as AuthState};
 export default AppRouter;

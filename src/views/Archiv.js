@@ -9,16 +9,15 @@ import { withRouter } from "react-router";
 import Row from 'react-bootstrap/Row';
 import Pagination from "react-js-pagination";
 
-import AuthenticationContext from '../components/AuthenticationContext';
+import GlobalContext from '../components/GlobalContext';
 import Header from '../components/Header';
-import Alerts from '../components/Alerts';
 import GravatarIMG from "../components/GravatarIMG";
 
 import './Archiv.css';
 
 class Archiv extends Component {
 
-    static contextType = AuthenticationContext;
+    static contextType = GlobalContext;
 
     constructor(props) {
         super(props);
@@ -26,11 +25,8 @@ class Archiv extends Component {
             list: [],
             page: 1,
             pages: 1,
-            alerts: []
         };
 
-        this.addAlert=this.addAlert.bind(this);
-        this.removeAlert=this.removeAlert.bind(this);
         this.change = this.change.bind(this);
     }
 
@@ -39,12 +35,9 @@ class Archiv extends Component {
     }
 
     load(page) {
-        let headers = new Headers();
-        headers.append("Content-Type", "application/json");
-        if(this.context.token) headers.append("Authorization", "Bearer " + this.context.token);
         fetch("/api/v2/archiv/"+page, {
             method: 'GET',
-            headers: headers
+            headers: this.context.defaultHeaders
         })
             .then((res) => {
                 if(!res.ok) throw Error(res.statusText);
@@ -59,34 +52,8 @@ class Archiv extends Component {
                 });
             })
             .catch(reason => {
-                this.addAlert({
-                    id: Math.random().toString(36),
-                    type: 'danger',
-                    head: 'Es ist ein Fehler aufgetreten',
-                    text: reason.message,
-                    autoclose: false
-                });
+                this.context.handleException(reason);
             });
-    }
-
-    addAlert(alert) {
-        var alerts = [...this.state.alerts];
-        alerts.push(alert);
-        this.setState({alerts: alerts});
-    }
-
-    removeAlert(id) {
-        var alerts = [...this.state.alerts]; // make a separate copy of the array
-        let index = -1;
-        for (const [key, value] of Object.entries(alerts)) {
-            if(value.id === id) {
-                index = key;
-            }
-        }
-        if (index !== -1) {
-            alerts.splice(index, 1);
-            this.setState({alerts: alerts});
-        }
     }
 
     change(page) {
@@ -97,7 +64,6 @@ class Archiv extends Component {
     render() {
         return (
             <Container fluid>
-                <Alerts onClose={this.removeAlert}>{this.state.alerts}</Alerts>
                 <Header />
                 <Archivlist songs={this.state.list} />
                 <Row className="justify-content-center archivepager">
