@@ -98,9 +98,11 @@ class UserPage extends Component {
 
     handleSave() {
         this.handleClose();
+        let headers = new Headers(this.context.defaultHeaders);
+        headers.set("Content-Type", "text/plain");
         fetch("/api/v2/user/"+this.state.user.id+"/"+this.state.modaltype, {
             method: 'POST',
-            headers: this.context.defaultHeaders,
+            headers: headers,
             body: this.state.modalvalue
         })
         .then((res) => {
