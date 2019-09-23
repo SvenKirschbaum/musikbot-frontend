@@ -40,6 +40,7 @@ class UserPage extends Component {
         this.handleClose = this.handleClose.bind(this);
         this.handleSave = this.handleSave.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        this.handleDelete = this.handleDelete.bind(this);
     }
 
     componentDidMount() {
@@ -85,7 +86,7 @@ class UserPage extends Component {
         } else if (type === "email") {
             this.setState({modalvalue: this.state.user.email});
         } else if (type === "password") {
-            this.setState({modalvalue: '******'});
+            this.setState({modalvalue: ''});
         } else if (type === "admin") {
             this.setState({modalvalue: this.state.user.admin ? "Ja" : "Nein"});
         }
@@ -129,6 +130,30 @@ class UserPage extends Component {
         });
     }
 
+    handleDelete() {
+        this.handleClose();
+        fetch("/api/v2/user/"+this.state.user.id, {
+            method: 'DELETE',
+            headers: this.context.defaultHeaders
+        })
+        .then((res) => {
+            if (!res.ok) throw Error(res.statusText);
+            return res;
+        })
+        .then(() => {
+            this.context.addAlert({
+                id: Math.random().toString(36),
+                type: 'success',
+                head: 'Der Nutzer wurde erfolgreich gelöscht',
+                autoclose: true
+            });
+            this.props.history.push('/');
+        })
+        .catch(reason => {
+            this.context.handleException(reason);
+        });
+    }
+
     handleChange(event) {
         this.setState({modalvalue: event.target.value});
     }
@@ -139,17 +164,21 @@ class UserPage extends Component {
                 <Header />
                 <Modal show={this.state.showmodal} onHide={this.handleClose}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Edit: {this.state.modaltype}</Modal.Title>
+                        <Modal.Title>Nutzer editieren: {this.state.modaltype}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <input className="modalinput" type={this.state.modaltype === "password" ? "password" : "text"} value={this.state.modalvalue} onChange={this.handleChange} />
+                        {this.state.modaltype === "delete" ?
+                            <span>Sind Sie sich wirklich sicher, dass der Nutzer {this.state.user.name} gelöscht werden soll?</span>
+                        :
+                            <input className="modalinput" type={this.state.modaltype === "password" ? "password" : "text"} value={this.state.modalvalue} onChange={this.handleChange} />
+                        }
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="secondary" onClick={this.handleClose}>
                             Abbrechen
                         </Button>
-                        <Button variant="primary" onClick={this.handleSave}>
-                            Speichern
+                        <Button variant="primary" onClick={this.state.modaltype === "delete" ? this.handleDelete : this.handleSave}>
+                            {this.state.modaltype === "delete" ? "Löschen" : "Speichern"}
                         </Button>
                     </Modal.Footer>
                 </Modal>
@@ -247,6 +276,11 @@ class UserPage extends Component {
                                                     </TransitionGroup>
                                                 </tbody>
                                             </table>
+                                            {(!this.state.user.guest) && (this.context.user.admin) &&
+                                                <div className="buttonrow d-none d-xl-flex">
+                                                    <button onClick={(e) => this.showedit("delete",e)}>Benutzer löschen</button>
+                                                </div>
+                                            }
                                         </Card.Body>
                                     </Card>
                                     <Card className="usercard">
