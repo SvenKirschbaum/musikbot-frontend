@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import Songs from './views/Songs';
 import NoMatch from './components/NoMatch';
 import BaseLayout from './components/BaseLayout';
@@ -15,7 +15,6 @@ import UserPage from './views/UserPage';
 import Register from "./views/Register";
 import GlobalContext from './components/GlobalContext';
 import {AdminRoute, AnonymousRoute, LoggedinRoute} from "./components/Routes";
-
 
 
 class AppRouter extends Component {
@@ -261,5 +260,4 @@ class AppRouter extends Component {
         }
     }
 }
-export {GlobalContext as AuthState};
 export default AppRouter;
