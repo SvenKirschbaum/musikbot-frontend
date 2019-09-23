@@ -23,26 +23,21 @@ class AppRouter extends Component {
         this.defaultHeaders = new Headers();
         this.defaultHeaders.append("Content-Type", "application/json");
 
-        let loadstate = JSON.parse(localStorage.getItem('loginstate'));
-        if(loadstate) {
-            this.state = {
-                loggedin: loadstate.loggedin,
-                user: {},
-                token: loadstate.token,
-                loading: true,
-                alerts: []
-            };
-            this.defaultHeaders.append("Authorization", "Bearer " + this.state.token);
-            this.loadUser();
+        this.state = {
+            loggedin: false,
+            extension: false,
+            user: {},
+            token: null,
+            loading: true,
+            alerts: []
+        };
+
+        // eslint-disable-next-line no-undef
+        if(chrome && chrome.runtime && chrome.runtime.sendMessage) {
+            this.loadTokenFromExtension();
         }
         else {
-            this.state = {
-                loggedin: false,
-                user: {},
-                token: null,
-                loading: false,
-                alerts: []
-            };
+            this.loadTokenFromStorage();
         }
 
         this.addAlert = this.addAlert.bind(this);
@@ -53,6 +48,47 @@ class AppRouter extends Component {
         this.login = this.login.bind(this);
         this.logout = this.logout.bind(this);
         this.loadUser = this.loadUser.bind(this);
+        this.loadTokenFromStorage = this.loadTokenFromStorage.bind(this);
+        this.loadTokenFromExtension = this.loadTokenFromExtension.bind(this);
+    }
+
+    loadTokenFromExtension() {
+        // eslint-disable-next-line no-undef
+        chrome.runtime.sendMessage(process.env.REACT_APP_CHROME_EXTENSION_ID,"token-request",{},(response) => {
+            // eslint-disable-next-line no-undef
+            if(!chrome.runtime.lastError && response && response.authtoken) {
+                this.setState({
+                    loggedin: true,
+                    token: response.authtoken,
+                    extension: true
+                });
+                this.defaultHeaders.set("Authorization", "Bearer " + response.authtoken);
+                this.loadUser();
+            }
+            else {
+                this.loadTokenFromStorage();
+            }
+        })
+    }
+
+    loadTokenFromStorage() {
+        let loadstate = JSON.parse(localStorage.getItem('loginstate'));
+        if(loadstate) {
+            this.setState({
+                loggedin: loadstate.loggedin,
+                token: loadstate.token
+            });
+            this.defaultHeaders.set("Authorization", "Bearer " + loadstate.token);
+            this.loadUser();
+        }
+        else {
+            this.defaultHeaders.delete("Authorization");
+            this.setState({
+                loggedin: false,
+                token: null,
+                loading: false,
+            });
+        }
     }
 
     addAlert(alert) {
@@ -106,7 +142,7 @@ class AppRouter extends Component {
                             loggedin: true,
                             token: response.token
                         }));
-                        this.defaultHeaders.append("Authorization", "Bearer " + response.token);
+                        this.defaultHeaders.set("Authorization", "Bearer " + response.token);
                         this.loadUser();
                         resolve();
                     }
@@ -126,14 +162,12 @@ class AppRouter extends Component {
             console.error("Error logging out" + res);
         });
 
-
-        this.loggedin = false;
-        this.user = null;
         this.setState({
             loggedin: false,
             user: {},
             token: null,
             loading: false,
+            extension: false
         });
         this.defaultHeaders.delete("Authorization");
         localStorage.removeItem('loginstate');
@@ -152,8 +186,17 @@ class AppRouter extends Component {
             });
         })
         .catch((res) => {
-           console.warn("Error loading user, the token probably timed out" + res);
-           this.logout();
+            if(this.state.extension) {
+                console.warn("Extension supplied invalid Token, falling back to default behavior");
+                this.setState({
+                    extension: false
+                });
+                this.loadTokenFromStorage();
+            }
+            else {
+                console.warn("Error loading user, the token probably timed out" + res);
+                this.logout();
+            }
         });
     }
 
