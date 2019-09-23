@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import Container from 'react-bootstrap/Container';
-import { withRouter } from "react-router";
+import {withRouter} from "react-router";
 
 import GlobalContext from '../components/GlobalContext';
 import Header from '../components/Header';
@@ -117,7 +117,7 @@ class UserPage extends Component {
                 autoclose: true
             });
             if(this.state.modaltype === "username") {
-                this.props.history.push('/users/'+this.state.modalvalue);
+                this.props.history.push('/user/'+this.state.modalvalue);
             }
             if(this.state.user.id === this.context.user.id) {
                 this.context.reload();

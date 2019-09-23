@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
-import { Link } from "react-router-dom";
+import React, {Component} from 'react';
+import {Link} from "react-router-dom";
 import CookieConsent from 'react-cookie-consent';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { CSSTransition } from 'react-transition-group';
+import {CSSTransition} from 'react-transition-group';
 
 import GlobalContext from './GlobalContext';
 
@@ -90,7 +90,7 @@ function LoginFooter(props) {
     if(props.AuthState.loggedin) {
         return (
             <span className="LoginFooter">
-                <Link to={`/users/${props.AuthState.user.name}`}>
+                <Link to={`/user/${props.AuthState.user.name}`}>
                     <GravatarIMG>{props.AuthState.user.gravatarId}</GravatarIMG>
                     <span><span className="d-none d-sm-inline">Willkommen </span>{props.AuthState.user.name}</span>
                 </Link>
@@ -196,6 +196,7 @@ function AMenu(props) {
                     <li><Link to="/songs" onClick={props.onItemClick}>Gesperrte Songs</Link></li>
                     <li><Link to="/gapcloser" onClick={props.onItemClick}>Gapcloser</Link></li>
                     <li><Link to="/log" onClick={props.onItemClick}>Log</Link></li>
+                    <li><Link to="/users" onClick={props.onItemClick}>User</Link></li>
                     <li><Link to="/debug" onClick={props.onItemClick}>Entwicklermenü</Link></li>
                 </React.Fragment>
             }

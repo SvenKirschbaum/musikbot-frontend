@@ -3,7 +3,7 @@ import Container from 'react-bootstrap/Container';
 import {Link} from "react-router-dom";
 import FlipMove from "react-flip-move";
 import Moment from 'react-moment';
-import {DragDropContext, Droppable, Draggable} from "react-beautiful-dnd";
+import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd";
 
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -241,7 +241,7 @@ function Playlist(props) {
                 >
                     <Droppable droppableId="droppable">
                         {(provided) => (
-                            <table className="playlist col-xl-9 col-lg-10 col-md-11 col-11"
+                            <table className="mb-table col-xl-9 col-lg-10 col-md-11 col-11"
                                    ref={provided.innerRef} {...provided.droppableProps}>
                                 <thead>
                                 <tr className="header">
@@ -288,7 +288,7 @@ function Song(props) {
                 format="DD.MM.YYYY - HH:mm:ss">{props.insertedAt}</Moment></DragFixedCell>
             <DragFixedCell isDragOccurring={props.isDragging}
                            className="d-none d-sm-inline-flex author"><span><GravatarIMG>{props.gravatarId}</GravatarIMG></span><Link
-                to={`/users/${props.authorLink}`}>{props.author}</Link></DragFixedCell>
+                to={`/user/${props.authorLink}`}>{props.author}</Link></DragFixedCell>
             <DragFixedCell isDragOccurring={props.isDragging} className="nolink songtitle"><a
                 href={props.link}>{props.title}</a></DragFixedCell>
             <DragFixedCell isDragOccurring={props.isDragging} className="d-none d-md-table-cell songlink"><a

@@ -74,7 +74,7 @@
     transition: none;
 }
 
-.song {
+.mb-table tbody tr {
     white-space: nowrap;
     background-color: #B6B6B6;
     color: #212121;
@@ -154,7 +154,7 @@
     margin-left: 10px;
     margin-right: 10px;
 }
-.playlist {
+.mb-table {
     font-size: 14px;
     box-sizing: border-box;
     line-height: 1.7em;
@@ -170,33 +170,33 @@
     color: #BDBDBD;
     margin: 0;
 }
-.playlist a {
+.mb-table a {
     color: #292929;
 }
-.playlist a:hover {
+.mb-table a:hover {
     color: #555;
 }
-.playlist .songlink, .playlist .songtitle {
+.mb-table .songlink, .mb-table .songtitle {
     text-align: left;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
     max-width: 20em;
 }
-.playlist img {
+.mb-table img {
     margin-right: 1ch;
 }
-.playlist .songid {
+.mb-table .songid {
     width: 5em;
 }
-.playlist .insertat {
+.mb-table .insertat {
     width: 10em;
 }
-.playlist .author {
+.mb-table .author {
     width: 10em;
     text-align: left;
     padding-left: 1em;
 }
-.playlist .delete {
+.mb-table .delete {
     width: 2em;
 }

@@ -15,6 +15,7 @@ import UserPage from './views/UserPage';
 import Register from "./views/Register";
 import GlobalContext from './components/GlobalContext';
 import {AdminRoute, AnonymousRoute, LoggedinRoute} from "./components/Routes";
+import UserList from "./views/UserList";
 
 
 class AppRouter extends Component {
@@ -238,7 +239,7 @@ class AppRouter extends Component {
                         <BaseLayout>
                             <Switch>
                                 <Route path="/" exact component={Home}/>
-                                <Route path="/users/:name" component={UserPage}/>
+                                <Route path="/user/:name" component={UserPage}/>
                                 <Route path="/archiv/:page?" component={Archiv}/>
                                 <Route path="/statistik" component={Stats}/>
                                 <AnonymousRoute path="/register" component={Register}/>
@@ -248,6 +249,7 @@ class AppRouter extends Component {
                                 <AdminRoute path="/gapcloser" component={Gapcloser}/>
                                 <AdminRoute path="/import" component={Playlist}/>
                                 <AdminRoute path="/songs" component={Songs}/>
+                                <AdminRoute path="/users/:page?" component={UserList}/>
                                 <Route component={NoMatch}/>
                             </Switch>
                         </BaseLayout>

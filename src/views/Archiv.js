@@ -4,7 +4,7 @@ import {Link} from "react-router-dom";
 import {TransitionGroup} from "react-transition-group";
 import CSSTransition from "react-transition-group/CSSTransition";
 import Moment from 'react-moment';
-import { withRouter } from "react-router";
+import {withRouter} from "react-router";
 
 import Row from 'react-bootstrap/Row';
 import Pagination from "react-js-pagination";
@@ -89,7 +89,7 @@ class Archiv extends Component {
 function Archivlist(props) {
     return (
         <Row className="justify-content-center">
-            <table className="playlist col-xl-9 col-lg-10 col-md-12 lr-space archiv">
+            <table className="mb-table col-xl-9 col-lg-10 col-md-12 lr-space archiv">
                 <thead>
                     <tr className="header">
                         <th className="d-none d-sm-table-cell songid">Song ID</th>
@@ -123,7 +123,7 @@ function Song(props) {
         <tr className={className}>
             <td className="d-none d-sm-table-cell">{ props.id }</td>
             <td className=""><span className="d-none d-sm-inline"><Moment format="DD.MM.YYYY">{ props.playedAt }</Moment> - </span><Moment format="HH:mm:ss">{ props.playedAt }</Moment></td>
-            <td className="d-none d-sm-inline-flex author"><GravatarIMG>{ props.gravatarId }</GravatarIMG><Link to={`/users/${props.authorLink}`}>{ props.author }</Link></td>
+            <td className="d-none d-sm-inline-flex author"><GravatarIMG>{ props.gravatarId }</GravatarIMG><Link to={`/user/${props.authorLink}`}>{ props.author }</Link></td>
             <td className="d-none d-sm-table-cell"><QuickAdd>{props.link}</QuickAdd></td>
             <td className="nolink songtitle"><a href={ props.link }>{ props.title }</a></td>
             <td className="d-none d-md-table-cell songlink"><a href={props.link}>{ props.link }</a></td>
