@@ -1,0 +1,51 @@
+.registerwindow {
+    max-width: 50ch;
+    padding: 1em;
+    margin-top: 10%;
+    vertical-align: middle;
+    border-radius: 4px;
+    box-shadow: inset 0 2px 2px rgba(0, 0, 0, .5), 0 1px 0 rgba(250, 250, 250, .2);
+    background-color: #252525;
+    background-image: url(../res/bgtexture.png);
+    box-sizing: border-box;
+    text-shadow: 0 -1px 0 #111;
+    color: #E0E0E0;
+    user-select: none;
+}
+.registerwindow form {
+    display: flex;
+    flex-direction: column;
+}
+.registerwindow form label {
+    display: flex;
+    justify-content: space-between;
+    line-height: 36px;
+    height: 36px;
+}
+.registerwindow form label:last-of-type {
+    height: initial;
+    line-height: initial;
+    align-items: center;
+    text-align: left;
+    margin: 0;
+
+    padding: 4px 5px;
+    border: 1px solid #888;
+    border-radius: 4px;
+    color: #eee;
+    background-color: #666;
+    box-shadow: inset 0 2px 2px rgba(0,0,0,0.2);
+    text-shadow: none;
+}
+.registerwindow form label input[type="checkbox"] {
+    margin: 10px;
+}
+.registerwindow form label input {
+
+}
+.registerwindow button {
+    margin: 1em;
+}
+.registerwindow a {
+    color: rgb(249,235,198);
+}

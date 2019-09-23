@@ -39,6 +39,8 @@
     "not op_mini all"
   ],
   "devDependencies": {
+    "@types/react": "^16.9.2",
+    "@types/react-dom": "^16.9.0",
     "@types/react-router-bootstrap": "^0.24.5",
     "@types/react-transition-group": "^2.9.2"
   }

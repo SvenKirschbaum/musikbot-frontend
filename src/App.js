@@ -12,7 +12,10 @@ import Gapcloser from './views/Gapcloser';
 import Stats from './views/Stats';
 import Playlist from './views/Playlist';
 import UserPage from './views/UserPage';
+import Register from "./views/Register";
 import GlobalContext from './components/GlobalContext';
+import {AdminRoute, AnonymousRoute, LoggedinRoute} from "./components/Routes";
+
 
 
 class AppRouter extends Component {
@@ -50,6 +53,7 @@ class AppRouter extends Component {
         this.loadUser = this.loadUser.bind(this);
         this.loadTokenFromStorage = this.loadTokenFromStorage.bind(this);
         this.loadTokenFromExtension = this.loadTokenFromExtension.bind(this);
+        this.loadToken = this.loadToken.bind(this);
     }
 
     loadTokenFromExtension() {
@@ -153,6 +157,21 @@ class AppRouter extends Component {
         });
     }
 
+    loadToken(token){
+        this.setState({
+            loggedin: true,
+            loading: true,
+            token: token,
+            user: {}
+        });
+        localStorage.setItem('loginstate', JSON.stringify({
+            loggedin: true,
+            token: token
+        }));
+        this.defaultHeaders.set("Authorization", "Bearer " + token);
+        this.loadUser();
+    }
+
     logout() {
         fetch("/api/v2/logout", {
             method: 'POST',
@@ -211,6 +230,7 @@ class AppRouter extends Component {
                             login: this.login,
                             logout: this.logout,
                             reload: this.loadUser,
+                            loadToken: this.loadToken,
                             alerts: this.state.alerts,
                             addAlert: this.addAlert,
                             removeAlert: this.removeAlert,
@@ -219,15 +239,16 @@ class AppRouter extends Component {
                         <BaseLayout>
                             <Switch>
                                 <Route path="/" exact component={Home}/>
-                                <Route path="/songs" component={Songs}/>
-                                <Route path="/archiv/:page?" component={Archiv}/>
-                                <Route path="/token" component={Token}/>
-                                <Route path="/debug" component={Debug}/>
-                                <Route path="/log" component={Log}/>
-                                <Route path="/gapcloser" component={Gapcloser}/>
-                                <Route path="/statistik" component={Stats}/>
-                                <Route path="/import" component={Playlist}/>
                                 <Route path="/users/:name" component={UserPage}/>
+                                <Route path="/archiv/:page?" component={Archiv}/>
+                                <Route path="/statistik" component={Stats}/>
+                                <AnonymousRoute path="/register" component={Register}/>
+                                <LoggedinRoute path="/token" component={Token}/>
+                                <AdminRoute path="/debug" component={Debug}/>
+                                <AdminRoute path="/log" component={Log}/>
+                                <AdminRoute path="/gapcloser" component={Gapcloser}/>
+                                <AdminRoute path="/import" component={Playlist}/>
+                                <AdminRoute path="/songs" component={Songs}/>
                                 <Route component={NoMatch}/>
                             </Switch>
                         </BaseLayout>
