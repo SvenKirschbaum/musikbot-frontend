@@ -55,6 +55,7 @@
 }
 .profilepic .card-body {
     height: 290px;
+    display: block;
 }
 .buttonrow {
     bottom: 0;
