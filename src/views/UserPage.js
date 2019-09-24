@@ -219,7 +219,7 @@ class UserPage extends Component {
                                                             <tr>
                                                                 <td>Username:</td>
                                                                 <td>
-                                                                    {this.state.user.name}
+                                                                    {this.state.user.guest ? "Gast" : this.state.user.name}
                                                                     {(this.context.user.admin && !this.state.user.guest) &&
                                                                         <span className="changelink" onClick={(e) => this.showedit("username",e)}>(Ändern)</span>
                                                                     }
