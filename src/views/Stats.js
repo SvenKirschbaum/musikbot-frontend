@@ -97,7 +97,7 @@ class Stats extends Component {
                         (entry,key) => (
                             <tr key={key}>
                                 <td className="idcolumn">{key+1}.</td>
-                                <td><Link to={`/users/${entry.name}`}>{entry.name}</Link></td>
+                                <td><Link to={`/user/${entry.name}`}>{entry.name}</Link></td>
                                 <td>{entry.count}</td>
                             </tr>
                         )
