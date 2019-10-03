@@ -35,14 +35,6 @@ class AppRouter extends Component {
             alerts: []
         };
 
-        // eslint-disable-next-line no-undef
-        if(chrome && chrome.runtime && chrome.runtime.sendMessage) {
-            this.loadTokenFromExtension();
-        }
-        else {
-            this.loadTokenFromStorage();
-        }
-
         this.addAlert = this.addAlert.bind(this);
         this.removeAlert = this.removeAlert.bind(this);
 
@@ -54,6 +46,16 @@ class AppRouter extends Component {
         this.loadTokenFromStorage = this.loadTokenFromStorage.bind(this);
         this.loadTokenFromExtension = this.loadTokenFromExtension.bind(this);
         this.loadToken = this.loadToken.bind(this);
+    }
+
+    componentDidMount() {
+        // eslint-disable-next-line no-undef
+        if(typeof(chrome) !== "undefined" && typeof(chrome.runtime) !== "undefined" && typeof(chrome.runtime.sendMessage) !== "undefined") {
+            this.loadTokenFromExtension();
+        }
+        else {
+            this.loadTokenFromStorage();
+        }
     }
 
     loadTokenFromExtension() {
