@@ -115,7 +115,7 @@ class Playlist extends Component {
         return (
             <Container fluid>
                 <Header />
-                <Row className="justify-content-center space-bottom">
+                <Row className="justify-content-center">
                     <Col xl={{span: 9}} lg={{span: 10}} md={{span: 11}} xs={{span: 11}}>
                         <table className="importlist">
                             <thead>
@@ -140,11 +140,11 @@ class Playlist extends Component {
                             </thead>
                             <tbody>
                                 <TransitionGroup component={null} exit={false}>
-                                {this.state.songs.map((song,key) => (
-                                    <CSSTransition key={song.id} timeout={300} classNames="song-anim">
-                                        <Song key={song.link + key} checked={this.state.checkboxes[key]} onChange={this.onCheckbox.bind(this,key)} title={song.name} link={song.link} />
-                                    </CSSTransition>
-                                ))}
+                                    {this.state.songs.map((song,key) => (
+                                        <CSSTransition key={song.link} timeout={300} classNames="song-anim">
+                                            <Song key={song.link + key} checked={this.state.checkboxes[key]} onChange={this.onCheckbox.bind(this,key)} title={song.name} link={song.link} />
+                                        </CSSTransition>
+                                    ))}
                                 </TransitionGroup>
                             </tbody>
                             <tfoot>
