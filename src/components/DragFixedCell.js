@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 
 class DragFixedCell extends Component {
 
-    getSnapshotBeforeUpdate(prevProps) {
+    getSnapshotBeforeUpdate(prevProps, prevState) {
         if (!this.ref) {
             return null;
         }
@@ -16,12 +16,10 @@ class DragFixedCell extends Component {
 
         const { width, height } = this.ref.getBoundingClientRect();
 
-        const snapshot = {
+        return {
             width,
             height,
         };
-
-        return snapshot;
     }
 
     componentDidUpdate(

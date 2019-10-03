@@ -106,7 +106,7 @@ class Playlist extends Component {
     }
 
     onCheckbox(id,e) {
-        var checkboxes = [...this.state.checkboxes];
+        let checkboxes = [...this.state.checkboxes];
         checkboxes[id] = e.target.checked;
         this.setState({checkboxes: checkboxes});
     }

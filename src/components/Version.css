@@ -1,7 +1,6 @@
 .version {
     list-style: none;
     padding: 0;
-    margin: 10px;
     position: fixed;
     right: 0;
     font-size: 0.75rem;
@@ -11,5 +10,5 @@
     user-select: none;
     text-align: right;
     line-height: 0.75rem;
-    margin-right: 15px;
+    margin: 10px 15px 10px 10px;
 }

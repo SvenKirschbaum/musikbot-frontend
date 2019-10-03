@@ -98,13 +98,13 @@ class AppRouter extends Component {
     }
 
     addAlert(alert) {
-        var alerts = [...this.state.alerts];
+        let alerts = [...this.state.alerts];
         alerts.push(alert);
         this.setState({alerts: alerts});
     }
 
     removeAlert(id) {
-        var alerts = [...this.state.alerts]; // make a separate copy of the array
+        let alerts = [...this.state.alerts]; // make a separate copy of the array
         let index = -1;
         for (const [key, value] of Object.entries(alerts)) {
             if (value.id === id) {
