@@ -23,18 +23,20 @@ class BaseLayout extends Component {
 
     render() {
         return (
-            <div>
-                <CookieConsent
-                    location="top"
-                    style={{ background: "black" }}
-                >
-                    This website uses cookies to ensure you get the best experience on our website. <a className="cookielink" href="https://cookiesandyou.com/">Learn more</a>
-                </CookieConsent>
-                <Version />
-                <Alerts onClose={this.context.removeAlert}>{this.context.alerts}</Alerts>
-                {this.props.children}
-                <Footer></Footer>
-            </div>
+            <React.Fragment>
+                <div className="page-body">
+                    <CookieConsent
+                        location="top"
+                        style={{ background: "black" }}
+                    >
+                        This website uses cookies to ensure you get the best experience on our website. <a className="cookielink" href="https://cookiesandyou.com/">Learn more</a>
+                    </CookieConsent>
+                    <Version />
+                    <Alerts onClose={this.context.removeAlert}>{this.context.alerts}</Alerts>
+                    {this.props.children}
+                </div>
+                <Footer />
+            </React.Fragment>
         );
     }
 }
@@ -52,7 +54,7 @@ class Footer extends Component {
     }
     render() {
         return (
-            <div>
+            <React.Fragment>
                 <img className="spotify-logo d-none d-md-block" alt="spotify Logo" src={spotifylogo} />
                 <img className="react-logo d-none d-md-block" alt="HTML5 Logo" src={reactlogo} />
                 <CSSTransition
@@ -81,7 +83,7 @@ class Footer extends Component {
                         <Clock className="clock d-none d-md-inline"></Clock>
                     </span>
                 </footer>
-            </div>
+            </React.Fragment>
         );
     }
 }
