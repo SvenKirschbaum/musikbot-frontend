@@ -47,8 +47,8 @@ class UserPage extends Component {
         this.load(this.props.match.params.name);
     }
 
-    componentWillReceiveProps(nextProps) {
-        if(this.props.match.params.name !== nextProps.match.params.name) {
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if(prevProps.match.params.name !== this.props.match.params.name) {
             this.setState({
                 user: {
                     recent: [],
@@ -60,7 +60,7 @@ class UserPage extends Component {
                 modalvalue: "",
                 showmodal: false,
             });
-            this.load((nextProps.match.params.name));
+            this.load(this.props.match.params.name);
         }
     }
 
