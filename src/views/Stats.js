@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import Container from 'react-bootstrap/Container';
 
 import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card'
 
 import GlobalContext from '../components/GlobalContext';
@@ -53,7 +52,7 @@ class Stats extends Component {
 
     render() {
         return (
-            <Container fluid className="h-100 d-flex flex-column">
+            <Container fluid className="d-flex flex-column statscontainer">
                 <Header />
                 <Row className="statsrow">
                     <EntryCard title="Am meisten gewünscht" data={this.state.mostplayed} mapfunction={
@@ -132,7 +131,7 @@ class Stats extends Component {
 
 function EntryCard(props) {
     return (
-        <Col lg={{span: 6}} className="statscard">
+        <div className="statscard">
             <Card className="h-100">
                 <Card.Body>
                     <Card.Title>{props.title}</Card.Title>
@@ -154,7 +153,7 @@ function EntryCard(props) {
                     </table>
                 </Card.Body>
             </Card>
-        </Col>
+        </div>
     );
 }
 
