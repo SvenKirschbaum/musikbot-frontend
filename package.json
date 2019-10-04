@@ -24,20 +24,22 @@
     "react-scripts": "^3.2.0",
     "react-stomp": "^4.2.0",
     "react-transition-group": "^2.9.0",
+    "source-map-explorer": "^2.1.0",
     "throttle-debounce": "^2.1.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "eslintConfig": {
     "extends": "react-app"
   },
   "browserslist": {
     "production": [
-      ">0.5%",
+      ">0.2%",
       "not dead",
       "not ie <= 10",
       "not op_mini all"
