@@ -15,6 +15,9 @@ body {
 html, body, #root {
     height: 100%;
 }
+html, body, #root, .page-body {
+    overflow-x: hidden;
+}
 
 #root {
     display: flex;
