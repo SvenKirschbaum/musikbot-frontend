@@ -33,7 +33,6 @@
     grid-template-columns: 1fr 1fr;
     grid-gap: 30px 30px;
     margin: 0;
-    align-content: stretch;
 }
 @media (max-width: 992px) {
     .statsrow {

@@ -4,7 +4,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Autosuggest from "react-autosuggest";
 import Button from "react-bootstrap/Button";
-import { throttle, debounce } from "throttle-debounce";
+import {debounce, throttle} from "throttle-debounce";
 
 import './AddSong.css';
 
@@ -124,8 +124,8 @@ class AddSong extends Component {
             <section>
                 <Row className="space-top justify-content-center">
                     <Col className="addSong" xl={{span: 4}} md={{span: 6}} xs={{span: 11}}>
-                        <Row noGutters>
-                            <form onSubmit={this.handleSubmit}>
+                        <form onSubmit={this.handleSubmit}>
+                            <Row noGutters>
                                 <Col xs={{span:12}} md={{span:8}}>
                                     <Autosuggest
                                         suggestions={this.state.suggestions}
@@ -137,8 +137,8 @@ class AddSong extends Component {
                                     />
                                 </Col>
                                 <Col xs={{span:12}} md={{span:4}}><Button type="submit">{this.props.buttontext}</Button></Col>
-                            </form>
-                        </Row>
+                            </Row>
+                        </form>
                     </Col>
                 </Row>
             </section>
