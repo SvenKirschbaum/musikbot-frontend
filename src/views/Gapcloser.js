@@ -51,7 +51,7 @@ class Gapcloser extends Component {
     save(e) {
         e.preventDefault();
         fetch("/api/v2/gapcloser", {
-            method: 'POST',
+            method: 'PUT',
             body: JSON.stringify({mode: this.state.mode, playlist: this.state.playlist}),
             headers: this.context.defaultHeaders
         })

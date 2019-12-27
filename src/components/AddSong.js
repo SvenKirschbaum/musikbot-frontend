@@ -68,10 +68,9 @@ class AddSong extends Component {
         this.waitfor = value;
         let headers = new Headers(this.context.defaultHeaders);
         headers.set("Content-Type","text/plain");
-        fetch("/api/v2/search/", {
-            method: 'POST',
-            headers: headers,
-            body: value
+        fetch("/api/v2/search?term="+encodeURIComponent(value), {
+            method: 'GET',
+            headers: headers
         }).then((res) => {
             if(!res.ok) throw Error(res.statusText);
             return res;
