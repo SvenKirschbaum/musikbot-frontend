@@ -141,7 +141,7 @@
 .BottomControl .col-6 {
     padding: 0;
 }
-.BottomControl .col-6:last-child * {
+.BottomControl .col-6:last-child > * {
     float: right;
 }
 .dragging {
@@ -197,4 +197,33 @@
 }
 .mb-table .delete {
     width: 2em;
+}
+.page-body {
+    user-select: none;
+}
+.volume-slider-container {
+    z-index: 5000000;
+    padding-top: 5px;
+}
+.volume-slider-container * {
+    float: left;
+}
+.volume-slider-icon {
+    z-index: 5000000;
+    height: 20px;
+    width: 20px;
+    fill: #BDBDBD;
+    margin: 4px;
+}
+.volume-slider {
+    width: 130px;
+    height: 8px;
+    border-radius: 4px;
+    background-color: #121212;
+    cursor: pointer;
+    margin: 10px;
+    z-index: 0;
+}
+.volume-slider-block {
+    float: right;
 }

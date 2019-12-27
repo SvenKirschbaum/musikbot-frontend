@@ -26,7 +26,7 @@ class Alerts extends Component {
                     <TransitionGroup component={null}>
                         {this.props.children.map((alert) => {
                             return (
-                                <CSSTransition key={alert.id} timeout={300} classNames="slidedown">
+                                <CSSTransition key={alert.id} timeout={300} classNames="alert-anim">
                                     <Alert dismissible variant={alert.type} onClose={() => {this.props.onClose(alert.id)}}>
                                         {alert.head && <Alert.Heading>{alert.head}</Alert.Heading>}
                                         {alert.text}

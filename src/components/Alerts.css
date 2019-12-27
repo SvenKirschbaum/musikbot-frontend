@@ -9,17 +9,17 @@
     box-shadow: 0 0 1rem 8px rgba(0,0,0,0.5);
     white-space: pre-line;
 }
-.slidedown-enter {
+.alert-anim-enter {
     opacity: 0;
 }
-.slidedown-enter-active {
+.alert-anim-enter-active {
     opacity: 1;
     transition: all 300ms;
 }
-.slidedown-exit {
+.alert-anim-exit {
     opacity: 1;
 }
-.slidedown-exit-active {
+.alert-anim-exit-active {
     opacity: 0;
     transition: all 300ms;
 }

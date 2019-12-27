@@ -183,6 +183,36 @@ footer a, footer a:hover {
     transition: all 300ms;
 }
 
+.slidedown-enter {
+    transform: translateY(-100%);
+}
+.slidedown-enter-active {
+    transform: translateY(0%);
+    transition: all 300ms;
+}
+.slidedown-exit {
+    transform: translateY(0%);
+}
+.slidedown-exit-active {
+    transform: translateY(-100%);
+    transition: all 300ms;
+}
+
+.slideright-enter {
+    transform: translateX(-100%);
+}
+.slideright-enter-active {
+    transform: translateX(0%);
+    transition: all 300ms;
+}
+.slideright-exit {
+    transform: translateX(0%);
+}
+.slideright-exit-active {
+    transform: translateX(-100%);
+    transition: all 300ms;
+}
+
 .AMenu {
     list-style: none;
     position: fixed;

@@ -8,6 +8,7 @@ import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
+import {Direction, PlayerIcon, Slider} from 'react-player-controls';
 
 import GlobalContext from '../components/GlobalContext';
 import GravatarIMG from "../components/GravatarIMG";
@@ -30,7 +31,8 @@ class Home extends Component {
             songtitle: 'Loading...',
             songlink: null,
             playlistdauer: 0,
-            playlist: []
+            playlist: [],
+            volume: 38
         };
 
         this.statebuffer = null;
@@ -48,6 +50,8 @@ class Home extends Component {
         this.onDragStart = this.onDragStart.bind(this);
         this.onDragEnd = this.onDragEnd.bind(this);
         this.parseUpdate = this.parseUpdate.bind(this);
+        this.setVolume = this.setVolume.bind(this);
+        this.onVolume = this.onVolume.bind(this);
     }
 
     parseUpdate(response) {
@@ -204,6 +208,27 @@ class Home extends Component {
         })
     }
 
+    setVolume(volume) {
+        this.setState({volume : volume*100});
+    }
+
+    onVolume(volume) {
+        let headers = new Headers(this.context.defaultHeaders);
+        headers.set("Content-Type", "application/json");
+        fetch("/api/control/volume", {
+            method: 'PUT',
+            headers: headers,
+            body: JSON.stringify({
+                'volume': volume*100
+            })
+        }).then((res) => {
+            if (!res.ok) throw Error(res.statusText);
+        })
+        .catch(reason => {
+            this.context.handleException(reason);
+        })
+    }
+
     render() {
         return (
             <Container fluid>
@@ -213,10 +238,10 @@ class Home extends Component {
                             duration={this.state.playlistdauer}/>
                     {this.context.user && this.context.user.admin &&
                     <ControlElements onStart={this.sendStart} onPause={this.sendPause} onStop={this.sendStop}
-                                     onSkip={this.sendSkip}/>}
+                                     onSkip={this.sendSkip} />}
                     <Playlist onDragStart={this.onDragStart} onDragEnd={this.onDragEnd} AuthState={this.context}
                               onDelete={this.sendDelete} songs={this.state.playlist}/>
-                    <BottomControl onShuffle={this.sendShuffle} admin={this.context.user && this.context.user.admin}/>
+                    <BottomControl onShuffle={this.sendShuffle} setVolume={this.setVolume} onVolume={this.onVolume} volume={this.state.volume} admin={this.context.user && this.context.user.admin}/>
                     <AddSong handlefetchError={this.context.handleException} sendSong={this.sendSong} buttontext="Abschicken"/>
                 </main>
                 <SockJsClient
@@ -337,6 +362,62 @@ function ControlElements(props) {
     );
 }
 
+class VolumeControl extends Component {
+    render() {
+        const SliderBar = ({ direction, value, style }) => (
+            <div
+                style={{
+                    position: 'absolute',
+                    background: '#9E9E9E',
+                    borderRadius: 4,
+                    top: 0,
+                    bottom: 0,
+                    left: 0,
+                    width: `${value * 100}%`,
+                }}
+            />
+        );
+        const SliderHandle = ({ direction, value, style }) => (
+            <div
+                style={{
+                    position: 'absolute',
+                    width: 12,
+                    height: 12,
+                    background: '#BDBDBD',
+                    borderRadius: '100%',
+                    transform: 'scale(1)',
+                    transition: 'transform 0.2s',
+                    '&:hover': {
+                        transform: 'scale(1.3)',
+                    },
+                    top: 0,
+                    left: `${value * 100}%`,
+                    marginTop: -2,
+                    marginLeft: -6,
+                }}
+            />
+        );
+
+        return (
+            <div className="volume-slider-container">
+                <PlayerIcon.SoundOn className="volume-slider-icon" onClick={this.toggleState}/>
+                <div className="volume-slider-block">
+                    <Slider
+                        direction={Direction.HORIZONTAL}
+                        isEnabled
+                        onChange={this.props.setVolume}
+                        onChangeEnd={this.props.onVolume}
+                        className="volume-slider"
+                    >
+                        <SliderBar direction={Direction.HORIZONTAL} value={this.props.volume / 100}/>
+                        <SliderHandle direction={Direction.HORIZONTAL} value={this.props.volume / 100}/>
+                    </Slider>
+                </div>
+            </div>
+        );
+    }
+}
+
 function BottomControl(props) {
     return (
         <section>
@@ -346,7 +427,10 @@ function BottomControl(props) {
                         <Col xs={{span: 6}}><Link to="/archiv">Zum Archiv</Link></Col>
                         <Col xs={{span: 6}}>
                             {props.admin &&
-                                <Button onClick={props.onShuffle}>Shuffle</Button>
+                                <Row noGutters={true}>
+                                    <VolumeControl onVolume={props.onVolume} setVolume={props.setVolume} volume={props.volume} />
+                                    <Button onClick={props.onShuffle}>Shuffle</Button>
+                                </Row>
                             }
                         </Col>
                     </Row>
