@@ -213,6 +213,8 @@ class Home extends Component {
     }
 
     onVolume(volume) {
+        if(volume == null) return;
+
         let headers = new Headers(this.context.defaultHeaders);
         headers.set("Content-Type", "application/json");
         fetch("/api/control/volume", {
