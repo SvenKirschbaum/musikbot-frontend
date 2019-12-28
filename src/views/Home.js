@@ -368,55 +368,60 @@ function ControlElements(props) {
     );
 }
 
-class VolumeControl extends Component {
-    render() {
-        const SliderBar = ({ direction, value, style }) => (
-            <div
-                style={{
-                    position: 'absolute',
-                    background: '#9E9E9E',
-                    borderRadius: 4,
-                    top: 0,
-                    bottom: 0,
-                    left: 0,
-                    width: `${value * 100}%`,
-                }}
-            />
-        );
-        const SliderHandle = ({ direction, value, style }) => (
-            <div
-                style={{
-                    position: 'absolute',
-                    width: 12,
-                    height: 12,
-                    background: '#BDBDBD',
-                    borderRadius: '100%',
-                    transform: 'scale(1)',
-                    transition: 'transform 0.2s',
-                    '&:hover': {
-                        transform: 'scale(1.3)',
-                    },
-                    top: 0,
-                    left: `${value * 100}%`,
-                    marginTop: -2,
-                    marginLeft: -6,
-                }}
-            />
-        );
+class VolumeControl extends Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            isDragging: false
+        };
 
+        this.onChange = this.onChange.bind(this);
+        this.onChangeStart = this.onChangeStart.bind(this);
+        this.onChangeEnd = this.onChangeEnd.bind(this);
+    }
+
+    onChange(volume) {
+        this.props.setVolume(volume);
+    }
+
+    onChangeStart(volume) {
+        this.setState({
+            isDragging: true
+        });
+    }
+
+    onChangeEnd(volume) {
+        this.setState({
+            isDragging: false
+        });
+        this.props.onVolume(volume);
+    }
+
+    render() {
         return (
             <div className="volume-slider-container">
-                <PlayerIcon.SoundOn className="volume-slider-icon" onClick={this.toggleState}/>
+                <PlayerIcon.SoundOn className="volume-slider-icon"/>
                 <div className="volume-slider-block">
                     <Slider
                         direction={Direction.HORIZONTAL}
                         isEnabled
-                        onChange={this.props.setVolume}
-                        onChangeEnd={this.props.onVolume}
-                        className="volume-slider"
+                        onChange={this.onChange}
+                        onChangeStart={this.onChangeStart}
+                        onChangeEnd={this.onChangeEnd}
+                        className={this.state.isDragging ? "volume-slider active" : "volume-slider"}
                     >
-                        <SliderBar direction={Direction.HORIZONTAL} value={this.props.volume / 100}/>
-                        <SliderHandle direction={Direction.HORIZONTAL} value={this.props.volume / 100}/>
+                        <div
+                            className="volume-slider-bar"
+                            style={{
+                                width: `${this.props.volume}%`,
+                            }}
+                        />
+                        <div
+                            className="volume-slider-handle"
+                            style={{
+                                left: `${this.props.volume}%`,
+                            }}
+                        />
                     </Slider>
                 </div>
             </div>

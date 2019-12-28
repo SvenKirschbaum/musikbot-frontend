@@ -227,3 +227,28 @@
 .volume-slider-block {
     float: right;
 }
+.volume-slider-bar {
+    position: absolute;
+    background: #9E9E9E;
+    border-radius: 4px;
+    top: 0;
+    bottom: 0;
+    left: 0;
+}
+.volume-slider-handle {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: #BDBDBD;
+    border-radius: 100%;
+    top: 0;
+    margin-top: -2px;
+    margin-left: -6px;
+}
+.volume-slider > div {
+    transition-duration: 1s;
+    transition-property: width,left;
+}
+.volume-slider.active > div {
+    transition:none!important;
+}
