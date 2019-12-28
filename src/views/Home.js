@@ -19,6 +19,7 @@ import DragFixedCell from "../components/DragFixedCell";
 import './Home.css';
 import {FaTrashAlt} from 'react-icons/fa';
 import SockJsClient from 'react-stomp';
+import ClassWrapper from "../components/ClassWrapper";
 
 class Home extends Component {
 
@@ -277,21 +278,24 @@ function Playlist(props) {
                                     <th className="d-none d-sm-table-cell author">Eingefügt von</th>
                                     <th className="songtitle">Titel</th>
                                     <th className="d-none d-md-table-cell songlink">Link</th>
-                                    {props.AuthState.user && props.AuthState.user.admin && <th className="delete"></th>}
+                                    {props.AuthState.user && props.AuthState.user.admin && <th className="delete"/>}
                                 </tr>
                                 </thead>
                                 <FlipMove typeName="tbody" enterAnimation="fade" leaveAnimation="none" duration={400}>
                                     {props.songs.map((song, index) => {
                                         return (
-                                            <Draggable
-                                                isDragDisabled={!(props.AuthState.user && props.AuthState.user.admin)}
-                                                key={song.id} draggableId={song.id} index={index}>
-                                                {(provided, snapshot) => (
-                                                    <Song AuthState={props.AuthState} onDelete={props.onDelete}
-                                                          key={song.id} {...song} provided={provided}
-                                                          isDragging={snapshot.isDragging}/>
-                                                )}
-                                            </Draggable>
+                                            //This wrapper is required, because Draggable is a functional Component since version 11 of react-beautiful-dnd, and functional components can not be used as childs of FlipMove
+                                            <ClassWrapper key={song.id}>
+                                                <Draggable
+                                                    isDragDisabled={!(props.AuthState.user && props.AuthState.user.admin)}
+                                                    key={song.id} draggableId={song.id.toString()} index={index}>
+                                                    {(provided, snapshot) => (
+                                                        <Song AuthState={props.AuthState} onDelete={props.onDelete}
+                                                              key={song.id} {...song} provided={provided}
+                                                              isDragging={snapshot.isDragging}/>
+                                                    )}
+                                                </Draggable>
+                                            </ClassWrapper>
                                         );
                                     })}
                                     {provided.placeholder}
