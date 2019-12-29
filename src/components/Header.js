@@ -3,6 +3,8 @@ import Col from "react-bootstrap/Col";
 import React, {Component} from "react";
 import {withRouter} from "react-router";
 import './Header.css';
+import Config from './Config';
+
 
 class Header extends Component {
 
@@ -21,7 +23,7 @@ class Header extends Component {
         return (
             <header>
                 <Row>
-                    <Col className="Header text-center"><span onClick={this.onClick}>Elite12 // </span><span onClick={this.onClick}>Radio</span></Col>
+                    <Col className="Header text-center"><span onClick={this.onClick}>{Config.title2}</span><span onClick={this.onClick}>{Config.title}</span></Col>
                 </Row>
             </header>
         );

@@ -17,6 +17,7 @@ import reactlogo from '../res/react.png';
 import spotifylogo from '../res/spotify.svg';
 import GravatarIMG from "./GravatarIMG";
 import Alerts from "./Alerts";
+import Config from "./Config";
 
 class BaseLayout extends Component {
     static contextType = GlobalContext;
@@ -31,7 +32,7 @@ class BaseLayout extends Component {
                     >
                         This website uses cookies to ensure you get the best experience on our website. <a className="cookielink" href="https://cookiesandyou.com/">Learn more</a>
                     </CookieConsent>
-                    <Version />
+                    {Config.showversion && <Version />}
                     <Alerts onClose={this.context.removeAlert}>{this.context.alerts}</Alerts>
                     {this.props.children}
                 </div>
@@ -55,34 +56,44 @@ class Footer extends Component {
     render() {
         return (
             <React.Fragment>
-                <img className="spotify-logo d-none d-md-block" alt="spotify Logo" src={spotifylogo} />
-                <img className="react-logo d-none d-md-block" alt="HTML5 Logo" src={reactlogo} />
+                {Config.showlogos &&
+                    <React.Fragment>
+                        <img className="spotify-logo d-none d-md-block" alt="spotify Logo" src={spotifylogo}/>
+                        <img className="react-logo d-none d-md-block" alt="HTML5 Logo" src={reactlogo} />
+                    </React.Fragment>
+                }
                 <CSSTransition
                     classNames="slideright"
                     timeout={300}
                     unmountOnExit
                     in={this.state.isPaneOpen}>
-                        <LoginBox AuthState={this.context} onClose={() => this.setState({ isPaneOpen: false })}></LoginBox>
+                        <LoginBox AuthState={this.context} onClose={() => this.setState({isPaneOpen: false})}/>
                 </CSSTransition>
                 <CSSTransition
                     classNames="slideup"
                     timeout={300}
                     unmountOnExit
                     in={this.state.isMenuOpen}>
-                    <AMenu AuthState={this.context} onItemClick={() => this.setState({ isMenuOpen: false })}></AMenu>
+                    <AMenu AuthState={this.context} onItemClick={() => this.setState({isMenuOpen: false})}/>
                 </CSSTransition>
-                <footer className="d-flex flex-row justify-content-between">
+                {Config.showfooter &&
+                    <footer className="d-flex flex-row justify-content-between no-gutters">
+                        <Col className="text-left">
+                            {Config.enableusers &&
+                            <LoginFooter AuthState={this.context} onLogin={() => this.setState({isPaneOpen: true})}
+                                         onMenu={() => this.setState({isMenuOpen: !this.state.isMenuOpen})}/>}
+                        </Col>
+                        <Col className="text-center">
+                            {Config.showstats && <Link to="/statistik">Statistik</Link>}
+                        </Col>
+                        <Col className="text-right">
+                            {Config.showrights && <a href={Config.rightslink}>Impressum<span
+                                className="d-none d-sm-inline">/Disclaimer/Datenschutz</span></a>}
 
-                    <LoginFooter AuthState={this.context} onLogin={() => this.setState({isPaneOpen: true})} onMenu={() => this.setState({isMenuOpen: !this.state.isMenuOpen})}></LoginFooter>
-
-                    <Link to="/statistik">Statistik</Link>
-
-                    <span>
-                        <a href="https://datenschutz.elite12.de/">Impressum<span className="d-none d-sm-inline">/Disclaimer/Datenschutz</span></a>
-
-                        <Clock className="clock d-none d-md-inline"></Clock>
-                    </span>
-                </footer>
+                            {Config.showclock && <Clock className="clock d-none d-md-inline"/>}
+                        </Col>
+                    </footer>
+                }
             </React.Fragment>
         );
     }
@@ -189,8 +200,8 @@ function AMenu(props) {
     return (
         <nav className="AMenu">
             <li><Link to="/" onClick={props.onItemClick}>Startseite</Link></li>
-			<li><Link to="/archiv" onClick={props.onItemClick}>Archiv</Link></li>
-			<li><Link to="/statistik" onClick={props.onItemClick}>Statistik</Link></li>
+            { Config.showarchive && <li><Link to="/archiv" onClick={props.onItemClick}>Archiv</Link></li>}
+            { Config.showstats && <li><Link to="/statistik" onClick={props.onItemClick}>Statistik</Link></li>}
             { props.AuthState.loggedin && <li><Link to="/token" onClick={props.onItemClick}>Auth-Token</Link></li>}
             { props.AuthState.user && props.AuthState.user.admin &&
                 <React.Fragment>

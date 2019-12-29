@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import Songs from './views/Songs';
 import NoMatch from './components/NoMatch';
+import Config from "./components/Config";
 import BaseLayout from './components/BaseLayout';
 import Home from './views/Home';
 import Archiv from './views/Archiv';
@@ -241,10 +242,10 @@ class AppRouter extends Component {
                         <BaseLayout>
                             <Switch>
                                 <Route path="/" exact component={Home}/>
-                                <Route path="/user/:name" component={UserPage}/>
-                                <Route path="/archiv/:page?" component={Archiv}/>
-                                <Route path="/statistik" component={Stats}/>
-                                <AnonymousRoute path="/register" component={Register}/>
+                                {Config.enableusers && <Route path="/user/:name" component={UserPage}/>}
+                                {Config.showarchive && <Route path="/archiv/:page?" component={Archiv}/>}
+                                {Config.showstats && <Route path="/statistik" component={Stats}/>}
+                                {Config.enableusers && <AnonymousRoute path="/register" component={Register}/>}
                                 <LoggedinRoute path="/token" component={Token}/>
                                 <AdminRoute path="/debug" component={Debug}/>
                                 <AdminRoute path="/log" component={Log}/>

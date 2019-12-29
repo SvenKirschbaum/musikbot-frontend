@@ -12,6 +12,7 @@ import Pagination from "react-js-pagination";
 import GlobalContext from '../components/GlobalContext';
 import Header from '../components/Header';
 import GravatarIMG from "../components/GravatarIMG";
+import Config from "../components/Config";
 
 import './Archiv.css';
 import QuickAdd from "../components/QuickAdd";
@@ -123,7 +124,7 @@ function Song(props) {
         <tr className={className}>
             <td className="d-none d-sm-table-cell">{ props.id }</td>
             <td className=""><span className="d-none d-sm-inline"><Moment format="DD.MM.YYYY">{ props.playedAt }</Moment> - </span><Moment format="HH:mm:ss">{ props.playedAt }</Moment></td>
-            <td className="d-none d-sm-inline-flex author"><GravatarIMG>{ props.gravatarId }</GravatarIMG><Link to={`/user/${props.authorLink}`}>{ props.author }</Link></td>
+            <td className="d-none d-sm-inline-flex author"><GravatarIMG>{ props.gravatarId }</GravatarIMG>{Config.enableusers ? <Link to={`/user/${props.authorLink}`}>{ props.author }</Link> : props.author}</td>
             <td className="d-none d-sm-table-cell"><QuickAdd>{props.link}</QuickAdd></td>
             <td className="nolink songtitle"><a href={ props.link }>{ props.title }</a></td>
             <td className="d-none d-md-table-cell songlink"><a href={props.link}>{ props.link }</a></td>

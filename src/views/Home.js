@@ -15,6 +15,7 @@ import GravatarIMG from "../components/GravatarIMG";
 import AddSong from "../components/AddSong";
 import Header from "../components/Header";
 import DragFixedCell from "../components/DragFixedCell";
+import Config from "../components/Config";
 
 import './Home.css';
 import {FaTrashAlt} from 'react-icons/fa';
@@ -318,8 +319,8 @@ function Song(props) {
             <DragFixedCell isDragOccurring={props.isDragging} className="d-none d-lg-table-cell"><Moment
                 format="DD.MM.YYYY - HH:mm:ss">{props.insertedAt}</Moment></DragFixedCell>
             <DragFixedCell isDragOccurring={props.isDragging}
-                           className="d-none d-sm-inline-flex author"><span><GravatarIMG>{props.gravatarId}</GravatarIMG></span><Link
-                to={`/user/${props.authorLink}`}>{props.author}</Link></DragFixedCell>
+                           className="d-none d-sm-inline-flex author"><span><GravatarIMG>{props.gravatarId}</GravatarIMG></span>{Config.enableusers ? <Link
+                to={`/user/${props.authorLink}`}>{props.author}</Link> : props.author}</DragFixedCell>
             <DragFixedCell isDragOccurring={props.isDragging} className="nolink songtitle"><a
                 href={props.link}>{props.title}</a></DragFixedCell>
             <DragFixedCell isDragOccurring={props.isDragging} className="d-none d-md-table-cell songlink"><a
@@ -435,7 +436,7 @@ function BottomControl(props) {
             <Row className="justify-content-center">
                 <Col className="BottomControl" xl={{span: 9}} lg={{span: 10}} md={{span: 11}} xs={{span: 11}}>
                     <Row noGutters={false}>
-                        <Col xs={{span: 6}}><Link to="/archiv">Zum Archiv</Link></Col>
+                        <Col xs={{span: 6}}>{Config.showarchive && <Link to="/archiv">Zum Archiv</Link>}</Col>
                         <Col xs={{span: 6}}>
                             {props.admin &&
                                 <Row noGutters={true}>

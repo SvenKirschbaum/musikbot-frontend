@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 
 import './Version.css';
 import GlobalContext from "./GlobalContext";
+import Config from './Config';
 
 class Version extends Component {
 
@@ -11,7 +12,7 @@ class Version extends Component {
         super(props);
 
         this.state = {
-            frontend: process.env.REACT_APP_VERSION || "~",
+            frontend: Config.version,
             backend: "~",
         };
     }
