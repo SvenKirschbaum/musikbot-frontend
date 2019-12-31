@@ -249,7 +249,7 @@ class Home extends Component {
                     <AddSong handlefetchError={this.context.handleException} sendSong={this.sendSong} buttontext="Abschicken"/>
                 </main>
                 <SockJsClient
-                    url={`/api/sock`}
+                    url={Config.apihost + `/api/sock`}
                     topics={['/user/queue/state','/topic/state']}
                     onMessage={(message) => this.parseUpdate(message)}
                     onConnect={() => this.clientRef.sendMessage("/app/state")}
