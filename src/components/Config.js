@@ -2,6 +2,7 @@ export default {
     title: process.env.REACT_APP_TITLE || "Radio",
     title2: process.env.REACT_APP_TITLE2 || "Elite12 // ",
 
+    apihost: process.env.REACT_APP_API_HOST || "",
     rightslink: process.env.REACT_APP_RIGHTS_LINK || "https://datenschutz.elite12.de/",
 
     showversion: ("REACT_APP_SHOW_VERSION" in process.env) ? process.env.REACT_APP_TITLE : true,

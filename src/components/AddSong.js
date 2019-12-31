@@ -7,6 +7,7 @@ import Button from "react-bootstrap/Button";
 import {debounce, throttle} from "throttle-debounce";
 
 import './AddSong.css';
+import Config from "./Config";
 
 class AddSong extends Component {
 
@@ -68,7 +69,7 @@ class AddSong extends Component {
         this.waitfor = value;
         let headers = new Headers(this.context.defaultHeaders);
         headers.set("Content-Type","text/plain");
-        fetch("/api/v2/search?term="+encodeURIComponent(value), {
+        fetch(Config.apihost + "/api/v2/search?term="+encodeURIComponent(value), {
             method: 'GET',
             headers: headers
         }).then((res) => {

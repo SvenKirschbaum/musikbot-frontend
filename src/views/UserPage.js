@@ -16,6 +16,7 @@ import GravatarIMG from "../components/GravatarIMG";
 import {TransitionGroup} from "react-transition-group";
 import CSSTransition from "react-transition-group/CSSTransition";
 import QuickAdd from "../components/QuickAdd";
+import Config from "../components/Config";
 
 class UserPage extends Component {
 
@@ -65,7 +66,7 @@ class UserPage extends Component {
     }
 
     load(username) {
-        fetch("/api/v2/user/" + username, {
+        fetch(Config.apihost + "/api/v2/user/" + username, {
             method: 'GET',
             headers: this.context.defaultHeaders
         })
@@ -101,7 +102,7 @@ class UserPage extends Component {
         this.handleClose();
         let headers = new Headers(this.context.defaultHeaders);
         headers.set("Content-Type", "text/plain");
-        fetch("/api/v2/user/"+this.state.user.id+"/"+this.state.modaltype, {
+        fetch(Config.apihost + "/api/v2/user/"+this.state.user.id+"/"+this.state.modaltype, {
             method: 'PUT',
             headers: headers,
             body: this.state.modalvalue
@@ -132,7 +133,7 @@ class UserPage extends Component {
 
     handleDelete() {
         this.handleClose();
-        fetch("/api/v2/user/"+this.state.user.id, {
+        fetch(Config.apihost + "/api/v2/user/"+this.state.user.id, {
             method: 'DELETE',
             headers: this.context.defaultHeaders
         })

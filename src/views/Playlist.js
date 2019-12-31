@@ -9,6 +9,7 @@ import Row from "react-bootstrap/Row";
 import Button from "react-bootstrap/Button";
 import TransitionGroup from "react-transition-group/TransitionGroup";
 import CSSTransition from "react-transition-group/CSSTransition";
+import Config from "../components/Config";
 
 class Playlist extends Component {
     static contextType = GlobalContext;
@@ -42,7 +43,7 @@ class Playlist extends Component {
 
     handleLoad(e) {
         e.preventDefault();
-        fetch("/api/v2/playlist?url=" + encodeURIComponent(this.state.url), {
+        fetch(Config.apihost + "/api/v2/playlist?url=" + encodeURIComponent(this.state.url), {
             method: 'GET',
             headers: this.context.defaultHeaders
         })
@@ -67,7 +68,7 @@ class Playlist extends Component {
     }
 
     onSubmit() {
-        fetch("/api/v2/playlist", {
+        fetch(Config.apihost + "/api/v2/playlist", {
             method: 'POST',
             headers: this.context.defaultHeaders,
             body: JSON.stringify(this.state.songs.filter((value,index) => this.state.checkboxes[index]))

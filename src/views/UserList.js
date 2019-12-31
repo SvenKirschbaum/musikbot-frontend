@@ -13,6 +13,7 @@ import {TransitionGroup} from "react-transition-group";
 import CSSTransition from "react-transition-group/CSSTransition";
 import GravatarIMG from "../components/GravatarIMG";
 import {Link} from "react-router-dom";
+import Config from "../components/Config";
 
 class UserList extends Component {
 
@@ -34,7 +35,7 @@ class UserList extends Component {
     }
 
     load(page) {
-        fetch("/api/v2/users/"+page, {
+        fetch(Config.apihost + "/api/v2/users/"+page, {
             method: 'GET',
             headers: this.context.defaultHeaders
         })

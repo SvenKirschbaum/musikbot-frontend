@@ -18,7 +18,7 @@ class Version extends Component {
     }
 
     componentDidMount() {
-        fetch("/api/version", {
+        fetch(Config.apihost + "/api/version", {
             method: 'GET',
             headers: this.context.defaultHeaders
         })

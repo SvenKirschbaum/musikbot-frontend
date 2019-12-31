@@ -7,6 +7,7 @@ import Header from '../components/Header';
 import './Register.css';
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import Config from "../components/Config";
 
 class Register extends Component {
 
@@ -21,7 +22,7 @@ class Register extends Component {
     }
 
     register(data) {
-        fetch("/api/v2/register", {
+        fetch(Config.apihost + "/api/v2/register", {
             method: 'POST',
             body: JSON.stringify(data),
             headers: this.context.defaultHeaders

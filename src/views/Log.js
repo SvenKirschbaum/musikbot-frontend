@@ -8,6 +8,7 @@ import GlobalContext from '../components/GlobalContext';
 import Header from '../components/Header';
 
 import './Log.css';
+import Config from "../components/Config";
 
 class Log extends Component {
 
@@ -27,7 +28,7 @@ class Log extends Component {
     }
 
     load() {
-        fetch("/api/log", {
+        fetch(Config.apihost + "/api/log", {
             method: 'GET',
             headers: this.context.defaultHeaders
         })

@@ -8,6 +8,7 @@ import GlobalContext from '../components/GlobalContext';
 import Header from '../components/Header';
 
 import './Token.css';
+import Config from "../components/Config";
 
 class Token extends Component {
 
@@ -27,7 +28,7 @@ class Token extends Component {
     }
 
     load(reset = false) {
-        fetch("/api/v2/user/self/token"+(reset ? "/reset" : ""), {
+        fetch(Config.apihost + "/api/v2/user/self/token"+(reset ? "/reset" : ""), {
             method: (reset ? 'POST' : 'GET'),
             headers: this.context.defaultHeaders
         })

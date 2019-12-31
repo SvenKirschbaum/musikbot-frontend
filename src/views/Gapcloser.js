@@ -8,6 +8,7 @@ import GlobalContext from '../components/GlobalContext';
 import Header from '../components/Header';
 
 import './Gapcloser.css';
+import Config from "../components/Config";
 
 class Gapcloser extends Component {
 
@@ -31,7 +32,7 @@ class Gapcloser extends Component {
 
 
     load() {
-        fetch("/api/v2/gapcloser", {
+        fetch(Config.apihost + "/api/v2/gapcloser", {
             method: 'GET',
             headers: this.context.defaultHeaders
         })
@@ -50,7 +51,7 @@ class Gapcloser extends Component {
 
     save(e) {
         e.preventDefault();
-        fetch("/api/v2/gapcloser", {
+        fetch(Config.apihost + "/api/v2/gapcloser", {
             method: 'PUT',
             body: JSON.stringify({mode: this.state.mode, playlist: this.state.playlist}),
             headers: this.context.defaultHeaders

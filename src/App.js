@@ -130,7 +130,7 @@ class AppRouter extends Component {
 
     login(username, password) {
         return new Promise((resolve,reject) => {
-            fetch("/api/v2/login", {
+            fetch(Config.apihost + "/api/v2/login", {
                 method: 'POST',
                 headers: this.defaultHeaders,
                 body: JSON.stringify({
@@ -176,7 +176,7 @@ class AppRouter extends Component {
     }
 
     logout() {
-        fetch("/api/v2/logout", {
+        fetch(Config.apihost + "/api/v2/logout", {
             method: 'POST',
             headers: this.defaultHeaders
         })
@@ -196,7 +196,7 @@ class AppRouter extends Component {
     }
 
     loadUser() {
-        fetch("/api/v2/user/self", {
+        fetch(Config.apihost + "/api/v2/user/self", {
             method: 'GET',
             headers: this.defaultHeaders
         })

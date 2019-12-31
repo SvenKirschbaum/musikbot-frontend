@@ -1,9 +1,10 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
 import './QuickAdd.css';
 
 import {FaPlus} from 'react-icons/fa';
 import GlobalContext from "./GlobalContext";
+import Config from "./Config";
 
 class QuickAdd extends Component {
 
@@ -18,7 +19,7 @@ class QuickAdd extends Component {
     onClick(e) {
         let headers = new Headers(this.context.defaultHeaders);
         headers.set("Content-Type", "text/plain");
-        fetch("/api/v2/songs", {
+        fetch(Config.apihost + "/api/v2/songs", {
             method: 'POST',
             body: this.props.children,
             headers: headers

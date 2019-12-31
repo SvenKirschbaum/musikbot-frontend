@@ -65,7 +65,7 @@ class Home extends Component {
     }
 
     sendStart() {
-        fetch("/api/control/start", {
+        fetch(Config.apihost + "/api/control/start", {
             method: 'POST',
             headers: this.context.defaultHeaders
         }).then((res) => {
@@ -77,7 +77,7 @@ class Home extends Component {
     }
 
     sendPause() {
-        fetch("/api/control/pause", {
+        fetch(Config.apihost + "/api/control/pause", {
             method: 'POST',
             headers: this.context.defaultHeaders
         }).then((res) => {
@@ -89,7 +89,7 @@ class Home extends Component {
     }
 
     sendStop() {
-        fetch("/api/control/stop", {
+        fetch(Config.apihost + "/api/control/stop", {
             method: 'POST',
             headers: this.context.defaultHeaders
         }).then((res) => {
@@ -101,7 +101,7 @@ class Home extends Component {
     }
 
     sendSkip() {
-        fetch("/api/control/skip", {
+        fetch(Config.apihost + "/api/control/skip", {
             method: 'POST',
             headers: this.context.defaultHeaders
         }).then((res) => {
@@ -113,7 +113,7 @@ class Home extends Component {
     }
 
     sendShuffle() {
-        fetch("/api/control/shuffle", {
+        fetch(Config.apihost + "/api/control/shuffle", {
             method: 'POST',
             headers: this.context.defaultHeaders
         }).then((res) => {
@@ -125,7 +125,7 @@ class Home extends Component {
     }
 
     sendDelete(id, lock) {
-        fetch("/api/v2/songs/" + id + (lock ? "?lock=true" : ""), {
+        fetch(Config.apihost + "/api/v2/songs/" + id + (lock ? "?lock=true" : ""), {
             method: 'DELETE',
             headers: this.context.defaultHeaders
         }).then((res) => {
@@ -139,7 +139,7 @@ class Home extends Component {
     sendSong(url) {
         let headers = new Headers(this.context.defaultHeaders);
         headers.set("Content-Type", "text/plain");
-        fetch("/api/v2/songs", {
+        fetch(Config.apihost + "/api/v2/songs", {
             method: 'POST',
             body: url,
             headers: headers
@@ -197,7 +197,7 @@ class Home extends Component {
     sendSort(prev, id) {
         let headers = new Headers(this.context.defaultHeaders);
         headers.set("Content-Type", "text/plain");
-        fetch("/api/v2/songs/" + id, {
+        fetch(Config.apihost + "/api/v2/songs/" + id, {
             method: 'PUT',
             headers: headers,
             body: prev
@@ -219,7 +219,7 @@ class Home extends Component {
 
         let headers = new Headers(this.context.defaultHeaders);
         headers.set("Content-Type", "application/json");
-        fetch("/api/control/volume", {
+        fetch(Config.apihost + "/api/control/volume", {
             method: 'PUT',
             headers: headers,
             body: JSON.stringify({

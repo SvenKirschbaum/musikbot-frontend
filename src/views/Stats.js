@@ -12,6 +12,7 @@ import './Stats.css';
 import CSSTransition from "react-transition-group/CSSTransition";
 import {Link} from "react-router-dom";
 import {TransitionGroup} from "react-transition-group";
+import Config from "../components/Config";
 
 class Stats extends Component {
 
@@ -35,7 +36,7 @@ class Stats extends Component {
 
 
     load() {
-        fetch("/api/v2/stats", {
+        fetch(Config.apihost + "/api/v2/stats", {
             method: 'GET',
             headers: this.context.defaultHeaders
         })

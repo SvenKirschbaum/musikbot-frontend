@@ -7,6 +7,7 @@ import Header from '../components/Header';
 import './Songs.css';
 import {FaTrashAlt} from "react-icons/fa";
 import AddSong from "../components/AddSong";
+import Config from "../components/Config";
 
 class Songs extends Component {
 
@@ -28,7 +29,7 @@ class Songs extends Component {
     }
 
     load() {
-        fetch("/api/v2/lockedsongs", {
+        fetch(Config.apihost + "/api/v2/lockedsongs", {
             method: 'GET',
             headers: this.context.defaultHeaders
         })
@@ -50,7 +51,7 @@ class Songs extends Component {
 
 
     sendDelete(id) {
-        fetch("/api/v2/lockedsongs/" + id, {
+        fetch(Config.apihost + "/api/v2/lockedsongs/" + id, {
             method: 'DELETE',
             headers: this.context.defaultHeaders
         }).then((res) => {
@@ -65,7 +66,7 @@ class Songs extends Component {
     sendSong(url) {
         let headers = new Headers(this.context.defaultHeaders);
         headers.set("Content-Type", "text/plain");
-        fetch("/api/v2/lockedsongs", {
+        fetch(Config.apihost + "/api/v2/lockedsongs", {
             method: 'POST',
             body: url,
             headers: headers

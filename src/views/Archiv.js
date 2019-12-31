@@ -37,7 +37,7 @@ class Archiv extends Component {
     }
 
     load(page) {
-        fetch("/api/v2/archiv/"+page, {
+        fetch(Config.apihost + "/api/v2/archiv/"+page, {
             method: 'GET',
             headers: this.context.defaultHeaders
         })

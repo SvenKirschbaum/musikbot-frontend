@@ -8,6 +8,7 @@ import GlobalContext from '../components/GlobalContext';
 import Header from '../components/Header';
 
 import './Debug.css';
+import Config from "../components/Config";
 
 class Debug extends Component {
 
@@ -21,7 +22,7 @@ class Debug extends Component {
     }
 
     onServer() {
-        fetch("/api/debug/server", {
+        fetch(Config.apihost + "/api/debug/server", {
             method: ('POST'),
             headers: this.context.defaultHeaders
         })
@@ -35,7 +36,7 @@ class Debug extends Component {
     }
 
     onClient() {
-        fetch("/api/debug/client", {
+        fetch(Config.apihost + "/api/debug/client", {
             method: ('POST'),
             headers: this.context.defaultHeaders
         })
