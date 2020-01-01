@@ -400,7 +400,7 @@ class VolumeControl extends Component{
 
     render() {
         return (
-            <div className="volume-slider-container">
+            <div className="d-none d-sm-inline volume-slider-container">
                 <PlayerIcon.SoundOn className="volume-slider-icon"/>
                 <div className="volume-slider-block">
                     <Slider
