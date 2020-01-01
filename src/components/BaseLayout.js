@@ -17,7 +17,7 @@ import reactlogo from '../res/react.png';
 import spotifylogo from '../res/spotify.svg';
 import GravatarIMG from "./GravatarIMG";
 import Alerts from "./Alerts";
-import Config from "./Config";
+import Config from "./Configuration";
 
 class BaseLayout extends Component {
     static contextType = GlobalContext;

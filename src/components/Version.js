@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 
 import './Version.css';
 import GlobalContext from "./GlobalContext";
-import Config from './Config';
+import Config from './Configuration';
 
 class Version extends Component {
 

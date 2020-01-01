@@ -3,7 +3,7 @@ import Col from "react-bootstrap/Col";
 import React, {Component} from "react";
 import {withRouter} from "react-router";
 import './Header.css';
-import Config from './Config';
+import Config from './Configuration';
 
 
 class Header extends Component {

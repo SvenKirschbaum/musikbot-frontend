@@ -13,7 +13,7 @@ import {TransitionGroup} from "react-transition-group";
 import CSSTransition from "react-transition-group/CSSTransition";
 import GravatarIMG from "../components/GravatarIMG";
 import {Link} from "react-router-dom";
-import Config from "../components/Config";
+import Config from "../components/Configuration";
 
 class UserList extends Component {
 

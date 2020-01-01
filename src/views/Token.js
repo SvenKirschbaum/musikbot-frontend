@@ -8,7 +8,7 @@ import GlobalContext from '../components/GlobalContext';
 import Header from '../components/Header';
 
 import './Token.css';
-import Config from "../components/Config";
+import Config from "../components/Configuration";
 
 class Token extends Component {
 

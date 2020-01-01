@@ -8,7 +8,7 @@ import GlobalContext from '../components/GlobalContext';
 import Header from '../components/Header';
 
 import './Log.css';
-import Config from "../components/Config";
+import Config from "../components/Configuration";
 
 class Log extends Component {
 

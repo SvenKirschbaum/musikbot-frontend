@@ -7,7 +7,7 @@ import Header from '../components/Header';
 import './Register.css';
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import Config from "../components/Config";
+import Config from "../components/Configuration";
 
 class Register extends Component {
 

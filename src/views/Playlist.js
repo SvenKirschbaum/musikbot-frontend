@@ -9,7 +9,7 @@ import Row from "react-bootstrap/Row";
 import Button from "react-bootstrap/Button";
 import TransitionGroup from "react-transition-group/TransitionGroup";
 import CSSTransition from "react-transition-group/CSSTransition";
-import Config from "../components/Config";
+import Config from "../components/Configuration";
 
 class Playlist extends Component {
     static contextType = GlobalContext;

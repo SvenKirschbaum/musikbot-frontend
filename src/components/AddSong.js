@@ -7,7 +7,7 @@ import Button from "react-bootstrap/Button";
 import {debounce, throttle} from "throttle-debounce";
 
 import './AddSong.css';
-import Config from "./Config";
+import Config from "./Configuration";
 
 class AddSong extends Component {
 

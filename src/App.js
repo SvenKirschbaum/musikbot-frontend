@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import Songs from './views/Songs';
 import NoMatch from './components/NoMatch';
-import Config from "./components/Config";
+import Config from "./components/Configuration";
 import BaseLayout from './components/BaseLayout';
 import Home from './views/Home';
 import Archiv from './views/Archiv';
@@ -60,22 +60,27 @@ class AppRouter extends Component {
     }
 
     loadTokenFromExtension() {
-        // eslint-disable-next-line no-undef
-        chrome.runtime.sendMessage(process.env.REACT_APP_CHROME_EXTENSION_ID,"token-request",{},(response) => {
+        if(Config.chromeextensionid) {
             // eslint-disable-next-line no-undef
-            if(!chrome.runtime.lastError && response && response.authtoken) {
-                this.setState({
-                    loggedin: true,
-                    token: response.authtoken,
-                    extension: true
-                });
-                this.defaultHeaders.set("Authorization", "Bearer " + response.authtoken);
-                this.loadUser();
-            }
-            else {
-                this.loadTokenFromStorage();
-            }
-        })
+            chrome.runtime.sendMessage(Config.chromeextensionid,"token-request",{},(response) => {
+                // eslint-disable-next-line no-undef
+                if(!chrome.runtime.lastError && response && response.authtoken) {
+                    this.setState({
+                        loggedin: true,
+                        token: response.authtoken,
+                        extension: true
+                    });
+                    this.defaultHeaders.set("Authorization", "Bearer " + response.authtoken);
+                    this.loadUser();
+                }
+                else {
+                    this.loadTokenFromStorage();
+                }
+            })
+        }
+        else {
+            this.loadTokenFromStorage();
+        }
     }
 
     loadTokenFromStorage() {

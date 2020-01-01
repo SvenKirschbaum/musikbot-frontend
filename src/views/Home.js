@@ -15,7 +15,7 @@ import GravatarIMG from "../components/GravatarIMG";
 import AddSong from "../components/AddSong";
 import Header from "../components/Header";
 import DragFixedCell from "../components/DragFixedCell";
-import Config from "../components/Config";
+import Config from "../components/Configuration";
 
 import './Home.css';
 import {FaTrashAlt} from 'react-icons/fa';

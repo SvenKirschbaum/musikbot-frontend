@@ -12,7 +12,7 @@ import './Stats.css';
 import CSSTransition from "react-transition-group/CSSTransition";
 import {Link} from "react-router-dom";
 import {TransitionGroup} from "react-transition-group";
-import Config from "../components/Config";
+import Config from "../components/Configuration";
 
 class Stats extends Component {
 

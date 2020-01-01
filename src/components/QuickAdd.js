@@ -4,7 +4,7 @@ import './QuickAdd.css';
 
 import {FaPlus} from 'react-icons/fa';
 import GlobalContext from "./GlobalContext";
-import Config from "./Config";
+import Config from "./Configuration";
 
 class QuickAdd extends Component {
 

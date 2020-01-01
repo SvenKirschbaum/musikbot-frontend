@@ -7,7 +7,7 @@ import Header from '../components/Header';
 import './Songs.css';
 import {FaTrashAlt} from "react-icons/fa";
 import AddSong from "../components/AddSong";
-import Config from "../components/Config";
+import Config from "../components/Configuration";
 
 class Songs extends Component {
 

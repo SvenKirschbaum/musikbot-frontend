@@ -16,7 +16,7 @@ import GravatarIMG from "../components/GravatarIMG";
 import {TransitionGroup} from "react-transition-group";
 import CSSTransition from "react-transition-group/CSSTransition";
 import QuickAdd from "../components/QuickAdd";
-import Config from "../components/Config";
+import Config from "../components/Configuration";
 
 class UserPage extends Component {
 

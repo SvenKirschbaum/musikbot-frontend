@@ -8,7 +8,7 @@ import GlobalContext from '../components/GlobalContext';
 import Header from '../components/Header';
 
 import './Debug.css';
-import Config from "../components/Config";
+import Config from "../components/Configuration";
 
 class Debug extends Component {
 

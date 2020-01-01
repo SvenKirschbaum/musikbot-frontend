@@ -12,7 +12,7 @@ import Pagination from "react-js-pagination";
 import GlobalContext from '../components/GlobalContext';
 import Header from '../components/Header';
 import GravatarIMG from "../components/GravatarIMG";
-import Config from "../components/Config";
+import Config from "../components/Configuration";
 
 import './Archiv.css';
 import QuickAdd from "../components/QuickAdd";
