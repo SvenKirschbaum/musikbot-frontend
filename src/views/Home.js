@@ -34,7 +34,7 @@ class Home extends Component {
             songlink: null,
             playlistdauer: 0,
             playlist: [],
-            volume: 38
+            volume: undefined
         };
 
         this.statebuffer = null;
