@@ -28,6 +28,8 @@ class BaseLayout extends Component {
                 <div className="page-body">
                     <CookieConsent
                         location="top"
+                        cookieSecurity={true}
+                        sameSite="strict"
                         style={{ background: "black" }}
                     >
                         This website uses cookies to ensure you get the best experience on our website. <a className="cookielink" href="https://cookiesandyou.com/">Learn more</a>
