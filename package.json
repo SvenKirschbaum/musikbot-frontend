@@ -3,29 +3,32 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "autoprefixer": "^9.7.3",
-    "bootstrap": "^4.4.1",
-    "moment": "^2.24.0",
-    "react": "^16.12.0",
-    "react-app-polyfill": "^1.0.5",
+    "autoprefixer": "^9.8.0",
+    "bootstrap": "^4.5.0",
+    "jquery": "^3.5.1",
+    "moment": "^2.26.0",
+    "popper.js": "^1.16.1",
+    "react": "^16.13.1",
+    "react-app-polyfill": "^1.0.6",
     "react-autosuggest": "^9.4.3",
     "react-beautiful-dnd": "^12.2.0",
-    "react-bootstrap": "^1.0.0-beta.16",
+    "react-bootstrap": "^1.0.1",
     "react-cookie-consent": "^3.0.0",
-    "react-dom": "^16.12.0",
+    "react-dom": "^16.13.1",
     "react-flip-move": "^3.0.4",
-    "react-icons": "^3.8.0",
-    "react-js-pagination": "^3.0.2",
+    "react-icons": "^3.10.0",
+    "react-js-pagination": "^3.0.3",
     "react-moment": "^0.9.7",
     "react-player-controls": "^1.1.0",
-    "react-router": "^5.1.2",
+    "react-router": "^5.2.0",
     "react-router-bootstrap": "^0.25.0",
-    "react-router-dom": "^5.1.2",
-    "react-scripts": "~3.2.0||>3.3.0",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "^3.4.1",
     "react-stomp": "^4.3.0",
-    "react-transition-group": "^4.3.0",
-    "source-map-explorer": "^2.2.0",
-    "throttle-debounce": "^2.1.0"
+    "react-transition-group": "^4.4.1",
+    "source-map-explorer": "^2.4.2",
+    "throttle-debounce": "^2.1.0",
+    "typescript": "^3.9.3"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -51,8 +54,8 @@
     ]
   },
   "devDependencies": {
-    "@types/react": "^16.9.17",
-    "@types/react-dom": "^16.9.4",
+    "@types/react": "^16.9.35",
+    "@types/react-dom": "^16.9.8",
     "@types/react-router-bootstrap": "^0.24.5"
   }
 }
