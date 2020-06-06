@@ -21,6 +21,7 @@ import './Home.css';
 import {FaTrashAlt} from 'react-icons/fa';
 import SockJsClient from 'react-stomp';
 import ClassWrapper from "../components/ClassWrapper";
+import SongProgress from "../components/SongProgress";
 
 class Home extends Component {
 
@@ -239,7 +240,7 @@ class Home extends Component {
                 <Header/>
                 <main>
                     <Status state={this.state.status} title={this.state.songtitle} link={this.state.songlink}
-                            duration={this.state.playlistdauer}/>
+                            duration={this.state.playlistdauer} progress={this.state.progress} />
                     {this.context.user && this.context.user.admin &&
                     <ControlElements onStart={this.sendStart} onPause={this.sendPause} onStop={this.sendStop}
                                      onSkip={this.sendSkip} />}
@@ -346,6 +347,7 @@ function Status(props) {
                     <Row>
                         <Col>{(props.link) ? <a href={props.link}>{props.title}</a> : props.title}</Col>
                     </Row>
+                    {props.progress && <SongProgress>{props.progress}</SongProgress>}
                 </Col>
             </Row>
         </section>

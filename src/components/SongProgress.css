@@ -1,0 +1,42 @@
+.song-progress-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: baseline;
+}
+.song-progress-bar {
+    flex: 1 1 auto;
+    height: 8px;
+    border-radius: 4px;
+    background-color: #404040;
+    margin: 10px;
+    margin-left: 0;
+    z-index: 0;
+}
+.song-progress-bar-progress {
+    background-color: rgb(249,235,198);
+    border-radius: 4px;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    height: 8px;
+}
+/*
+.song-progress-bar-handle {
+    position: relative;
+    width: 12px;
+    height: 12px;
+    background: #BDBDBD;
+    border-radius: 100%;
+    top: 0;
+    margin-top: -10px;
+    margin-left: -6px;
+}*/
+.song-progress-time {
+    float: right;
+}
+
+.song-progress-bar > * {
+    transition-duration: 0.5s;
+    transition-property: width,left;
+}
