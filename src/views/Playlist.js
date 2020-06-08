@@ -25,10 +25,16 @@ class Playlist extends Component {
             link: ""
         };
 
+        this.abortController = new AbortController();
+
         this.onCheckbox = this.onCheckbox.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
         this.handleLoad = this.handleLoad.bind(this);
+    }
+
+    componentWillUnmount() {
+        this.abortController.abort();
     }
 
     handleInputChange(event) {
@@ -45,7 +51,8 @@ class Playlist extends Component {
         e.preventDefault();
         fetch(Config.apihost + "/api/v2/playlist?url=" + encodeURIComponent(this.state.url), {
             method: 'GET',
-            headers: this.context.defaultHeaders
+            headers: this.context.defaultHeaders,
+            signal: this.abortController.signal
         })
         .then((res) => {
             if(res.status === 404) {
@@ -62,7 +69,6 @@ class Playlist extends Component {
             res.json().then(value => this.setState({...value, checkboxes: new Array(value.songs.length).fill(true)}));
         })
         .catch(reason => {
-            console.log(reason);
             this.context.handleException(reason);
         });
     }
@@ -101,7 +107,6 @@ class Playlist extends Component {
             });
         })
         .catch(reason => {
-            console.log(reason);
             this.context.handleException(reason);
         });
     }

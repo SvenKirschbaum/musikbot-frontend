@@ -20,6 +20,8 @@ class Token extends Component {
             token: ""
         };
 
+        this.abortController = new AbortController();
+
         this.onReset = this.onReset.bind(this);
     }
 
@@ -27,10 +29,15 @@ class Token extends Component {
         this.load();
     }
 
+    componentWillUnmount() {
+        this.abortController.abort();
+    }
+
     load(reset = false) {
         fetch(Config.apihost + "/api/v2/user/self/token"+(reset ? "/reset" : ""), {
             method: (reset ? 'POST' : 'GET'),
-            headers: this.context.defaultHeaders
+            headers: this.context.defaultHeaders,
+            signal: this.abortController.signal
         })
         .then((res) => {
             if(!res.ok) throw Error(res.statusText);

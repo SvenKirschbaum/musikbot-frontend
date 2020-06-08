@@ -29,6 +29,8 @@ class Archiv extends Component {
             pages: 1,
         };
 
+        this.abortController = new AbortController();
+
         this.change = this.change.bind(this);
     }
 
@@ -36,10 +38,17 @@ class Archiv extends Component {
         this.load((this.props.match.params.page === undefined ? 1 : this.props.match.params.page));
     }
 
+    componentWillUnmount() {
+        this.abortController.abort();
+    }
+
     load(page) {
+        this.abortController.abort();
+        this.abortController = new AbortController();
         fetch(Config.apihost + "/api/v2/archiv/"+page, {
             method: 'GET',
-            headers: this.context.defaultHeaders
+            headers: this.context.defaultHeaders,
+            signal: this.abortController.signal
         })
             .then((res) => {
                 if(!res.ok) throw Error(res.statusText);

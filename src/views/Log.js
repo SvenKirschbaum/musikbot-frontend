@@ -20,6 +20,8 @@ class Log extends Component {
             log: ""
         };
 
+        this.abortController = new AbortController();
+
         this.load = this.load.bind(this);
     }
 
@@ -27,10 +29,15 @@ class Log extends Component {
         this.load();
     }
 
+    componentWillUnmount() {
+        this.abortController.abort();
+    }
+
     load() {
         fetch(Config.apihost + "/api/log", {
             method: 'GET',
-            headers: this.context.defaultHeaders
+            headers: this.context.defaultHeaders,
+            signal: this.abortController.signal
         })
         .then((res) => {
             if(!res.ok) throw Error(res.statusText);

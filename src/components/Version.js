@@ -11,16 +11,23 @@ class Version extends Component {
     constructor(props) {
         super(props);
 
+        this.abortController = new AbortController();
+
         this.state = {
             frontend: Config.version,
             backend: "~",
         };
     }
 
+    componentWillUnmount() {
+        this.abortController.abort();
+    }
+
     componentDidMount() {
         fetch(Config.apihost + "/api/version", {
             method: 'GET',
-            headers: this.context.defaultHeaders
+            headers: this.context.defaultHeaders,
+            signal: this.abortController.signal
         })
         .then((res) => {
             if (!res.ok) throw Error(res.statusText);
@@ -29,7 +36,7 @@ class Version extends Component {
         .then((res) => res.json())
         .then(value => this.setState({backend: value.version}))
         .catch(reason => {
-            console.error(reason);
+            this.context.handleException(reason);
         });
     }
 

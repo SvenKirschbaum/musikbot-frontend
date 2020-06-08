@@ -124,6 +124,8 @@ class AppRouter extends Component {
     }
 
     handleException(e) {
+        //Ignore AbortController.abort()
+        if(e.name === 'AbortError') return;
         this.addAlert({
             id: Math.random().toString(36),
             type: 'danger',

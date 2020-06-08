@@ -36,6 +36,8 @@ class UserPage extends Component {
             showmodal: false,
         };
 
+        this.abortController = new AbortController();
+
         this.load = this.load.bind(this);
         this.showedit = this.showedit.bind(this);
         this.handleClose = this.handleClose.bind(this);
@@ -46,6 +48,10 @@ class UserPage extends Component {
 
     componentDidMount() {
         this.load(this.props.match.params.name);
+    }
+
+    componentWillUnmount() {
+        this.abortController.abort();
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -66,9 +72,12 @@ class UserPage extends Component {
     }
 
     load(username) {
+        this.abortController.abort();
+        this.abortController = new AbortController();
         fetch(Config.apihost + "/api/v2/user/" + username, {
             method: 'GET',
-            headers: this.context.defaultHeaders
+            headers: this.context.defaultHeaders,
+            signal: this.abortController.signal
         })
             .then((res) => {
                 if (!res.ok) throw Error(res.statusText);

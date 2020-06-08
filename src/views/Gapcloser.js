@@ -21,6 +21,8 @@ class Gapcloser extends Component {
             mode : ''
         };
 
+        this.abortController = new AbortController();
+
         this.load = this.load.bind(this);
         this.save = this.save.bind(this);
     }
@@ -29,12 +31,15 @@ class Gapcloser extends Component {
         this.load();
     }
 
-
+    componentWillUnmount() {
+        this.abortController.abort();
+    }
 
     load() {
         fetch(Config.apihost + "/api/v2/gapcloser", {
             method: 'GET',
-            headers: this.context.defaultHeaders
+            headers: this.context.defaultHeaders,
+            signal: this.abortController.signal
         })
         .then((res) => {
             if(!res.ok) throw Error(res.statusText);
@@ -54,7 +59,8 @@ class Gapcloser extends Component {
         fetch(Config.apihost + "/api/v2/gapcloser", {
             method: 'PUT',
             body: JSON.stringify({mode: this.state.mode, playlist: this.state.playlist}),
-            headers: this.context.defaultHeaders
+            headers: this.context.defaultHeaders,
+            signal: this.abortController.signal
         })
         .then((res) => {
             if(!res.ok) throw Error(res.statusText);

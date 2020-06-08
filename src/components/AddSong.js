@@ -24,6 +24,7 @@ class AddSong extends Component {
             suggestions: []
         };
 
+        this.abortController = new AbortController();
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -31,6 +32,10 @@ class AddSong extends Component {
 
         this.loadDebounced = debounce(500, this.loadSuggestions);
         this.loadThrottled = throttle(500, this.loadSuggestions);
+    }
+
+    componentWillUnmount() {
+        this.abortController.abort();
     }
 
     handleChange(event, {newValue}) {
@@ -58,6 +63,9 @@ class AddSong extends Component {
     };
 
     loadSuggestions(value) {
+        this.abortController.abort();
+        this.abortController = new AbortController();
+
         const cached = this._cache[value];
         if(cached) {
             this.setState({
@@ -71,7 +79,8 @@ class AddSong extends Component {
         headers.set("Content-Type","text/plain");
         fetch(Config.apihost + "/api/v2/search?term="+encodeURIComponent(value), {
             method: 'GET',
-            headers: headers
+            headers: headers,
+            signal: this.abortController.signal
         }).then((res) => {
             if(!res.ok) throw Error(res.statusText);
             return res;
@@ -84,7 +93,7 @@ class AddSong extends Component {
                     suggestions: res
                 });
             })
-            .catch(reason => {
+            .catch(reason => {console.log(reason);
                 this.props.handlefetchError(reason);
             });
     }

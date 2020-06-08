@@ -19,6 +19,8 @@ class Songs extends Component {
             songs: []
         };
 
+        this.abortController = new AbortController();
+
         this.load=this.load.bind(this);
         this.sendDelete=this.sendDelete.bind(this);
         this.sendSong=this.sendSong.bind(this);
@@ -28,10 +30,15 @@ class Songs extends Component {
         this.load();
     }
 
+    componentWillUnmount() {
+        this.abortController.abort();
+    }
+
     load() {
         fetch(Config.apihost + "/api/v2/lockedsongs", {
             method: 'GET',
-            headers: this.context.defaultHeaders
+            headers: this.context.defaultHeaders,
+            signal: this.abortController.signal
         })
         .then((res) => {
             if(!res.ok) throw Error(res.statusText);
