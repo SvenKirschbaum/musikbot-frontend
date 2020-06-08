@@ -31,7 +31,7 @@ class Home extends Component {
         super(props);
         this.state = {
             status: 'Loading...',
-            songtitle: 'Loading...',
+            songtitle: null,
             songlink: null,
             playlistdauer: 0,
             playlist: [],
