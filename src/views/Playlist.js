@@ -21,6 +21,7 @@ class Playlist extends Component {
             url: "",
             songs: [],
             checkboxes: [],
+            selectAll: true,
             name: "",
             link: ""
         };
@@ -28,6 +29,7 @@ class Playlist extends Component {
         this.abortController = new AbortController();
 
         this.onCheckbox = this.onCheckbox.bind(this);
+        this.onSelectAll = this.onSelectAll.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
         this.handleLoad = this.handleLoad.bind(this);
@@ -117,6 +119,14 @@ class Playlist extends Component {
         this.setState({checkboxes: checkboxes});
     }
 
+    onSelectAll() {
+        let checkboxes = new Array(this.state.checkboxes.length).fill(!this.state.selectAll);
+        this.setState({
+            selectAll: !this.state.selectAll,
+            checkboxes: checkboxes
+        })
+    }
+
     render() {
         return (
             <Container fluid>
@@ -138,7 +148,7 @@ class Playlist extends Component {
                                 </tr>
                                 {this.state.songs.length>0 && (
                                     <tr>
-                                        <th></th>
+                                        <th><input type="checkbox" checked={this.state.selectAll} onChange={this.onSelectAll} /></th>
                                         <th>Titel</th>
                                         <th>Link</th>
                                     </tr>
@@ -156,8 +166,8 @@ class Playlist extends Component {
                             <tfoot>
                             {this.state.songs.length>0 && (
                                 <tr>
-                                    <th></th>
-                                    <th></th>
+                                    <th/>
+                                    <th/>
                                     <th>
                                         <Button disabled={this.state.songs.length===0} onClick={this.onSubmit}>Einfügen</Button>
                                     </th>
