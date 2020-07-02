@@ -3,8 +3,8 @@
     text-align: center;
 }
 .quickadd > * {
-    visibility: hidden;
+    opacity: 0.3;
 }
 .quickadd:hover > * {
-    visibility: visible;
+    opacity: 1;
 }
