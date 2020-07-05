@@ -21,9 +21,9 @@ class Stats extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            mostplayed: [],
-            mostskipped: [],
-            topuser: [],
+            mostPlayed: [],
+            mostSkipped: [],
+            topUsers: [],
             general: []
         };
 
@@ -62,7 +62,7 @@ class Stats extends Component {
             <Container fluid className="d-flex flex-column statscontainer">
                 <Header />
                 <Row className="statsrow">
-                    <EntryCard title="Am meisten gewünscht" data={this.state.mostplayed} mapfunction={
+                    <EntryCard title="Am meisten gewünscht" data={this.state.mostPlayed} mapfunction={
                         (entry,key) => (
                             <tr key={key}>
                                 <td className="idcolumn">{key+1}.</td>
@@ -80,7 +80,7 @@ class Stats extends Component {
                             <th>Anzahl</th>
                         </tr>
                     } />
-                    <EntryCard title="Am meisten geskippt" data={this.state.mostskipped} mapfunction={
+                    <EntryCard title="Am meisten geskippt" data={this.state.mostSkipped} mapfunction={
                         (entry,key) => (
                             <tr key={key}>
                                 <td className="idcolumn">{key+1}.</td>
@@ -99,7 +99,7 @@ class Stats extends Component {
                         </tr>
                     } />
 
-                    <EntryCard title="Top Wünscher" data={this.state.topuser} mapfunction={
+                    <EntryCard title="Top Wünscher" data={this.state.topUsers} mapfunction={
                         (entry,key) => (
                             <tr key={key}>
                                 <td className="idcolumn">{key+1}.</td>
