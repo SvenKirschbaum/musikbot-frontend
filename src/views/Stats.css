@@ -54,10 +54,16 @@
     opacity: 1;
     transition: all 300ms;
 }
+
 .fade-anim-exit {
     opacity: 1;
 }
+
 .fade-exit-active {
     opacity: 0;
     transition: all 300ms;
+}
+
+.mb-6 {
+    margin-bottom: 4rem;
 }

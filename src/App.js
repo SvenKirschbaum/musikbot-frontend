@@ -10,7 +10,7 @@ import Token from './views/Token';
 import Debug from './views/Debug';
 import Log from './views/Log';
 import Gapcloser from './views/Gapcloser';
-import Stats from './views/Stats';
+import Stats from './components/Stats';
 import Playlist from './views/Playlist';
 import UserPage from './views/UserPage';
 import Register from "./views/Register";
