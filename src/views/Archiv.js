@@ -105,7 +105,7 @@ function Archivlist(props) {
                         <th className="d-none d-sm-table-cell songid">Song ID</th>
                         <th className="insertat">Gespielt um</th>
                         <th className="d-none d-sm-table-cell author">Eingefügt von</th>
-                        <td className="d-none d-sm-table-cell"></td>
+                        <td className="d-none d-sm-table-cell"/>
                         <th className="songtitle">Titel</th>
                         <th className="d-none d-md-table-cell songlink">Link</th>
                     </tr>
@@ -131,12 +131,24 @@ function Song(props) {
     }
     return (
         <tr className={className}>
-            <td className="d-none d-sm-table-cell">{ props.id }</td>
-            <td className=""><span className="d-none d-sm-inline"><Moment format="DD.MM.YYYY">{ props.playedAt }</Moment> - </span><Moment format="HH:mm:ss">{ props.playedAt }</Moment></td>
-            <td className="d-none d-sm-inline-flex author"><GravatarIMG>{ props.gravatarId }</GravatarIMG>{Config.enableusers ? <Link to={`/user/${props.authorLink}`}>{ props.author }</Link> : props.author}</td>
+            <td className="d-none d-sm-table-cell">{props.id}</td>
+            <td className=""><span className="d-none d-sm-inline"><Moment format="DD.MM.YYYY">{props.playedAt}</Moment> - </span><Moment
+                format="HH:mm:ss">{props.playedAt}</Moment></td>
+            <td className="d-none d-sm-inline-flex author">
+                <GravatarIMG>{props.gravatarId}</GravatarIMG>
+                {Config.enableusers ?
+                    (props.authorLink ?
+                            <Link to={`/user/${props.authorLink}`}>{props.author}</Link>
+                            :
+                            <div>{props.author}</div>
+                    )
+                    :
+                    props.author
+                }
+            </td>
             <td className="d-none d-sm-table-cell"><QuickAdd>{props.link}</QuickAdd></td>
-            <td className="nolink songtitle"><a href={ props.link }>{ props.title }</a></td>
-            <td className="d-none d-md-table-cell songlink"><a href={props.link}>{ props.link }</a></td>
+            <td className="nolink songtitle"><a href={props.link}>{props.title}</a></td>
+            <td className="d-none d-md-table-cell songlink"><a href={props.link}>{props.link}</a></td>
         </tr>
     );
 }

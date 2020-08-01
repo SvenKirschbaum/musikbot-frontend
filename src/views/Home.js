@@ -164,7 +164,7 @@ class Home extends Component {
             })
     }
 
-    onDragStart(start, provided) {
+    onDragStart(_start, _provided) {
         this.isdragging = true;
     }
 
@@ -319,9 +319,16 @@ function Song(props) {
                            addToElem={props.provided.dragHandleProps}>{props.id}</DragFixedCell>
             <DragFixedCell isDragOccurring={props.isDragging} className="d-none d-lg-table-cell"><Moment
                 format="DD.MM.YYYY - HH:mm:ss">{props.insertedAt}</Moment></DragFixedCell>
-            <DragFixedCell isDragOccurring={props.isDragging}
-                           className="d-none d-sm-inline-flex author"><span><GravatarIMG>{props.gravatarId}</GravatarIMG></span>{Config.enableusers ? <Link
-                to={`/user/${props.authorLink}`}>{props.author}</Link> : props.author}</DragFixedCell>
+            <DragFixedCell isDragOccurring={props.isDragging} className="d-none d-sm-inline-flex author">
+                <span>
+                    <GravatarIMG>{props.gravatarId}</GravatarIMG>
+                </span>
+                {Config.enableusers && props.authorLink ?
+                    <Link to={`/user/${props.authorLink}`}>{props.author}</Link>
+                    :
+                    props.author
+                }
+            </DragFixedCell>
             <DragFixedCell isDragOccurring={props.isDragging} className="nolink songtitle"><a
                 href={props.link}>{props.title}</a></DragFixedCell>
             <DragFixedCell isDragOccurring={props.isDragging} className="d-none d-md-table-cell songlink"><a
@@ -387,7 +394,7 @@ class VolumeControl extends Component{
         this.props.setVolume(volume);
     }
 
-    onChangeStart(volume) {
+    onChangeStart(_volume) {
         this.setState({
             isDragging: true
         });
