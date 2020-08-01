@@ -34,7 +34,7 @@ class Log extends Component {
     }
 
     load() {
-        fetch(Config.apihost + "/api/log", {
+        fetch(Config.apihost + "/api/manage/logfile", {
             method: 'GET',
             headers: this.context.defaultHeaders,
             signal: this.abortController.signal
