@@ -117,17 +117,24 @@ function AMenu(props) {
             <li><Link to="/" onClick={props.onItemClick}>Startseite</Link></li>
             { Config.showarchive && <li><Link to="/archiv" onClick={props.onItemClick}>Archiv</Link></li>}
             { Config.showstats && <li><Link to="/statistik" onClick={props.onItemClick}>Statistik</Link></li>}
-            { props.AuthState.user && props.AuthState.user.admin &&
-                <React.Fragment>
-                    <li><Link to="/import" onClick={props.onItemClick}>Playlist Importieren</Link></li>
-                    <li><Link to="/songs" onClick={props.onItemClick}>Gesperrte Songs</Link></li>
-                    <li><Link to="/gapcloser" onClick={props.onItemClick}>Gapcloser</Link></li>
-                    <li><Link to="/log" onClick={props.onItemClick}>Log</Link></li>
-                    <li><Link to="/users" onClick={props.onItemClick}>User</Link></li>
-                    <li><Link to="/debug" onClick={props.onItemClick}>Entwicklermenü</Link></li>
-                </React.Fragment>
+            {props.AuthState.user && props.AuthState.user.admin &&
+            <React.Fragment>
+                <li><Link to="/import" onClick={props.onItemClick}>Playlist Importieren</Link></li>
+                <li><Link to="/songs" onClick={props.onItemClick}>Gesperrte Songs</Link></li>
+                <li><Link to="/gapcloser" onClick={props.onItemClick}>Gapcloser</Link></li>
+                <li><Link to="/log" onClick={props.onItemClick}>Log</Link></li>
+                <li><Link to="/users" onClick={props.onItemClick}>User</Link></li>
+                <li><Link to="/debug" onClick={props.onItemClick}>Entwicklermenü</Link></li>
+            </React.Fragment>
             }
-            { props.AuthState.loggedin && <li><Link to="#" onClick={() => {props.onItemClick(); props.AuthState.logout()}}>Logout</Link></li>}
+            {props.AuthState.loggedin && <li><Link to="#" onClick={() => {
+                props.onItemClick();
+                props.AuthState.editAccount()
+            }}>Account bearbeiten</Link></li>}
+            {props.AuthState.loggedin && <li><Link to="#" onClick={() => {
+                props.onItemClick();
+                props.AuthState.logout()
+            }}>Logout</Link></li>}
         </nav>
     );
 }

@@ -25,7 +25,8 @@ function App() {
         <KeycloakProvider keycloak={keycloak} LoadingComponent={<div>"Loading..."</div>} initConfig={{
             onLoad: 'check-sso',
             promiseType: 'native',
-            flow: 'implicit',
+            flow: 'standard',
+            pkceMethod: 'S256',
             checkLoginIframe: false,
             silentCheckSsoRedirectUri: window.location.origin + '/silent-sso.html'
         }}>
@@ -95,7 +96,8 @@ function AppRouter(props) {
                     removeAlert: removeAlert,
                     handleException: handleException,
                     login: () => keycloak.login(),
-                    logout: () => keycloak.logout()
+                    logout: () => keycloak.logout(),
+                    editAccount: () => keycloak.accountManagement()
                 }}>
                 <BaseLayout>
                     <Switch>
