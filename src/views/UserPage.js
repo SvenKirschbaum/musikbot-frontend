@@ -8,8 +8,6 @@ import Header from '../components/Header';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card'
-import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
 
 import './UserPage.css';
 import GravatarIMG from "../components/GravatarIMG";
@@ -30,20 +28,12 @@ class UserPage extends Component {
                 mostwished: [],
                 mostskipped: [],
                 guest: true,
-            },
-            modaltype: "",
-            modalvalue: "",
-            showmodal: false,
+            }
         };
 
         this.abortController = new AbortController();
 
         this.load = this.load.bind(this);
-        this.showedit = this.showedit.bind(this);
-        this.handleClose = this.handleClose.bind(this);
-        this.handleSave = this.handleSave.bind(this);
-        this.handleChange = this.handleChange.bind(this);
-        this.handleDelete = this.handleDelete.bind(this);
     }
 
     componentDidMount() {
@@ -62,10 +52,7 @@ class UserPage extends Component {
                     mostwished: [],
                     mostskipped: [],
                     guest: true,
-                },
-                modaltype: "",
-                modalvalue: "",
-                showmodal: false,
+                }
             });
             this.load(this.props.match.params.name);
         }
@@ -90,108 +77,10 @@ class UserPage extends Component {
             });
     }
 
-    showedit(type) {
-        if (type === "username") {
-            this.setState({modalvalue: this.state.user.name});
-        } else if (type === "email") {
-            this.setState({modalvalue: this.state.user.email});
-        } else if (type === "password") {
-            this.setState({modalvalue: ''});
-        } else if (type === "admin") {
-            this.setState({modalvalue: this.state.user.admin ? "Ja" : "Nein"});
-        }
-        this.setState({showmodal: true, modaltype: type});
-    }
-
-    handleClose() {
-        this.setState({showmodal: false});
-    }
-
-    handleSave() {
-        this.handleClose();
-        let headers = new Headers(this.context.defaultHeaders);
-        headers.set("Content-Type", "text/plain");
-        fetch(Config.apihost + "/api/v2/user/"+this.state.user.id+"/"+this.state.modaltype, {
-            method: 'PUT',
-            headers: headers,
-            body: this.state.modalvalue
-        })
-        .then((res) => {
-            if (!res.ok) throw Error(res.statusText);
-            return res;
-        })
-        .then(() => {
-            this.context.addAlert({
-                id: Math.random().toString(36),
-                type: 'success',
-                head: 'Änderung durchgeführt',
-                autoclose: true
-            });
-            if(this.state.modaltype === "username") {
-                this.props.history.push('/user/'+this.state.modalvalue);
-            }
-            if(this.state.user.id === this.context.user.id) {
-                this.context.reload();
-            }
-            this.load(this.props.match.params.name);
-        })
-        .catch(reason => {
-            this.context.handleException(reason);
-        });
-    }
-
-    handleDelete() {
-        this.handleClose();
-        fetch(Config.apihost + "/api/v2/user/"+this.state.user.id, {
-            method: 'DELETE',
-            headers: this.context.defaultHeaders
-        })
-        .then((res) => {
-            if (!res.ok) throw Error(res.statusText);
-            return res;
-        })
-        .then(() => {
-            this.context.addAlert({
-                id: Math.random().toString(36),
-                type: 'success',
-                head: 'Der Nutzer wurde erfolgreich gelöscht',
-                autoclose: true
-            });
-            this.props.history.push('/');
-        })
-        .catch(reason => {
-            this.context.handleException(reason);
-        });
-    }
-
-    handleChange(event) {
-        this.setState({modalvalue: event.target.value});
-    }
-
     render() {
         return (
             <Container fluid className="h-100 d-flex flex-column">
                 <Header />
-                <Modal show={this.state.showmodal} onHide={this.handleClose}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Nutzer editieren: {this.state.modaltype}</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        {this.state.modaltype === "delete" ?
-                            <span>Sind Sie sich wirklich sicher, dass der Nutzer {this.state.user.name} gelöscht werden soll?</span>
-                        :
-                            <input className="modalinput" type={this.state.modaltype === "password" ? "password" : "text"} value={this.state.modalvalue} onChange={this.handleChange} />
-                        }
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={this.handleClose}>
-                            Abbrechen
-                        </Button>
-                        <Button variant="primary" onClick={this.state.modaltype === "delete" ? this.handleDelete : this.handleSave}>
-                            {this.state.modaltype === "delete" ? "Löschen" : "Speichern"}
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
                 <Container fluid className="userpage">
                     <Row>
                         <Col xl={3} xs={12}>
@@ -230,9 +119,6 @@ class UserPage extends Component {
                                                                 <td>Username:</td>
                                                                 <td>
                                                                     {this.state.user.guest ? "Gast" : this.state.user.name}
-                                                                    {(this.context.user.admin && !this.state.user.guest) &&
-                                                                        <span className="changelink" onClick={(e) => this.showedit("username",e)}>(Ändern)</span>
-                                                                    }
                                                                 </td>
                                                             </tr>
                                                         </CSSTransition>
@@ -242,18 +128,6 @@ class UserPage extends Component {
                                                                     <td>Email:</td>
                                                                     <td>
                                                                         {this.state.user.email}
-                                                                        <span className="changelink" onClick={(e) => this.showedit("email",e)}>(Ändern)</span>
-                                                                    </td>
-                                                                </tr>
-                                                            </CSSTransition>
-                                                        }
-                                                        {(!this.state.user.guest) && (this.context.user.admin || (this.state.user.id === this.context.user.id)) &&
-                                                            <CSSTransition key="password" timeout={300} classNames="fade">
-                                                                <tr>
-                                                                    <td>Passwort:</td>
-                                                                    <td>
-                                                                        ******
-                                                                        <span className="changelink" onClick={(e) => this.showedit("password",e)}>(Ändern)</span>
                                                                     </td>
                                                                 </tr>
                                                             </CSSTransition>
@@ -264,9 +138,6 @@ class UserPage extends Component {
                                                                     <td>Admin:</td>
                                                                     <td>
                                                                         {this.state.user.admin ? "Ja" : "Nein"}
-                                                                        {this.context.user.admin &&
-                                                                            <span className="changelink" onClick={(e) => this.showedit("admin",e)}>(Ändern)</span>
-                                                                        }
                                                                     </td>
                                                                 </tr>
                                                             </CSSTransition>
@@ -286,11 +157,6 @@ class UserPage extends Component {
                                                     </TransitionGroup>
                                                 </tbody>
                                             </table>
-                                            {(!this.state.user.guest) && (this.context.user.admin) &&
-                                                <div className="buttonrow d-none d-xl-flex">
-                                                    <button onClick={(e) => this.showedit("delete",e)}>Benutzer löschen</button>
-                                                </div>
-                                            }
                                         </Card.Body>
                                     </Card>
                                     <Card className="usercard">

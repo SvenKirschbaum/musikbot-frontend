@@ -1,10 +1,6 @@
 import React, {Component} from 'react';
 import {Link} from "react-router-dom";
 import CookieConsent from 'react-cookie-consent';
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
-import Spinner from 'react-bootstrap/Spinner';
-import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import {CSSTransition} from 'react-transition-group';
 
@@ -18,6 +14,7 @@ import spotifylogo from '../res/spotify.svg';
 import GravatarIMG from "./GravatarIMG";
 import Alerts from "./Alerts";
 import Config from "./Configuration";
+
 
 class BaseLayout extends Component {
     static contextType = GlobalContext;
@@ -51,7 +48,6 @@ class Footer extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isPaneOpen: false,
             isMenuOpen: false
         };
     }
@@ -65,13 +61,6 @@ class Footer extends Component {
                     </React.Fragment>
                 }
                 <CSSTransition
-                    classNames="slideright"
-                    timeout={300}
-                    unmountOnExit
-                    in={this.state.isPaneOpen}>
-                        <LoginBox AuthState={this.context} onClose={() => this.setState({isPaneOpen: false})}/>
-                </CSSTransition>
-                <CSSTransition
                     classNames="slideup"
                     timeout={300}
                     unmountOnExit
@@ -82,7 +71,7 @@ class Footer extends Component {
                     <footer className="d-flex flex-row justify-content-between no-gutters">
                         <Col className="text-left">
                             {Config.enableusers &&
-                            <LoginFooter AuthState={this.context} onLogin={() => this.setState({isPaneOpen: true})}
+                            <LoginFooter AuthState={this.context} onLogin={() => this.context.login()}
                                          onMenu={() => this.setState({isMenuOpen: !this.state.isMenuOpen})}/>}
                         </Col>
                         <Col className="text-center">
@@ -117,83 +106,7 @@ function LoginFooter(props) {
         return (
             <span className="LoginFooter">
                 <Link to="#" onClick={props.onLogin}>Login</Link>
-                <Link to="/register">Registrieren</Link>
             </span>
-        );
-    }
-}
-
-class LoginBox extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            loading: false,
-            username: '',
-            password: '',
-            errormessage: ''
-        };
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-    }
-    handleSubmit(e) {
-        this.setState({loading: true}, () => {
-            this.props.AuthState.login(this.state.username,this.state.password)
-            .then(() => {
-                this.props.onClose();
-            })
-            .catch((e) => {
-                this.setState({
-                    errormessage: e,
-                    loading: false
-                });
-            });
-        });
-        e.preventDefault();
-    }
-
-    handleChange(event) {
-        const target = event.target;
-        const value = target.value;
-        const name = target.name;
-
-        this.setState({
-            [name]: value
-        });
-    }
-    render() {
-        return (
-            <div className="LoginBox">
-                <button type="button" className="close" onClick={this.props.onClose}>
-                    <span>&times;</span>
-                </button>
-                <Form onSubmit={this.handleSubmit}>
-                    <Form.Group as={Form.Row} controlId="username">
-                        <Form.Label>Username</Form.Label>
-                        <Form.Control type="text" name="username" value={this.state.username} onChange={this.handleChange} disabled={this.state.loading} />
-                    </Form.Group>
-                    <Form.Group as={Form.Row} controlId="password">
-                        <Form.Label>Passwort</Form.Label>
-                        <Form.Control type="password" name="password" value={this.state.password} onChange={this.handleChange} disabled={this.state.loading} />
-                    </Form.Group>
-                    <Row>
-                        <Col className="loginerrors">{this.state.errormessage}</Col>
-                        <Col>
-                            <Button variant="light" type="submit" className="float-right" size="sm" disabled={this.state.loading}>
-                                {this.state.loading &&
-                                    <Spinner
-                                        as="span"
-                                        animation="border"
-                                        size="sm"
-                                        className="LoginSpinner"
-                                    />
-                                }
-                                Einloggen
-                            </Button>
-                        </Col>
-                    </Row>
-                </Form>
-            </div>
         );
     }
 }
@@ -204,7 +117,6 @@ function AMenu(props) {
             <li><Link to="/" onClick={props.onItemClick}>Startseite</Link></li>
             { Config.showarchive && <li><Link to="/archiv" onClick={props.onItemClick}>Archiv</Link></li>}
             { Config.showstats && <li><Link to="/statistik" onClick={props.onItemClick}>Statistik</Link></li>}
-            { props.AuthState.loggedin && <li><Link to="/token" onClick={props.onItemClick}>Auth-Token</Link></li>}
             { props.AuthState.user && props.AuthState.user.admin &&
                 <React.Fragment>
                     <li><Link to="/import" onClick={props.onItemClick}>Playlist Importieren</Link></li>
