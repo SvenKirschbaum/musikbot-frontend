@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import {Component} from "react";
 import GlobalContext from "../components/GlobalContext";
 import Container from "react-bootstrap/Container";
 

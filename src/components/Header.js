@@ -1,6 +1,6 @@
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import React, {Component} from "react";
+import {Component} from "react";
 import {withRouter} from "react-router";
 import './Header.css';
 import Config from './Configuration';

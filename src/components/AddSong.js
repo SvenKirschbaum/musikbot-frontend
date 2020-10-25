@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import {Component} from "react";
 import GlobalContext from "./GlobalContext";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";

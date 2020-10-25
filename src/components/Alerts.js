@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import {Component} from "react";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import {TransitionGroup} from "react-transition-group";

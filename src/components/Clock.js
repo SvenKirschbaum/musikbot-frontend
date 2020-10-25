@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import {Component} from 'react';
 import Moment from "react-moment";
 
 class Clock extends Component {

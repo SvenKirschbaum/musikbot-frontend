@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import Config from "../components/Configuration";
 import GlobalContext from "../components/GlobalContext";
 import EntryCard from "../components/EntryCard";

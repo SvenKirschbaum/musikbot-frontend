@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import {Component, Fragment} from 'react';
 import {Link} from "react-router-dom";
 import CookieConsent from 'react-cookie-consent';
 import Col from 'react-bootstrap/Col';
@@ -21,22 +21,23 @@ class BaseLayout extends Component {
 
     render() {
         return (
-            <React.Fragment>
+            <Fragment>
                 <div className="page-body">
                     <CookieConsent
                         location="top"
                         cookieSecurity={true}
                         sameSite="strict"
-                        style={{ background: "black" }}
+                        style={{background: "black"}}
                     >
-                        This website uses cookies to ensure you get the best experience on our website. <a className="cookielink" href="https://cookiesandyou.com/">Learn more</a>
+                        This website uses cookies to ensure you get the best experience on our website. <a
+                        className="cookielink" href="https://cookiesandyou.com/">Learn more</a>
                     </CookieConsent>
-                    {Config.showversion && <Version />}
+                    {Config.showversion && <Version/>}
                     <Alerts onClose={this.context.removeAlert}>{this.context.alerts}</Alerts>
                     {this.props.children}
                 </div>
-                <Footer />
-            </React.Fragment>
+                <Footer/>
+            </Fragment>
         );
     }
 }
@@ -53,12 +54,12 @@ class Footer extends Component {
     }
     render() {
         return (
-            <React.Fragment>
+            <Fragment>
                 {Config.showlogos &&
-                    <React.Fragment>
-                        <img className="spotify-logo d-none d-md-block" alt="spotify Logo" src={spotifylogo}/>
-                        <img className="react-logo d-none d-md-block" alt="HTML5 Logo" src={reactlogo} />
-                    </React.Fragment>
+                <Fragment>
+                    <img className="spotify-logo d-none d-md-block" alt="spotify Logo" src={spotifylogo}/>
+                    <img className="react-logo d-none d-md-block" alt="HTML5 Logo" src={reactlogo}/>
+                </Fragment>
                 }
                 <CSSTransition
                     classNames="slideup"
@@ -85,7 +86,7 @@ class Footer extends Component {
                         </Col>
                     </footer>
                 }
-            </React.Fragment>
+            </Fragment>
         );
     }
 }
@@ -118,14 +119,14 @@ function AMenu(props) {
             { Config.showarchive && <li><Link to="/archiv" onClick={props.onItemClick}>Archiv</Link></li>}
             { Config.showstats && <li><Link to="/statistik" onClick={props.onItemClick}>Statistik</Link></li>}
             {props.AuthState.user && props.AuthState.user.admin &&
-            <React.Fragment>
+            <Fragment>
                 <li><Link to="/import" onClick={props.onItemClick}>Playlist Importieren</Link></li>
                 <li><Link to="/songs" onClick={props.onItemClick}>Gesperrte Songs</Link></li>
                 <li><Link to="/gapcloser" onClick={props.onItemClick}>Gapcloser</Link></li>
                 <li><Link to="/log" onClick={props.onItemClick}>Log</Link></li>
                 <li><Link to="/users" onClick={props.onItemClick}>User</Link></li>
                 <li><Link to="/debug" onClick={props.onItemClick}>Entwicklermenü</Link></li>
-            </React.Fragment>
+            </Fragment>
             }
             {props.AuthState.loggedin && <li><Link to="#" onClick={() => {
                 props.onItemClick();

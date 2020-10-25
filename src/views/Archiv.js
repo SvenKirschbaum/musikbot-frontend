@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import {Component} from 'react';
 import Container from 'react-bootstrap/Container';
 import {Link} from "react-router-dom";
 import {TransitionGroup} from "react-transition-group";

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import {useState} from 'react';
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import Songs from './views/Songs';
 import NoMatch from './components/NoMatch';
@@ -15,14 +15,14 @@ import UserPage from './views/UserPage';
 import GlobalContext from './components/GlobalContext';
 import {AdminRoute} from "./components/Routes";
 import UserList from "./views/UserList";
-import {KeycloakProvider, useKeycloak} from "@react-keycloak/web";
+import {ReactKeycloakProvider, useKeycloak} from "@react-keycloak/web";
 import md5 from "md5"
 
 import keycloak from "./keycloak";
 
 function App() {
     return (
-        <KeycloakProvider keycloak={keycloak} LoadingComponent={<div>"Loading..."</div>} initConfig={{
+        <ReactKeycloakProvider authClient={keycloak} LoadingComponent={<div>"Loading..."</div>} initOptions={{
             onLoad: 'check-sso',
             promiseType: 'native',
             flow: 'standard',
@@ -31,13 +31,13 @@ function App() {
             silentCheckSsoRedirectUri: window.location.origin + '/silent-sso.html'
         }}>
             <AppRouter/>
-        </KeycloakProvider>
+        </ReactKeycloakProvider>
     );
 }
 
 function AppRouter(props) {
 
-    const [keycloak] = useKeycloak()
+    const {keycloak} = useKeycloak();
     const [alerts, setAlerts] = useState([]);
 
     let defaultHeaders = new Headers();

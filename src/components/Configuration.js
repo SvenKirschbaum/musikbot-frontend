@@ -1,9 +1,9 @@
-export default {
+const config = {
     title: window.Config.title || (process.env.REACT_APP_TITLE || "Radio"),
     title2: window.Config.title2 || (process.env.REACT_APP_TITLE2 || "Elite12 // "),
 
     apihost: window.Config.apihost || (process.env.REACT_APP_API_HOST || ""),
-    chromeextensionid: window.Config.chromeextensionid || (process.env.REACT_APP_CHROME_EXTENSION_ID ||""),
+    chromeextensionid: window.Config.chromeextensionid || (process.env.REACT_APP_CHROME_EXTENSION_ID || ""),
     rightslink: window.Config.rightslink || (process.env.REACT_APP_RIGHTS_LINK || "https://datenschutz.elite12.de/"),
 
     showversion: "showversion" in window.Config ? window.Config.showversion : (("REACT_APP_SHOW_VERSION" in process.env) ? process.env.REACT_APP_TITLE : true),
@@ -18,3 +18,5 @@ export default {
 
     version: process.env.REACT_APP_VERSION || "dev",
 };
+
+export default config;

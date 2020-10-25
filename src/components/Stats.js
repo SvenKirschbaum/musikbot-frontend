@@ -1,6 +1,5 @@
 import {Switch, useRouteMatch} from "react-router";
 import {Route} from "react-router-dom";
-import React from "react";
 import StatsOverview from "../views/StatsOverview";
 import NoMatch from "./NoMatch";
 import StatsList from "../views/StatsList";

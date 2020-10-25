@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import {Component} from 'react';
 
 import './Version.css';
 import GlobalContext from "./GlobalContext";
