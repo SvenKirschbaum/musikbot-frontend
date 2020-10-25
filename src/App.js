@@ -16,7 +16,6 @@ import GlobalContext from './components/GlobalContext';
 import {AdminRoute} from "./components/Routes";
 import UserList from "./views/UserList";
 import {ReactKeycloakProvider, useKeycloak} from "@react-keycloak/web";
-import md5 from "md5"
 
 import keycloak from "./keycloak";
 
@@ -39,18 +38,6 @@ function AppRouter(props) {
 
     const {keycloak} = useKeycloak();
     const [alerts, setAlerts] = useState([]);
-
-    let defaultHeaders = new Headers();
-    defaultHeaders.append("Content-Type", "application/json");
-
-    let user = {};
-    if (keycloak.authenticated) {
-        defaultHeaders.set("Authorization", "Bearer " + keycloak.token);
-        user.name = keycloak.tokenParsed.preferred_username;
-        user.email = keycloak.tokenParsed.email;
-        user.gravatarId = md5(keycloak.tokenParsed.email);
-        user.admin = keycloak.hasResourceRole("admin", "musikbot-backend");
-    }
 
     let addAlert = (alert) => {
         let a = [...alerts];
@@ -88,9 +75,6 @@ function AppRouter(props) {
         <Router>
             <GlobalContext.Provider
                 value={{
-                    loggedin: keycloak.authenticated,
-                    user,
-                    defaultHeaders: defaultHeaders,
                     alerts: alerts,
                     addAlert: addAlert,
                     removeAlert: removeAlert,

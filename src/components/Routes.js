@@ -1,65 +1,55 @@
-import {Component} from "react";
 import {Redirect, Route} from "react-router-dom";
-import GlobalContext from "./GlobalContext";
+import useUser from "../hooks/user";
 
-class AdminRoute extends Component {
+function AdminRoute(props) {
+    const {component: Component, ...rprops} = props;
 
-    static contextType = GlobalContext;
+    const user = useUser();
 
-    render() {
-        const { component: Component, ...props } = this.props;
-
-        return (
-            <Route
-                {...props}
-                render={props => (
-                    this.context.loggedin && this.context.user.admin ?
-                        <Component {...props} /> :
-                        <Redirect to='/' />
-                )}
-            />
-        )
-    }
+    return (
+        <Route
+            {...rprops}
+            render={props => (
+                user && user.admin ?
+                    <Component {...props} /> :
+                    <Redirect to='/'/>
+            )}
+        />
+    )
 }
 
-class LoggedinRoute extends Component {
+function LoggedinRoute(props) {
+    const {component: Component, ...rprops} = props;
 
-    static contextType = GlobalContext;
+    const user = useUser();
 
-    render() {
-        const { component: Component, ...props } = this.props;
-
-        return (
-            <Route
-                {...props}
-                render={props => (
-                    this.context.loggedin ?
-                        <Component {...props} /> :
-                        <Redirect to='/' />
-                )}
-            />
-        )
-    }
+    return (
+        <Route
+            {...rprops}
+            render={props => (
+                user ?
+                    <Component {...props} /> :
+                    <Redirect to='/'/>
+            )}
+        />
+    )
 }
 
-class AnonymousRoute extends Component {
+function AnonymousRoute(props) {
+    const {component: Component, ...rprops} = props;
 
-    static contextType = GlobalContext;
+    const user = useUser();
 
-    render() {
-        const { component: Component, ...props } = this.props;
-
-        return (
-            <Route
-                {...props}
-                render={props => (
-                    !this.context.loggedin ?
-                        <Component {...props} /> :
-                        <Redirect to='/' />
-                )}
-            />
-        )
-    }
+    return (
+        <Route
+            {...rprops}
+            render={props => (
+                !user ?
+                    <Component {...props} /> :
+                    <Redirect to='/'/>
+            )}
+        />
+    )
 }
 
 export {AdminRoute, LoggedinRoute, AnonymousRoute};

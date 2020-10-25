@@ -11,6 +11,7 @@ import './Stats.css';
 import {Link} from "react-router-dom";
 import Config from "../components/Configuration";
 import EntryCard from "../components/EntryCard";
+import {getDefaultHeaders} from "../hooks/defaultHeaders";
 
 class StatsOverview extends Component {
 
@@ -41,7 +42,7 @@ class StatsOverview extends Component {
     load() {
         fetch(Config.apihost + "/api/v2/stats", {
             method: 'GET',
-            headers: this.context.defaultHeaders,
+            headers: getDefaultHeaders(),
             signal: this.abortController.signal
         })
         .then((res) => {

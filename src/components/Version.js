@@ -3,6 +3,7 @@ import {Component} from 'react';
 import './Version.css';
 import GlobalContext from "./GlobalContext";
 import Config from './Configuration';
+import {getDefaultHeaders} from "../hooks/defaultHeaders";
 
 class Version extends Component {
 
@@ -26,7 +27,7 @@ class Version extends Component {
     componentDidMount() {
         fetch(Config.apihost + "/api/version", {
             method: 'GET',
-            headers: this.context.defaultHeaders,
+            headers: getDefaultHeaders(),
             signal: this.abortController.signal
         })
         .then((res) => {

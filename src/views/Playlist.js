@@ -10,6 +10,7 @@ import Button from "react-bootstrap/Button";
 import TransitionGroup from "react-transition-group/TransitionGroup";
 import CSSTransition from "react-transition-group/CSSTransition";
 import Config from "../components/Configuration";
+import {getDefaultHeaders} from "../hooks/defaultHeaders";
 
 class Playlist extends Component {
     static contextType = GlobalContext;
@@ -53,7 +54,7 @@ class Playlist extends Component {
         e.preventDefault();
         fetch(Config.apihost + "/api/v2/playlist?url=" + encodeURIComponent(this.state.url), {
             method: 'GET',
-            headers: this.context.defaultHeaders,
+            headers: getDefaultHeaders(),
             signal: this.abortController.signal
         })
         .then((res) => {
@@ -78,8 +79,8 @@ class Playlist extends Component {
     onSubmit() {
         fetch(Config.apihost + "/api/v2/playlist", {
             method: 'POST',
-            headers: this.context.defaultHeaders,
-            body: JSON.stringify(this.state.songs.filter((value,index) => this.state.checkboxes[index]))
+            headers: getDefaultHeaders(),
+            body: JSON.stringify(this.state.songs.filter((value, index) => this.state.checkboxes[index]))
         })
         .then((res) => {
             if(!res.ok) throw Error(res.statusText);

@@ -9,6 +9,7 @@ import Header from '../components/Header';
 
 import './Gapcloser.css';
 import Config from "../components/Configuration";
+import {getDefaultHeaders} from "../hooks/defaultHeaders";
 
 class Gapcloser extends Component {
 
@@ -38,7 +39,7 @@ class Gapcloser extends Component {
     load() {
         fetch(Config.apihost + "/api/v2/gapcloser", {
             method: 'GET',
-            headers: this.context.defaultHeaders,
+            headers: getDefaultHeaders(),
             signal: this.abortController.signal
         })
         .then((res) => {
@@ -59,7 +60,7 @@ class Gapcloser extends Component {
         fetch(Config.apihost + "/api/v2/gapcloser", {
             method: 'PUT',
             body: JSON.stringify({mode: this.state.mode, playlist: this.state.playlist}),
-            headers: this.context.defaultHeaders,
+            headers: getDefaultHeaders(),
             signal: this.abortController.signal
         })
         .then((res) => {

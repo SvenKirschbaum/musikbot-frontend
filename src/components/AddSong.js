@@ -8,6 +8,7 @@ import {debounce, throttle} from "throttle-debounce";
 
 import './AddSong.css';
 import Config from "./Configuration";
+import {getDefaultHeaders} from "../hooks/defaultHeaders";
 
 class AddSong extends Component {
 
@@ -75,7 +76,7 @@ class AddSong extends Component {
         }
 
         this.waitfor = value;
-        let headers = new Headers(this.context.defaultHeaders);
+        let headers = getDefaultHeaders();
         headers.set("Content-Type","text/plain");
         fetch(Config.apihost + "/api/v2/search?term="+encodeURIComponent(value), {
             method: 'GET',

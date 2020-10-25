@@ -9,6 +9,7 @@ import Header from '../components/Header';
 
 import './Debug.css';
 import Config from "../components/Configuration";
+import {getDefaultHeaders} from "../hooks/defaultHeaders";
 
 class Debug extends Component {
 
@@ -24,7 +25,7 @@ class Debug extends Component {
     onServer() {
         fetch(Config.apihost + "/api/debug/server", {
             method: ('POST'),
-            headers: this.context.defaultHeaders
+            headers: getDefaultHeaders()
         })
         .then((res) => {
             if(!res.ok) throw Error(res.statusText);
@@ -38,7 +39,7 @@ class Debug extends Component {
     onClient() {
         fetch(Config.apihost + "/api/debug/client", {
             method: ('POST'),
-            headers: this.context.defaultHeaders
+            headers: getDefaultHeaders()
         })
         .then((res) => {
             if(!res.ok) throw Error(res.statusText);

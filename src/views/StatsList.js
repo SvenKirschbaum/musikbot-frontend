@@ -9,6 +9,7 @@ import Container from "react-bootstrap/Container";
 import './Stats.css';
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import {getDefaultHeaders} from "../hooks/defaultHeaders";
 
 function StatsList(props) {
 
@@ -22,7 +23,7 @@ function StatsList(props) {
 
         fetch(Config.apihost + "/api/v2/stats/" + props.subRoute, {
             method: 'GET',
-            headers: context.defaultHeaders,
+            headers: getDefaultHeaders(),
             signal: abortController.signal
         })
             .then((res) => {

@@ -15,6 +15,8 @@ import {TransitionGroup} from "react-transition-group";
 import CSSTransition from "react-transition-group/CSSTransition";
 import QuickAdd from "../components/QuickAdd";
 import Config from "../components/Configuration";
+import {getDefaultHeaders} from "../hooks/defaultHeaders";
+import {withUser} from "../hooks/user";
 
 class UserPage extends Component {
 
@@ -63,7 +65,7 @@ class UserPage extends Component {
         this.abortController = new AbortController();
         fetch(Config.apihost + "/api/v2/user/" + username, {
             method: 'GET',
-            headers: this.context.defaultHeaders,
+            headers: getDefaultHeaders(),
             signal: this.abortController.signal
         })
             .then((res) => {
@@ -122,15 +124,15 @@ class UserPage extends Component {
                                                                 </td>
                                                             </tr>
                                                         </CSSTransition>
-                                                        {(!this.state.user.guest) && (this.context.user.admin || (this.state.user.id === this.context.user.id)) &&
-                                                            <CSSTransition key="email" timeout={300} classNames="fade">
-                                                                <tr>
-                                                                    <td>Email:</td>
-                                                                    <td>
-                                                                        {this.state.user.email}
-                                                                    </td>
-                                                                </tr>
-                                                            </CSSTransition>
+                                                        {(!this.state.user.guest) && (this.props.user.admin || (this.state.user.id === this.props.user.id)) &&
+                                                        <CSSTransition key="email" timeout={300} classNames="fade">
+                                                            <tr>
+                                                                <td>Email:</td>
+                                                                <td>
+                                                                    {this.state.user.email}
+                                                                </td>
+                                                            </tr>
+                                                        </CSSTransition>
                                                         }
                                                         {(!this.state.user.guest) &&
                                                             <CSSTransition key="admin" timeout={300} classNames="fade">
@@ -262,4 +264,4 @@ class UserPage extends Component {
     }
 }
 
-export default withRouter(UserPage);
+export default withRouter(withUser(UserPage));

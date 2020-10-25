@@ -14,6 +14,7 @@ import spotifylogo from '../res/spotify.svg';
 import GravatarIMG from "./GravatarIMG";
 import Alerts from "./Alerts";
 import Config from "./Configuration";
+import useUser from "../hooks/user";
 
 
 class BaseLayout extends Component {
@@ -66,13 +67,14 @@ class Footer extends Component {
                     timeout={300}
                     unmountOnExit
                     in={this.state.isMenuOpen}>
-                    <AMenu AuthState={this.context} onItemClick={() => this.setState({isMenuOpen: false})}/>
+                    <AMenu onItemClick={() => this.setState({isMenuOpen: false})} editAccount={this.context.editAccount}
+                           logout={this.context.logout}/>
                 </CSSTransition>
                 {Config.showfooter &&
                     <footer className="d-flex flex-row justify-content-between no-gutters">
                         <Col className="text-left">
                             {Config.enableusers &&
-                            <LoginFooter AuthState={this.context} onLogin={() => this.context.login()}
+                            <LoginFooter onLogin={() => this.context.login()}
                                          onMenu={() => this.setState({isMenuOpen: !this.state.isMenuOpen})}/>}
                         </Col>
                         <Col className="text-center">
@@ -92,12 +94,15 @@ class Footer extends Component {
 }
 
 function LoginFooter(props) {
-    if(props.AuthState.loggedin) {
+
+    const user = useUser();
+
+    if (user) {
         return (
             <span className="LoginFooter">
-                <Link to={`/user/${props.AuthState.user.name}`}>
-                    <GravatarIMG>{props.AuthState.user.gravatarId}</GravatarIMG>
-                    <span><span className="d-none d-sm-inline">Willkommen </span>{props.AuthState.user.name}</span>
+                <Link to={`/user/${user.name}`}>
+                    <GravatarIMG>{user.gravatarId}</GravatarIMG>
+                    <span><span className="d-none d-sm-inline">Willkommen </span>{user.name}</span>
                 </Link>
                 <Link to="#" onClick={props.onMenu}>Menü</Link>
             </span>
@@ -113,12 +118,15 @@ function LoginFooter(props) {
 }
 
 function AMenu(props) {
+
+    const user = useUser();
+
     return (
         <nav className="AMenu">
             <li><Link to="/" onClick={props.onItemClick}>Startseite</Link></li>
-            { Config.showarchive && <li><Link to="/archiv" onClick={props.onItemClick}>Archiv</Link></li>}
-            { Config.showstats && <li><Link to="/statistik" onClick={props.onItemClick}>Statistik</Link></li>}
-            {props.AuthState.user && props.AuthState.user.admin &&
+            {Config.showarchive && <li><Link to="/archiv" onClick={props.onItemClick}>Archiv</Link></li>}
+            {Config.showstats && <li><Link to="/statistik" onClick={props.onItemClick}>Statistik</Link></li>}
+            {user && user.admin &&
             <Fragment>
                 <li><Link to="/import" onClick={props.onItemClick}>Playlist Importieren</Link></li>
                 <li><Link to="/songs" onClick={props.onItemClick}>Gesperrte Songs</Link></li>
@@ -128,13 +136,13 @@ function AMenu(props) {
                 <li><Link to="/debug" onClick={props.onItemClick}>Entwicklermenü</Link></li>
             </Fragment>
             }
-            {props.AuthState.loggedin && <li><Link to="#" onClick={() => {
+            {user && <li><Link to="#" onClick={() => {
                 props.onItemClick();
-                props.AuthState.editAccount()
+                props.editAccount()
             }}>Account bearbeiten</Link></li>}
-            {props.AuthState.loggedin && <li><Link to="#" onClick={() => {
+            {user && <li><Link to="#" onClick={() => {
                 props.onItemClick();
-                props.AuthState.logout()
+                props.logout()
             }}>Logout</Link></li>}
         </nav>
     );

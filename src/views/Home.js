@@ -22,6 +22,8 @@ import {FaTrashAlt} from 'react-icons/fa';
 import SockJsClient from 'react-stomp';
 import ClassWrapper from "../components/ClassWrapper";
 import SongProgress from "../components/SongProgress";
+import {getDefaultHeaders} from "../hooks/defaultHeaders";
+import useUser, {withUser} from "../hooks/user";
 
 class Home extends Component {
 
@@ -68,7 +70,7 @@ class Home extends Component {
     sendStart() {
         fetch(Config.apihost + "/api/control/start", {
             method: 'POST',
-            headers: this.context.defaultHeaders
+            headers: getDefaultHeaders()
         }).then((res) => {
             if (!res.ok) throw Error(res.statusText);
         })
@@ -80,7 +82,7 @@ class Home extends Component {
     sendPause() {
         fetch(Config.apihost + "/api/control/pause", {
             method: 'POST',
-            headers: this.context.defaultHeaders
+            headers: getDefaultHeaders()
         }).then((res) => {
             if (!res.ok) throw Error(res.statusText);
         })
@@ -92,7 +94,7 @@ class Home extends Component {
     sendStop() {
         fetch(Config.apihost + "/api/control/stop", {
             method: 'POST',
-            headers: this.context.defaultHeaders
+            headers: getDefaultHeaders()
         }).then((res) => {
             if (!res.ok) throw Error(res.statusText);
         })
@@ -104,7 +106,7 @@ class Home extends Component {
     sendSkip() {
         fetch(Config.apihost + "/api/control/skip", {
             method: 'POST',
-            headers: this.context.defaultHeaders
+            headers: getDefaultHeaders()
         }).then((res) => {
             if (!res.ok) throw Error(res.statusText);
         })
@@ -116,7 +118,7 @@ class Home extends Component {
     sendShuffle() {
         fetch(Config.apihost + "/api/control/shuffle", {
             method: 'POST',
-            headers: this.context.defaultHeaders
+            headers: getDefaultHeaders()
         }).then((res) => {
             if (!res.ok) throw Error(res.statusText);
         })
@@ -128,7 +130,7 @@ class Home extends Component {
     sendDelete(id, lock) {
         fetch(Config.apihost + "/api/v2/songs/" + id + (lock ? "?lock=true" : ""), {
             method: 'DELETE',
-            headers: this.context.defaultHeaders
+            headers: getDefaultHeaders()
         }).then((res) => {
             if (!res.ok) throw Error(res.statusText);
         })
@@ -138,7 +140,7 @@ class Home extends Component {
     }
 
     sendSong(url) {
-        let headers = new Headers(this.context.defaultHeaders);
+        let headers = getDefaultHeaders();
         headers.set("Content-Type", "text/plain");
         fetch(Config.apihost + "/api/v2/songs", {
             method: 'POST',
@@ -196,7 +198,7 @@ class Home extends Component {
     }
 
     sendSort(prev, id) {
-        let headers = new Headers(this.context.defaultHeaders);
+        let headers = getDefaultHeaders();
         headers.set("Content-Type", "text/plain");
         fetch(Config.apihost + "/api/v2/songs/" + id, {
             method: 'PUT',
@@ -218,7 +220,7 @@ class Home extends Component {
     onVolume(volume) {
         if(volume == null) return;
 
-        let headers = new Headers(this.context.defaultHeaders);
+        let headers = getDefaultHeaders();
         headers.set("Content-Type", "application/json");
         fetch(Config.apihost + "/api/control/volume", {
             method: 'PUT',
@@ -241,13 +243,15 @@ class Home extends Component {
                 <main>
                     <Status state={this.state.status} title={this.state.songtitle} link={this.state.songlink}
                             duration={this.state.playlistdauer} progress={this.state.progress} />
-                    {this.context.user && this.context.user.admin &&
+                    {this.props.user && this.props.user.admin &&
                     <ControlElements onStart={this.sendStart} onPause={this.sendPause} onStop={this.sendStop}
-                                     onSkip={this.sendSkip} />}
-                    <Playlist onDragStart={this.onDragStart} onDragEnd={this.onDragEnd} AuthState={this.context}
+                                     onSkip={this.sendSkip}/>}
+                    <Playlist onDragStart={this.onDragStart} onDragEnd={this.onDragEnd}
                               onDelete={this.sendDelete} songs={this.state.playlist}/>
-                    <BottomControl onShuffle={this.sendShuffle} setVolume={this.setVolume} onVolume={this.onVolume} volume={this.state.volume} admin={this.context.user && this.context.user.admin}/>
-                    <AddSong handlefetchError={this.context.handleException} sendSong={this.sendSong} buttontext="Abschicken"/>
+                    <BottomControl onShuffle={this.sendShuffle} setVolume={this.setVolume} onVolume={this.onVolume}
+                                   volume={this.state.volume} admin={this.props.user && this.props.user.admin}/>
+                    <AddSong handlefetchError={this.context.handleException} sendSong={this.sendSong}
+                             buttontext="Abschicken"/>
                 </main>
                 <SockJsClient
                     url={Config.apihost + `/api/sock`}
@@ -262,6 +266,9 @@ class Home extends Component {
 }
 
 function Playlist(props) {
+
+    const user = useUser();
+
     return (
         <section>
             <Row className="space-top justify-content-center">
@@ -280,7 +287,7 @@ function Playlist(props) {
                                     <th className="d-none d-sm-table-cell author">Eingefügt von</th>
                                     <th className="songtitle">Titel</th>
                                     <th className="d-none d-md-table-cell songlink">Link</th>
-                                    {props.AuthState.user && props.AuthState.user.admin && <th className="delete"/>}
+                                    {user && user.admin && <th className="delete"/>}
                                 </tr>
                                 </thead>
                                 <FlipMove typeName="tbody" enterAnimation="fade" leaveAnimation="none" duration={400}>
@@ -289,12 +296,14 @@ function Playlist(props) {
                                             //This wrapper is required, because Draggable is a functional Component since version 11 of react-beautiful-dnd, and functional components can not be used as childs of FlipMove
                                             <ClassWrapper key={song.id}>
                                                 <Draggable
-                                                    isDragDisabled={!(props.AuthState.user && props.AuthState.user.admin)}
+                                                    isDragDisabled={!(user && user.admin)}
                                                     key={song.id} draggableId={song.id.toString()} index={index}>
                                                     {(provided, snapshot) => (
-                                                        <Song AuthState={props.AuthState} onDelete={props.onDelete}
+                                                        <Song onDelete={props.onDelete}
                                                               key={song.id} {...song} provided={provided}
-                                                              isDragging={snapshot.isDragging}/>
+                                                              isDragging={snapshot.isDragging}
+                                                              user={user}
+                                                        />
                                                     )}
                                                 </Draggable>
                                             </ClassWrapper>
@@ -333,7 +342,7 @@ function Song(props) {
                 href={props.link}>{props.title}</a></DragFixedCell>
             <DragFixedCell isDragOccurring={props.isDragging} className="d-none d-md-table-cell songlink"><a
                 href={props.link}>{props.link}</a></DragFixedCell>
-            {props.AuthState.user && props.AuthState.user.admin &&
+            {props.user && props.user.admin &&
             <DragFixedCell isDragOccurring={props.isDragging} className="d-inline-flex deleteicon" onClick={(e) => {
                 props.onDelete(props.id, e.shiftKey)
             }}><FaTrashAlt/></DragFixedCell>}
@@ -461,4 +470,4 @@ function BottomControl(props) {
     );
 }
 
-export default Home;
+export default withUser(Home);

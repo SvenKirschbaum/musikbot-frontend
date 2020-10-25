@@ -9,6 +9,7 @@ import Header from '../components/Header';
 
 import './Log.css';
 import Config from "../components/Configuration";
+import {getDefaultHeaders} from "../hooks/defaultHeaders";
 
 class Log extends Component {
 
@@ -36,7 +37,7 @@ class Log extends Component {
     load() {
         fetch(Config.apihost + "/api/manage/logfile", {
             method: 'GET',
-            headers: this.context.defaultHeaders,
+            headers: getDefaultHeaders(),
             signal: this.abortController.signal
         })
         .then((res) => {

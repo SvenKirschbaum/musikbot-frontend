@@ -5,6 +5,7 @@ import './QuickAdd.css';
 import {FaPlus} from 'react-icons/fa';
 import GlobalContext from "./GlobalContext";
 import Config from "./Configuration";
+import {getDefaultHeaders} from "../hooks/defaultHeaders";
 
 class QuickAdd extends Component {
 
@@ -17,7 +18,7 @@ class QuickAdd extends Component {
     }
 
     onClick(e) {
-        let headers = new Headers(this.context.defaultHeaders);
+        let headers = getDefaultHeaders();
         headers.set("Content-Type", "text/plain");
         fetch(Config.apihost + "/api/v2/songs", {
             method: 'POST',

@@ -16,6 +16,7 @@ import Config from "../components/Configuration";
 
 import './Archiv.css';
 import QuickAdd from "../components/QuickAdd";
+import {getDefaultHeaders} from "../hooks/defaultHeaders";
 
 class Archiv extends Component {
 
@@ -47,7 +48,7 @@ class Archiv extends Component {
         this.abortController = new AbortController();
         fetch(Config.apihost + "/api/v2/archiv/"+page, {
             method: 'GET',
-            headers: this.context.defaultHeaders,
+            headers: getDefaultHeaders(),
             signal: this.abortController.signal
         })
             .then((res) => {
