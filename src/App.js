@@ -11,7 +11,7 @@ import Log from './views/Log';
 import Gapcloser from './views/Gapcloser';
 import Stats from './components/Stats';
 import Playlist from './views/Playlist';
-import UserPage from './views/UserPage';
+import UserPage from './views/User';
 import GlobalContext from './components/GlobalContext';
 import {AdminRoute} from "./components/Routes";
 import UserList from "./views/UserList";

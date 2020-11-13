@@ -2,7 +2,7 @@ import {Switch, useRouteMatch} from "react-router";
 import {Route} from "react-router-dom";
 import StatsOverview from "../views/StatsOverview";
 import NoMatch from "./NoMatch";
-import StatsList from "../views/StatsList";
+import {StatsDetails} from "../views/StatsList";
 
 function Stats() {
     let match = useRouteMatch();
@@ -10,10 +10,10 @@ function Stats() {
         <Switch>
             <Route path={`${match.path}/`} exact component={StatsOverview}/>
             <Route path={`${match.path}/played`}>
-                <StatsList subRoute="played"/>
+                <StatsDetails subRoute="played"/>
             </Route>
             <Route path={`${match.path}/skipped`}>
-                <StatsList subRoute="skipped"/>
+                <StatsDetails subRoute="skipped"/>
             </Route>
             <Route component={NoMatch}/>
         </Switch>

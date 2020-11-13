@@ -1,6 +1,6 @@
 import {Component} from 'react';
 import Container from 'react-bootstrap/Container';
-import {withRouter} from "react-router";
+import {Switch, useRouteMatch, withRouter} from "react-router";
 
 import GlobalContext from '../components/GlobalContext';
 import Header from '../components/Header';
@@ -9,7 +9,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card'
 
-import './UserPage.css';
+import './User.css';
 import GravatarIMG from "../components/GravatarIMG";
 import {TransitionGroup} from "react-transition-group";
 import CSSTransition from "react-transition-group/CSSTransition";
@@ -17,6 +17,9 @@ import QuickAdd from "../components/QuickAdd";
 import Config from "../components/Configuration";
 import {getDefaultHeaders} from "../hooks/defaultHeaders";
 import {withUser} from "../hooks/user";
+import {Link, Route} from "react-router-dom";
+import {UserStatsDetails} from "./StatsList";
+import NoMatch from "../components/NoMatch";
 
 class UserPage extends Component {
 
@@ -194,7 +197,8 @@ class UserPage extends Component {
                                 <Col className="usercardcol">
                                     <Card className="usercard">
                                         <Card.Body>
-                                            <Card.Title>Am meisten gewünscht:</Card.Title>
+                                            <Card.Title><Link to={this.props.match.url + "/played"}>Am meisten
+                                                gewünscht:</Link></Card.Title>
                                             <table>
                                                 <thead>
                                                 <tr>
@@ -225,7 +229,8 @@ class UserPage extends Component {
                                     </Card>
                                     <Card className="usercard">
                                         <Card.Body>
-                                            <Card.Title>Am meisten geskippt:</Card.Title>
+                                            <Card.Title><Link to={this.props.match.url + "/skipped"}>Am meisten
+                                                geskippt:</Link></Card.Title>
                                             <table>
                                                 <thead>
                                                 <tr>
@@ -264,4 +269,20 @@ class UserPage extends Component {
     }
 }
 
-export default withRouter(withUser(UserPage));
+function User(props) {
+    let match = useRouteMatch();
+    return (
+        <Switch>
+            <Route path={`${match.path}/`} exact component={withUser(UserPage)}/>
+            <Route path={`${match.path}/played`}>
+                <UserStatsDetails subRoute="played"/>
+            </Route>
+            <Route path={`${match.path}/skipped`}>
+                <UserStatsDetails subRoute="skipped"/>
+            </Route>
+            <Route component={NoMatch}/>
+        </Switch>
+    );
+}
+
+export default withRouter(User);
