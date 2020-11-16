@@ -23,6 +23,9 @@ import SongProgress from "../components/SongProgress";
 import {getDefaultHeaders} from "../hooks/defaultHeaders";
 import useUser, {withUser} from "../hooks/user";
 import {AlertContext} from "../context/AlertContext";
+import withDropSong from "../components/withDropSong";
+
+const HomeContainer = withDropSong(Container);
 
 class Home extends Component {
 
@@ -237,11 +240,15 @@ class Home extends Component {
 
     render() {
         return (
-            <Container fluid>
+            <HomeContainer
+                fluid
+                className={"homeContainer"}
+                sendSong={this.sendSong}
+            >
                 <Header/>
                 <main>
                     <Status state={this.state.status} title={this.state.songtitle} link={this.state.songlink}
-                            duration={this.state.playlistdauer} progress={this.state.progress} />
+                            duration={this.state.playlistdauer} progress={this.state.progress}/>
                     {this.props.user && this.props.user.admin &&
                     <ControlElements onStart={this.sendStart} onPause={this.sendPause} onStop={this.sendStop}
                                      onSkip={this.sendSkip}/>}
@@ -254,12 +261,16 @@ class Home extends Component {
                 </main>
                 <SockJsClient
                     url={Config.apihost + `/api/sock`}
-                    topics={['/user/queue/state','/topic/state']}
+                    topics={['/user/queue/state', '/topic/state']}
                     onMessage={(message) => this.parseUpdate(message)}
-                    onConnect={() => {if(this.clientRef) this.clientRef.sendMessage("/app/state")}}
-                    ref={(client) => { this.clientRef = client }}
+                    onConnect={() => {
+                        if (this.clientRef) this.clientRef.sendMessage("/app/state")
+                    }}
+                    ref={(client) => {
+                        this.clientRef = client
+                    }}
                 />
-            </Container>
+            </HomeContainer>
         );
     }
 }

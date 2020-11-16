@@ -30,6 +30,8 @@ html, body, #root, .page-body {
     overflow-y: overlay;
     height: 100%;
     padding-bottom: 60px;
+    display: flex;
+    flex-direction: column;
 }
 
 /* width */
