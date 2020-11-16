@@ -1,4 +1,4 @@
-import {Component} from 'react';
+import {Component, useMemo} from 'react';
 import Container from 'react-bootstrap/Container';
 import {Switch, useRouteMatch, withRouter} from "react-router";
 
@@ -270,10 +270,12 @@ class UserPage extends Component {
 }
 
 function User(props) {
-    let match = useRouteMatch();
+    const match = useRouteMatch();
+    const UserRouteComponent = useMemo(() => withUser(UserPage), []);
+
     return (
         <Switch>
-            <Route path={`${match.path}/`} exact component={withUser(UserPage)}/>
+            <Route path={`${match.path}/`} exact component={UserRouteComponent}/>
             <Route path={`${match.path}/played`}>
                 <UserStatsDetails subRoute="played"/>
             </Route>
