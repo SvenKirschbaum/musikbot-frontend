@@ -1,5 +1,4 @@
 import {Component} from "react";
-import GlobalContext from "../components/GlobalContext";
 import Container from "react-bootstrap/Container";
 
 import './Playlist.css';
@@ -11,9 +10,10 @@ import TransitionGroup from "react-transition-group/TransitionGroup";
 import CSSTransition from "react-transition-group/CSSTransition";
 import Config from "../components/Configuration";
 import {getDefaultHeaders} from "../hooks/defaultHeaders";
+import {AlertContext} from "../context/AlertContext";
 
 class Playlist extends Component {
-    static contextType = GlobalContext;
+    static contextType = AlertContext;
 
     constructor(props) {
         super(props);

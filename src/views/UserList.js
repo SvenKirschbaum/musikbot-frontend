@@ -4,8 +4,6 @@ import {withRouter} from "react-router";
 
 import Row from 'react-bootstrap/Row';
 import Pagination from "react-js-pagination";
-
-import GlobalContext from '../components/GlobalContext';
 import Header from '../components/Header';
 
 import './UserList.css';
@@ -15,10 +13,11 @@ import GravatarIMG from "../components/GravatarIMG";
 import {Link} from "react-router-dom";
 import Config from "../components/Configuration";
 import {getDefaultHeaders} from "../hooks/defaultHeaders";
+import {AlertContext} from "../context/AlertContext";
 
 class UserList extends Component {
 
-    static contextType = GlobalContext;
+    static contextType = AlertContext;
 
     constructor(props) {
         super(props);

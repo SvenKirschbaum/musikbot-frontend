@@ -4,7 +4,7 @@ import CookieConsent from 'react-cookie-consent';
 import Col from 'react-bootstrap/Col';
 import {CSSTransition} from 'react-transition-group';
 
-import GlobalContext from './GlobalContext';
+import LoginContext from '../context/LoginContext';
 
 import Clock from './Clock.js';
 import Version from './Version.js';
@@ -18,7 +18,7 @@ import useUser from "../hooks/user";
 
 
 class BaseLayout extends Component {
-    static contextType = GlobalContext;
+    static contextType = LoginContext;
 
     render() {
         return (
@@ -34,7 +34,7 @@ class BaseLayout extends Component {
                         className="cookielink" href="https://cookiesandyou.com/">Learn more</a>
                     </CookieConsent>
                     {Config.showversion && <Version/>}
-                    <Alerts onClose={this.context.removeAlert}>{this.context.alerts}</Alerts>
+                    <Alerts/>
                     {this.props.children}
                 </div>
                 <Footer/>
@@ -45,7 +45,7 @@ class BaseLayout extends Component {
 
 class Footer extends Component {
 
-    static contextType = GlobalContext;
+    static contextType = LoginContext;
 
     constructor(props) {
         super(props);

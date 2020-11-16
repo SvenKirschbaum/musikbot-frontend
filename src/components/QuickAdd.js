@@ -1,28 +1,22 @@
-import {Component} from 'react';
+import {useContext} from 'react';
 
 import './QuickAdd.css';
 
 import {FaPlus} from 'react-icons/fa';
-import GlobalContext from "./GlobalContext";
 import Config from "./Configuration";
 import {getDefaultHeaders} from "../hooks/defaultHeaders";
+import {AlertContext} from "../context/AlertContext";
 
-class QuickAdd extends Component {
+function QuickAdd(props) {
 
-    static contextType = GlobalContext;
+    const alerts = useContext(AlertContext);
 
-    constructor(props) {
-        super(props);
-
-        this.onClick = this.onClick.bind(this);
-    }
-
-    onClick(e) {
+    const onClick = () => {
         let headers = getDefaultHeaders();
         headers.set("Content-Type", "text/plain");
         fetch(Config.apihost + "/api/v2/songs", {
             method: 'POST',
-            body: this.props.children,
+            body: props.children,
             headers: headers
         }).then((res) => {
             if (!res.ok) throw Error(res.statusText);
@@ -32,7 +26,7 @@ class QuickAdd extends Component {
             .then((res) => {
                 let type = res.success ? 'success' : 'danger';
                 if (res.warn && res.success) type = 'warning';
-                this.context.addAlert({
+                alerts.addAlert({
                     id: Math.random().toString(36),
                     type: type,
                     text: res.message,
@@ -40,15 +34,13 @@ class QuickAdd extends Component {
                 });
             })
             .catch(reason => {
-                this.context.handleException(reason);
+                alerts.handleException(reason);
             })
     }
 
-    render() {
-        return (
-            <div className="quickadd" onClick={this.onClick}><FaPlus /></div>
-        );
-    }
+    return (
+        <div className="quickadd" onClick={onClick}><FaPlus/></div>
+    );
 }
 
 export default QuickAdd;

@@ -1,7 +1,5 @@
 import {Component} from 'react';
 import Container from 'react-bootstrap/Container';
-
-import GlobalContext from '../components/GlobalContext';
 import Header from '../components/Header';
 
 import './Songs.css';
@@ -9,10 +7,11 @@ import {FaTrashAlt} from "react-icons/fa";
 import AddSong from "../components/AddSong";
 import Config from "../components/Configuration";
 import {getDefaultHeaders} from "../hooks/defaultHeaders";
+import {AlertContext} from "../context/AlertContext";
 
 class Songs extends Component {
 
-    static contextType = GlobalContext;
+    static contextType = AlertContext;
 
     constructor(props) {
         super(props);
@@ -120,7 +119,7 @@ function SongList(props) {
                 <th>ID</th>
                 <th>Titel</th>
                 <th>URL</th>
-                <th></th>
+                <th/>
             </tr>
             </thead>
             <tbody>
@@ -129,7 +128,7 @@ function SongList(props) {
                         <td>{entry.id}</td>
                         <td>{entry.title}</td>
                         <td><a href={entry.url}>{entry.url}</a></td>
-                        <td className="deleteicon" onClick={(e) => props.onDelete(entry.id)}><FaTrashAlt/></td>
+                        <td className="deleteicon" onClick={() => props.onDelete(entry.id)}><FaTrashAlt/></td>
                     </tr>
                 ))}
             </tbody>

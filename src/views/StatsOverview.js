@@ -2,8 +2,6 @@ import {Component} from 'react';
 import Container from 'react-bootstrap/Container';
 
 import Row from 'react-bootstrap/Row';
-
-import GlobalContext from '../components/GlobalContext';
 import Header from '../components/Header';
 import QuickAdd from "../components/QuickAdd";
 
@@ -12,10 +10,11 @@ import {Link} from "react-router-dom";
 import Config from "../components/Configuration";
 import EntryCard from "../components/EntryCard";
 import {getDefaultHeaders} from "../hooks/defaultHeaders";
+import {AlertContext} from "../context/AlertContext";
 
 class StatsOverview extends Component {
 
-    static contextType = GlobalContext;
+    static contextType = AlertContext;
 
     constructor(props) {
         super(props);

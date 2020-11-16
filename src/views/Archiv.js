@@ -8,8 +8,6 @@ import {withRouter} from "react-router";
 
 import Row from 'react-bootstrap/Row';
 import Pagination from "react-js-pagination";
-
-import GlobalContext from '../components/GlobalContext';
 import Header from '../components/Header';
 import GravatarIMG from "../components/GravatarIMG";
 import Config from "../components/Configuration";
@@ -17,10 +15,11 @@ import Config from "../components/Configuration";
 import './Archiv.css';
 import QuickAdd from "../components/QuickAdd";
 import {getDefaultHeaders} from "../hooks/defaultHeaders";
+import {AlertContext} from "../context/AlertContext";
 
 class Archiv extends Component {
 
-    static contextType = GlobalContext;
+    static contextType = AlertContext;
 
     constructor(props) {
         super(props);

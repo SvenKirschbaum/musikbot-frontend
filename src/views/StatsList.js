@@ -1,6 +1,6 @@
 import {useContext, useEffect, useState} from "react";
 import Config from "../components/Configuration";
-import GlobalContext from "../components/GlobalContext";
+import LoginContext from "../context/LoginContext";
 import EntryCard from "../components/EntryCard";
 import QuickAdd from "../components/QuickAdd";
 import Header from "../components/Header";
@@ -11,6 +11,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import {getDefaultHeaders} from "../hooks/defaultHeaders";
 import {useRouteMatch} from "react-router";
+import {AlertContext} from "../context/AlertContext";
 
 function StatsList(props) {
 
@@ -48,7 +49,7 @@ function StatsList(props) {
 }
 
 function UserStatsDetails(props) {
-    const context = useContext(GlobalContext);
+    const context = useContext(AlertContext);
 
     const [data, setData] = useState([]);
     const match = useRouteMatch();
@@ -78,13 +79,13 @@ function UserStatsDetails(props) {
         return () => {
             abortController.abort();
         };
-    }, [props.subRoute, userName]);
+    }, [props.subRoute, userName, context]);
 
     return <StatsList data={data}/>
 }
 
 function StatsDetails(props) {
-    const context = useContext(GlobalContext);
+    const context = useContext(LoginContext);
 
     const [data, setData] = useState([]);
 
@@ -112,7 +113,7 @@ function StatsDetails(props) {
         return () => {
             abortController.abort();
         };
-    }, [props.subRoute]);
+    }, [props.subRoute, context]);
 
     return <StatsList data={data}/>
 }

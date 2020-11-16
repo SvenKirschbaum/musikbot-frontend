@@ -9,8 +9,6 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import {Direction, PlayerIcon, Slider} from 'react-player-controls';
-
-import GlobalContext from '../components/GlobalContext';
 import GravatarIMG from "../components/GravatarIMG";
 import AddSong from "../components/AddSong";
 import Header from "../components/Header";
@@ -24,10 +22,11 @@ import ClassWrapper from "../components/ClassWrapper";
 import SongProgress from "../components/SongProgress";
 import {getDefaultHeaders} from "../hooks/defaultHeaders";
 import useUser, {withUser} from "../hooks/user";
+import {AlertContext} from "../context/AlertContext";
 
 class Home extends Component {
 
-    static contextType = GlobalContext;
+    static contextType = AlertContext;
 
     constructor(props) {
         super(props);

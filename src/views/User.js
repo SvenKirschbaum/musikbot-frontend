@@ -1,8 +1,6 @@
 import {Component, useMemo} from 'react';
 import Container from 'react-bootstrap/Container';
 import {Switch, useRouteMatch, withRouter} from "react-router";
-
-import GlobalContext from '../components/GlobalContext';
 import Header from '../components/Header';
 
 import Row from 'react-bootstrap/Row';
@@ -20,10 +18,11 @@ import {withUser} from "../hooks/user";
 import {Link, Route} from "react-router-dom";
 import {UserStatsDetails} from "./StatsList";
 import NoMatch from "../components/NoMatch";
+import {AlertContext} from "../context/AlertContext";
 
 class UserPage extends Component {
 
-    static contextType = GlobalContext;
+    static contextType = AlertContext;
 
     constructor(props) {
         super(props);
@@ -171,7 +170,7 @@ class UserPage extends Component {
                                                 <thead>
                                                     <tr>
                                                         <th>Nr.</th>
-                                                        <th className="idcolumn"></th>
+                                                        <th className="idcolumn"/>
                                                         <th>Titel</th>
                                                     </tr>
                                                 </thead>
@@ -203,7 +202,7 @@ class UserPage extends Component {
                                                 <thead>
                                                 <tr>
                                                     <th>Nr.</th>
-                                                    <th className="idcolumn"></th>
+                                                    <th className="idcolumn"/>
                                                     <th>Titel</th>
                                                     <th>Anzahl</th>
                                                 </tr>
@@ -235,7 +234,7 @@ class UserPage extends Component {
                                                 <thead>
                                                 <tr>
                                                     <th>Nr.</th>
-                                                    <th className="idcolumn"></th>
+                                                    <th className="idcolumn"/>
                                                     <th>Titel</th>
                                                     <th>Anzahl</th>
                                                 </tr>
@@ -269,7 +268,7 @@ class UserPage extends Component {
     }
 }
 
-function User(props) {
+function User() {
     const match = useRouteMatch();
     const UserRouteComponent = useMemo(() => withUser(UserPage), []);
 

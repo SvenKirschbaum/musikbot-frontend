@@ -1,13 +1,13 @@
 import {Component} from 'react';
 
 import './Version.css';
-import GlobalContext from "./GlobalContext";
 import Config from './Configuration';
 import {getDefaultHeaders} from "../hooks/defaultHeaders";
+import {AlertContext} from "../context/AlertContext";
 
 class Version extends Component {
 
-    static contextType = GlobalContext;
+    static contextType = AlertContext;
 
     constructor(props) {
         super(props);
