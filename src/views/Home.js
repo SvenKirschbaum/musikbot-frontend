@@ -261,11 +261,8 @@ class Home extends Component {
                 </main>
                 <SockJsClient
                     url={Config.apihost + `/api/sock`}
-                    topics={['/user/queue/state', '/topic/state']}
+                    topics={['/topic/state', '/musikbot/state']}
                     onMessage={(message) => this.parseUpdate(message)}
-                    onConnect={() => {
-                        if (this.clientRef) this.clientRef.sendMessage("/app/state")
-                    }}
                     ref={(client) => {
                         this.clientRef = client
                     }}
