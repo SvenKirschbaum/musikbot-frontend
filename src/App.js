@@ -14,7 +14,7 @@ import Playlist from './views/Playlist';
 import UserPage from './views/User';
 import {AdminRoute} from "./components/Routes";
 import UserList from "./views/UserList";
-import {ReactKeycloakProvider} from "@react-keycloak/web";
+import {ReactKeycloakProvider, useKeycloak} from "@react-keycloak/web";
 
 import keycloak from "./keycloak";
 import {AlertContext, AlertRenderContext} from "./context/AlertContext";
@@ -31,9 +31,7 @@ function App() {
             checkLoginIframe: false,
             silentCheckSsoRedirectUri: window.location.origin + '/silent-sso.html'
         }}>
-            <StompSessionProvider url={Config.apihost + `/api/sock`}>
-                <AppRouter/>
-            </StompSessionProvider>
+            <AppRouter/>
         </ReactKeycloakProvider>
     );
 }
@@ -41,6 +39,8 @@ function App() {
 function AppRouter() {
     const [alerts, setAlerts] = useState([]);
     const prevAlertsRef = useRef(alerts);
+
+    const {keycloak} = useKeycloak();
 
     useEffect(() => {
         const diff = alerts.filter(x => !prevAlertsRef.current.includes(x));
@@ -88,33 +88,46 @@ function AppRouter() {
     }
 
     return (
-        <Router>
-            <AlertRenderContext.Provider value={alerts}>
-                <AlertContext.Provider value={{
-                    addAlert: addAlert,
-                    removeAlert: removeAlert,
-                    handleException: handleException,
-                }}>
-                    <BaseLayout>
-                        <ErrorBoundary>
-                            <Switch>
-                                <Route path="/" exact component={Home}/>
-                                {Config.enableusers && <Route path="/user/:name" component={UserPage}/>}
-                                {Config.showarchive && <Route path="/archiv/:page?" component={Archiv}/>}
-                                {Config.showstats && <Route path="/statistik" component={Stats}/>}
-                                <AdminRoute path="/debug" component={Debug}/>
-                                <AdminRoute path="/log" component={Log}/>
-                                <AdminRoute path="/gapcloser" component={Gapcloser}/>
-                                <AdminRoute path="/import" component={Playlist}/>
-                                <AdminRoute path="/songs" component={Songs}/>
-                                <AdminRoute path="/users/:page?" component={UserList}/>
-                                <Route component={NoMatch}/>
-                            </Switch>
-                        </ErrorBoundary>
-                    </BaseLayout>
-                </AlertContext.Provider>
-            </AlertRenderContext.Provider>
-        </Router>
+        <StompSessionProvider
+            url={`/api/sock/`}
+            beforeConnect={function () {
+                if (keycloak.token) {
+                    this.connectHeaders = {
+                        'Authorization': "Bearer " + keycloak.token
+                    }
+                } else {
+                    this.connectHeaders = {}
+                }
+            }}
+        >
+            <Router>
+                <AlertRenderContext.Provider value={alerts}>
+                    <AlertContext.Provider value={{
+                        addAlert: addAlert,
+                        removeAlert: removeAlert,
+                        handleException: handleException,
+                    }}>
+                        <BaseLayout>
+                            <ErrorBoundary>
+                                <Switch>
+                                    <Route path="/" exact component={Home}/>
+                                    {Config.enableusers && <Route path="/user/:name" component={UserPage}/>}
+                                    {Config.showarchive && <Route path="/archiv/:page?" component={Archiv}/>}
+                                    {Config.showstats && <Route path="/statistik" component={Stats}/>}
+                                    <AdminRoute path="/debug" component={Debug}/>
+                                    <AdminRoute path="/log" component={Log}/>
+                                    <AdminRoute path="/gapcloser" component={Gapcloser}/>
+                                    <AdminRoute path="/import" component={Playlist}/>
+                                    <AdminRoute path="/songs" component={Songs}/>
+                                    <AdminRoute path="/users/:page?" component={UserList}/>
+                                    <Route component={NoMatch}/>
+                                </Switch>
+                            </ErrorBoundary>
+                        </BaseLayout>
+                    </AlertContext.Provider>
+                </AlertRenderContext.Provider>
+            </Router>
+        </StompSessionProvider>
     );
 }
 
