@@ -19,6 +19,7 @@ import {ReactKeycloakProvider} from "@react-keycloak/web";
 import keycloak from "./keycloak";
 import {AlertContext, AlertRenderContext} from "./context/AlertContext";
 import {StompSessionProvider} from "react-stomp-hooks";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 function App() {
     return (
@@ -95,19 +96,21 @@ function AppRouter() {
                     handleException: handleException,
                 }}>
                     <BaseLayout>
-                        <Switch>
-                            <Route path="/" exact component={Home}/>
-                            {Config.enableusers && <Route path="/user/:name" component={UserPage}/>}
-                            {Config.showarchive && <Route path="/archiv/:page?" component={Archiv}/>}
-                            {Config.showstats && <Route path="/statistik" component={Stats}/>}
-                            <AdminRoute path="/debug" component={Debug}/>
-                            <AdminRoute path="/log" component={Log}/>
-                            <AdminRoute path="/gapcloser" component={Gapcloser}/>
-                            <AdminRoute path="/import" component={Playlist}/>
-                            <AdminRoute path="/songs" component={Songs}/>
-                            <AdminRoute path="/users/:page?" component={UserList}/>
-                            <Route component={NoMatch}/>
-                        </Switch>
+                        <ErrorBoundary>
+                            <Switch>
+                                <Route path="/" exact component={Home}/>
+                                {Config.enableusers && <Route path="/user/:name" component={UserPage}/>}
+                                {Config.showarchive && <Route path="/archiv/:page?" component={Archiv}/>}
+                                {Config.showstats && <Route path="/statistik" component={Stats}/>}
+                                <AdminRoute path="/debug" component={Debug}/>
+                                <AdminRoute path="/log" component={Log}/>
+                                <AdminRoute path="/gapcloser" component={Gapcloser}/>
+                                <AdminRoute path="/import" component={Playlist}/>
+                                <AdminRoute path="/songs" component={Songs}/>
+                                <AdminRoute path="/users/:page?" component={UserList}/>
+                                <Route component={NoMatch}/>
+                            </Switch>
+                        </ErrorBoundary>
                     </BaseLayout>
                 </AlertContext.Provider>
             </AlertRenderContext.Provider>
