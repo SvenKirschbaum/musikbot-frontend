@@ -18,6 +18,7 @@ import {ReactKeycloakProvider} from "@react-keycloak/web";
 
 import keycloak from "./keycloak";
 import {AlertContext, AlertRenderContext} from "./context/AlertContext";
+import {StompSessionProvider} from "react-stomp-hooks";
 
 function App() {
     return (
@@ -29,7 +30,9 @@ function App() {
             checkLoginIframe: false,
             silentCheckSsoRedirectUri: window.location.origin + '/silent-sso.html'
         }}>
-            <AppRouter/>
+            <StompSessionProvider url={Config.apihost + `/api/sock`}>
+                <AppRouter/>
+            </StompSessionProvider>
         </ReactKeycloakProvider>
     );
 }

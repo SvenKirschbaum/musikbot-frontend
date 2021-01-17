@@ -1,4 +1,4 @@
-import {Component} from 'react';
+import {Component, useContext, useRef, useState} from 'react';
 import Container from 'react-bootstrap/Container';
 import {Link} from "react-router-dom";
 import FlipMove from "react-flip-move";
@@ -17,59 +17,45 @@ import Config from "../components/Configuration";
 
 import './Home.css';
 import {FaTrashAlt} from 'react-icons/fa';
-import SockJsClient from 'react-stomp';
 import ClassWrapper from "../components/ClassWrapper";
 import SongProgress from "../components/SongProgress";
 import {getDefaultHeaders} from "../hooks/defaultHeaders";
 import useUser, {withUser} from "../hooks/user";
 import {AlertContext} from "../context/AlertContext";
 import withDropSong from "../components/withDropSong";
+import {useSubscription} from "react-stomp-hooks";
 
 const HomeContainer = withDropSong(Container);
 
-class Home extends Component {
+function Home(props) {
 
-    static contextType = AlertContext;
+    const alertContext = useContext(AlertContext);
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            status: 'Loading...',
-            songtitle: null,
-            songlink: null,
-            playlistdauer: 0,
-            playlist: [],
-            volume: undefined
-        };
+    const [state, setState] = useState({
+        status: 'Loading...',
+        songtitle: null,
+        songlink: null,
+        playlistdauer: 0,
+        playlist: [],
+        volume: undefined
+    });
 
-        this.statebuffer = null;
-        this.isdragging = false;
-        this.clientRef = null;
+    const statebuffer = useRef(null);
+    const isdragging = useRef(false);
 
-        this.sendStart = this.sendStart.bind(this);
-        this.sendPause = this.sendPause.bind(this);
-        this.sendStop = this.sendStop.bind(this);
-        this.sendSkip = this.sendSkip.bind(this);
-        this.sendShuffle = this.sendShuffle.bind(this);
-        this.sendDelete = this.sendDelete.bind(this);
-        this.sendSong = this.sendSong.bind(this);
-        this.sendSort = this.sendSort.bind(this);
-        this.onDragStart = this.onDragStart.bind(this);
-        this.onDragEnd = this.onDragEnd.bind(this);
-        this.parseUpdate = this.parseUpdate.bind(this);
-        this.setVolume = this.setVolume.bind(this);
-        this.onVolume = this.onVolume.bind(this);
-    }
-
-    parseUpdate(response) {
-        if (this.isdragging) {
-            this.statebuffer = response;
+    const parseUpdate = (message) => {
+        const content = JSON.parse(message.body);
+        if (isdragging.current) {
+            statebuffer.current = content;
         } else {
-            this.setState(response);
+            setState(content);
         }
     }
 
-    sendStart() {
+    useSubscription("/topic/state", parseUpdate)
+    useSubscription("/musikbot/state", parseUpdate)
+
+    const sendStart = () => {
         fetch(Config.apihost + "/api/control/start", {
             method: 'POST',
             headers: getDefaultHeaders()
@@ -77,11 +63,11 @@ class Home extends Component {
             if (!res.ok) throw Error(res.statusText);
         })
             .catch(reason => {
-                this.context.handleException(reason);
+                alertContext.handleException(reason);
             })
     }
 
-    sendPause() {
+    const sendPause = () => {
         fetch(Config.apihost + "/api/control/pause", {
             method: 'POST',
             headers: getDefaultHeaders()
@@ -89,11 +75,11 @@ class Home extends Component {
             if (!res.ok) throw Error(res.statusText);
         })
             .catch(reason => {
-                this.context.handleException(reason);
+                alertContext.handleException(reason);
             })
     }
 
-    sendStop() {
+    const sendStop = () => {
         fetch(Config.apihost + "/api/control/stop", {
             method: 'POST',
             headers: getDefaultHeaders()
@@ -101,11 +87,11 @@ class Home extends Component {
             if (!res.ok) throw Error(res.statusText);
         })
             .catch(reason => {
-                this.context.handleException(reason);
+                alertContext.handleException(reason);
             })
     }
 
-    sendSkip() {
+    const sendSkip = () => {
         fetch(Config.apihost + "/api/control/skip", {
             method: 'POST',
             headers: getDefaultHeaders()
@@ -113,11 +99,11 @@ class Home extends Component {
             if (!res.ok) throw Error(res.statusText);
         })
             .catch(reason => {
-                this.context.handleException(reason);
+                alertContext.handleException(reason);
             })
     }
 
-    sendShuffle() {
+    const sendShuffle = () => {
         fetch(Config.apihost + "/api/control/shuffle", {
             method: 'POST',
             headers: getDefaultHeaders()
@@ -125,11 +111,11 @@ class Home extends Component {
             if (!res.ok) throw Error(res.statusText);
         })
             .catch(reason => {
-                this.context.handleException(reason);
+                alertContext.handleException(reason);
             })
     }
 
-    sendDelete(id, lock) {
+    const sendDelete = (id, lock) => {
         fetch(Config.apihost + "/api/v2/songs/" + id + (lock ? "?lock=true" : ""), {
             method: 'DELETE',
             headers: getDefaultHeaders()
@@ -137,11 +123,11 @@ class Home extends Component {
             if (!res.ok) throw Error(res.statusText);
         })
             .catch(reason => {
-                this.context.handleException(reason);
+                alertContext.handleException(reason);
             })
     }
 
-    sendSong(url) {
+    const sendSong = (url) => {
         let headers = getDefaultHeaders();
         headers.set("Content-Type", "text/plain");
         fetch(Config.apihost + "/api/v2/songs", {
@@ -156,7 +142,7 @@ class Home extends Component {
             .then((res) => {
                 let type = res.success ? 'success' : 'danger';
                 if (res.warn && res.success) type = 'warning';
-                this.context.addAlert({
+                alertContext.addAlert({
                     id: Math.random().toString(36),
                     type: type,
                     text: res.message,
@@ -164,19 +150,19 @@ class Home extends Component {
                 });
             })
             .catch(reason => {
-                this.context.handleException(reason);
+                alertContext.handleException(reason);
             })
     }
 
-    onDragStart(_start, _provided) {
-        this.isdragging = true;
+    const onDragStart = (_start, _provided) => {
+        isdragging.current = true;
     }
 
-    onDragEnd(result) {
-        this.isdragging = false;
-        if (this.statebuffer !== null) {
-            this.setState(this.statebuffer);
-            this.statebuffer = null;
+    const onDragEnd = (result) => {
+        isdragging.current = false;
+        if (statebuffer.current !== null) {
+            setState(statebuffer.current);
+            statebuffer.current = null;
         }
 
 
@@ -184,22 +170,22 @@ class Home extends Component {
         if (!destination) return;
         if (destination.droppableId === source.droppableId && destination.index === source.index) return;
 
-        const newList = Array.from(this.state.playlist);
+        const newList = Array.from(state.playlist);
         newList.splice(source.index, 1);
-        newList.splice(destination.index, 0, this.state.playlist[source.index]);
+        newList.splice(destination.index, 0, state.playlist[source.index]);
 
-        this.setState({
-            playlist: newList
-        }, () => this.statebuffer = null);
+        const newState = Object.assign({}, state, {playlist: newList});
+        statebuffer.current = null
+        setState(newState);
 
         const prev = (destination.index - 1) >= 0 ? newList[destination.index - 1].id : -1;
         const id = newList[destination.index].id;
 
-        this.sendSort(prev, id);
+        sendSort(prev, id);
 
     }
 
-    sendSort(prev, id) {
+    const sendSort = (prev, id) => {
         let headers = getDefaultHeaders();
         headers.set("Content-Type", "text/plain");
         fetch(Config.apihost + "/api/v2/songs/" + id, {
@@ -208,19 +194,18 @@ class Home extends Component {
             body: prev
         }).then((res) => {
             if (!res.ok) throw Error(res.statusText);
-
         })
-        .catch(reason => {
-            this.context.handleException(reason);
-        })
+            .catch(reason => {
+                alertContext.handleException(reason);
+            })
     }
 
-    setVolume(volume) {
-        this.setState({volume : volume*100});
+    const setVolume = (volume) => {
+        setState(Object.assign({}, state, {volume: volume * 100}));
     }
 
-    onVolume(volume) {
-        if(volume == null) return;
+    const onVolume = (volume) => {
+        if (volume == null) return;
 
         let headers = getDefaultHeaders();
         headers.set("Content-Type", "application/json");
@@ -228,48 +213,38 @@ class Home extends Component {
             method: 'PUT',
             headers: headers,
             body: JSON.stringify({
-                'volume': volume*100
+                'volume': volume * 100
             })
         }).then((res) => {
             if (!res.ok) throw Error(res.statusText);
         })
-        .catch(reason => {
-            this.context.handleException(reason);
-        })
+            .catch(reason => {
+                alertContext.handleException(reason);
+            })
     }
 
-    render() {
-        return (
-            <HomeContainer
-                fluid
-                className={"homeContainer"}
-                sendSong={this.sendSong}
-            >
-                <Header/>
-                <main>
-                    <Status state={this.state.status} title={this.state.songtitle} link={this.state.songlink}
-                            duration={this.state.playlistdauer} progress={this.state.progress}/>
-                    {this.props.user && this.props.user.admin &&
-                    <ControlElements onStart={this.sendStart} onPause={this.sendPause} onStop={this.sendStop}
-                                     onSkip={this.sendSkip}/>}
-                    <Playlist onDragStart={this.onDragStart} onDragEnd={this.onDragEnd}
-                              onDelete={this.sendDelete} songs={this.state.playlist}/>
-                    <BottomControl onShuffle={this.sendShuffle} setVolume={this.setVolume} onVolume={this.onVolume}
-                                   volume={this.state.volume} admin={this.props.user && this.props.user.admin}/>
-                    <AddSong handlefetchError={this.context.handleException} sendSong={this.sendSong}
-                             buttontext="Abschicken"/>
-                </main>
-                <SockJsClient
-                    url={Config.apihost + `/api/sock`}
-                    topics={['/topic/state', '/musikbot/state']}
-                    onMessage={(message) => this.parseUpdate(message)}
-                    ref={(client) => {
-                        this.clientRef = client
-                    }}
-                />
-            </HomeContainer>
-        );
-    }
+    return (
+        <HomeContainer
+            fluid
+            className={"homeContainer"}
+            sendSong={sendSong}
+        >
+            <Header/>
+            <main>
+                <Status state={state.status} title={state.songtitle} link={state.songlink}
+                        duration={state.playlistdauer} progress={state.progress}/>
+                {props.user && props.user.admin &&
+                <ControlElements onStart={sendStart} onPause={sendPause} onStop={sendStop}
+                                 onSkip={sendSkip}/>}
+                <Playlist onDragStart={onDragStart} onDragEnd={onDragEnd}
+                          onDelete={sendDelete} songs={state.playlist}/>
+                <BottomControl onShuffle={sendShuffle} setVolume={setVolume} onVolume={onVolume}
+                               volume={state.volume} admin={props.user && props.user.admin}/>
+                <AddSong handlefetchError={alertContext.handleException} sendSong={sendSong}
+                         buttontext="Abschicken"/>
+            </main>
+        </HomeContainer>
+    );
 }
 
 function Playlist(props) {
