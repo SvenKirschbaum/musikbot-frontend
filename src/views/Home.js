@@ -52,8 +52,7 @@ function Home(props) {
         }
     }
 
-    useSubscription("/topic/state", parseUpdate)
-    useSubscription("/musikbot/state", parseUpdate)
+    useSubscription(["/topic/state", "/musikbot/state"], parseUpdate)
 
     const sendStart = () => {
         fetch(Config.apihost + "/api/control/start", {
