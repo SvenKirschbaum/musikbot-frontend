@@ -6,23 +6,16 @@ import Button from "react-bootstrap/Button";
 import {debounce, throttle} from "throttle-debounce";
 
 import './AddSong.css';
-import Config from "./Configuration";
-import {getDefaultHeaders} from "../hooks/defaultHeaders";
+import {withStompClient, withSubscription} from "react-stomp-hooks";
 
 class AddSong extends Component {
-
-    _cache = {};
 
     constructor(props) {
         super(props);
         this.state = {
             value: '',
-            request: '',
-            loading: false,
             suggestions: []
         };
-
-        this.abortController = new AbortController();
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -32,68 +25,27 @@ class AddSong extends Component {
         this.loadThrottled = throttle(500, this.loadSuggestions);
     }
 
-    componentWillUnmount() {
-        this.abortController.abort();
-    }
-
     handleChange(event, {newValue}) {
         this.setState({value: newValue});
     }
 
     onSuggestionsFetchRequested = ({ value }) => {
-        this.setState({request: value}, () => {
-            const q = this.state.request;
-            const cached = this._cache[q];
-            if(cached) {
-                this.setState({
-                    suggestions: cached
-                });
-            }
-
-
-            if(q.length < 5 || q.endsWith(' ')) {
-                this.loadThrottled(this.state.request);
-            }
-            else {
-                this.loadDebounced(this.state.request);
-            }
-        });
+        if (value.length < 5 || value.endsWith(' ')) {
+            this.loadThrottled(value);
+        } else {
+            this.loadDebounced(value);
+        }
     };
 
     loadSuggestions(value) {
-        this.abortController.abort();
-        this.abortController = new AbortController();
+        this.props.stompClient.publish({destination: '/musikbot/search', body: value});
+    }
 
-        const cached = this._cache[value];
-        if(cached) {
-            this.setState({
-                suggestions: cached
-            });
-            return;
-        }
-
-        this.waitfor = value;
-        let headers = getDefaultHeaders();
-        headers.set("Content-Type","text/plain");
-        fetch(Config.apihost + "/api/v2/search?term="+encodeURIComponent(value), {
-            method: 'GET',
-            headers: headers,
-            signal: this.abortController.signal
-        }).then((res) => {
-            if(!res.ok) throw Error(res.statusText);
-            return res;
-        })
-            .then((res) => res.json())
-            .then((res) => {
-                this._cache[value] = res;
-                if(value !== this.waitfor) return;
-                this.setState({
-                    suggestions: res
-                });
-            })
-            .catch(reason => {console.log(reason);
-                this.props.handlefetchError(reason);
-            });
+    onMessage = (message) => {
+        const content = JSON.parse(message.body);
+        this.setState({
+            suggestions: content
+        });
     }
 
     onSuggestionsClearRequested = () => {
@@ -102,7 +54,7 @@ class AddSong extends Component {
         });
     };
 
-    getSuggestionValue (suggestion) {
+    getSuggestionValue(suggestion) {
         return suggestion.value;
     }
 
@@ -153,4 +105,4 @@ class AddSong extends Component {
     }
 }
 
-export default AddSong;
+export default withStompClient(withSubscription(AddSong, '/user/queue/search'));
