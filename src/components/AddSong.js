@@ -1,5 +1,4 @@
 import {Component} from "react";
-import LoginContext from "../context/LoginContext";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Autosuggest from "react-autosuggest";
@@ -11,8 +10,6 @@ import Config from "./Configuration";
 import {getDefaultHeaders} from "../hooks/defaultHeaders";
 
 class AddSong extends Component {
-
-    static contextType = LoginContext;
 
     _cache = {};
 

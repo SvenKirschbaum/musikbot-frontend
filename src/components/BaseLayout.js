@@ -1,10 +1,8 @@
-import {Component, Fragment} from 'react';
+import {Component, Fragment, useState} from 'react';
 import {Link} from "react-router-dom";
 import CookieConsent from 'react-cookie-consent';
 import Col from 'react-bootstrap/Col';
 import {CSSTransition} from 'react-transition-group';
-
-import LoginContext from '../context/LoginContext';
 
 import Clock from './Clock.js';
 import Version from './Version.js';
@@ -15,10 +13,10 @@ import GravatarIMG from "./GravatarIMG";
 import Alerts from "./Alerts";
 import Config from "./Configuration";
 import useUser from "../hooks/user";
+import {useKeycloak} from "@react-keycloak/web";
 
 
 class BaseLayout extends Component {
-    static contextType = LoginContext;
 
     render() {
         return (
@@ -43,59 +41,50 @@ class BaseLayout extends Component {
     }
 }
 
-class Footer extends Component {
+function Footer() {
 
-    static contextType = LoginContext;
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            isMenuOpen: false
-        };
-    }
-    render() {
-        return (
+    return (
+        <Fragment>
+            {Config.showlogos &&
             <Fragment>
-                {Config.showlogos &&
-                <Fragment>
-                    <img className="spotify-logo d-none d-md-block" alt="spotify Logo" src={spotifylogo}/>
-                    <img className="react-logo d-none d-md-block" alt="HTML5 Logo" src={reactlogo}/>
-                </Fragment>
-                }
-                <CSSTransition
-                    classNames="slideup"
-                    timeout={300}
-                    unmountOnExit
-                    in={this.state.isMenuOpen}>
-                    <AMenu onItemClick={() => this.setState({isMenuOpen: false})} editAccount={this.context.editAccount}
-                           logout={this.context.logout}/>
-                </CSSTransition>
-                {Config.showfooter &&
-                    <footer className="d-flex flex-row justify-content-between no-gutters">
-                        <Col className="text-left">
-                            {Config.enableusers &&
-                            <LoginFooter onLogin={() => this.context.login()}
-                                         onMenu={() => this.setState({isMenuOpen: !this.state.isMenuOpen})}/>}
-                        </Col>
-                        <Col className="text-center">
-                            {Config.showstats && <Link to="/statistik">Statistik</Link>}
-                        </Col>
-                        <Col className="text-right">
-                            {Config.showrights && <a href={Config.rightslink}>Impressum<span
-                                className="d-none d-sm-inline">/Disclaimer/Datenschutz</span></a>}
-
-                            {Config.showclock && <Clock className="clock d-none d-md-inline"/>}
-                        </Col>
-                    </footer>
-                }
+                <img className="spotify-logo d-none d-md-block" alt="spotify Logo" src={spotifylogo}/>
+                <img className="react-logo d-none d-md-block" alt="HTML5 Logo" src={reactlogo}/>
             </Fragment>
-        );
-    }
+            }
+            <CSSTransition
+                classNames="slideup"
+                timeout={300}
+                unmountOnExit
+                in={isMenuOpen}>
+                <AMenu onItemClick={() => setIsMenuOpen(false)}/>
+            </CSSTransition>
+            {Config.showfooter &&
+            <footer className="d-flex flex-row justify-content-between no-gutters">
+                <Col className="text-left">
+                    {Config.enableusers &&
+                    <LoginFooter onMenu={() => setIsMenuOpen(!isMenuOpen)}/>}
+                </Col>
+                <Col className="text-center">
+                    {Config.showstats && <Link to="/statistik">Statistik</Link>}
+                </Col>
+                <Col className="text-right">
+                    {Config.showrights && <a href={Config.rightslink}>Impressum<span
+                        className="d-none d-sm-inline">/Disclaimer/Datenschutz</span></a>}
+
+                    {Config.showclock && <Clock className="clock d-none d-md-inline"/>}
+                </Col>
+            </footer>
+            }
+        </Fragment>
+    );
 }
 
 function LoginFooter(props) {
 
     const user = useUser();
+    const {keycloak} = useKeycloak();
 
     if (user) {
         return (
@@ -111,7 +100,7 @@ function LoginFooter(props) {
     else {
         return (
             <span className="LoginFooter">
-                <Link to="#" onClick={props.onLogin}>Login</Link>
+                <Link to="#" onClick={keycloak.login}>Login</Link>
             </span>
         );
     }
@@ -120,6 +109,7 @@ function LoginFooter(props) {
 function AMenu(props) {
 
     const user = useUser();
+    const {keycloak} = useKeycloak();
 
     return (
         <nav className="AMenu">
@@ -138,11 +128,11 @@ function AMenu(props) {
             }
             {user && <li><Link to="#" onClick={() => {
                 props.onItemClick();
-                props.editAccount()
+                keycloak.accountManagement();
             }}>Account bearbeiten</Link></li>}
             {user && <li><Link to="#" onClick={() => {
                 props.onItemClick();
-                props.logout()
+                keycloak.logout()
             }}>Logout</Link></li>}
         </nav>
     );

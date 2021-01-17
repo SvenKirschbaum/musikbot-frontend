@@ -1,6 +1,5 @@
 import {useContext, useEffect, useState} from "react";
 import Config from "../components/Configuration";
-import LoginContext from "../context/LoginContext";
 import EntryCard from "../components/EntryCard";
 import QuickAdd from "../components/QuickAdd";
 import Header from "../components/Header";
@@ -85,7 +84,7 @@ function UserStatsDetails(props) {
 }
 
 function StatsDetails(props) {
-    const context = useContext(LoginContext);
+    const context = useContext(AlertContext);
 
     const [data, setData] = useState([]);
 

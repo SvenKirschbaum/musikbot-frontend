@@ -12,10 +12,9 @@ import Gapcloser from './views/Gapcloser';
 import Stats from './components/Stats';
 import Playlist from './views/Playlist';
 import UserPage from './views/User';
-import LoginContext from './context/LoginContext';
 import {AdminRoute} from "./components/Routes";
 import UserList from "./views/UserList";
-import {ReactKeycloakProvider, useKeycloak} from "@react-keycloak/web";
+import {ReactKeycloakProvider} from "@react-keycloak/web";
 
 import keycloak from "./keycloak";
 import {AlertContext, AlertRenderContext} from "./context/AlertContext";
@@ -36,8 +35,6 @@ function App() {
 }
 
 function AppRouter() {
-
-    const {keycloak} = useKeycloak();
     const [alerts, setAlerts] = useState([]);
     const prevAlertsRef = useRef(alerts);
 
@@ -94,28 +91,21 @@ function AppRouter() {
                     removeAlert: removeAlert,
                     handleException: handleException,
                 }}>
-                    <LoginContext.Provider
-                        value={{
-                            login: () => keycloak.login(),
-                            logout: () => keycloak.logout(),
-                            editAccount: () => keycloak.accountManagement()
-                        }}>
-                        <BaseLayout>
-                            <Switch>
-                                <Route path="/" exact component={Home}/>
-                                {Config.enableusers && <Route path="/user/:name" component={UserPage}/>}
-                                {Config.showarchive && <Route path="/archiv/:page?" component={Archiv}/>}
-                                {Config.showstats && <Route path="/statistik" component={Stats}/>}
-                                <AdminRoute path="/debug" component={Debug}/>
-                                <AdminRoute path="/log" component={Log}/>
-                                <AdminRoute path="/gapcloser" component={Gapcloser}/>
-                                <AdminRoute path="/import" component={Playlist}/>
-                                <AdminRoute path="/songs" component={Songs}/>
-                                <AdminRoute path="/users/:page?" component={UserList}/>
-                                <Route component={NoMatch}/>
-                            </Switch>
-                        </BaseLayout>
-                    </LoginContext.Provider>
+                    <BaseLayout>
+                        <Switch>
+                            <Route path="/" exact component={Home}/>
+                            {Config.enableusers && <Route path="/user/:name" component={UserPage}/>}
+                            {Config.showarchive && <Route path="/archiv/:page?" component={Archiv}/>}
+                            {Config.showstats && <Route path="/statistik" component={Stats}/>}
+                            <AdminRoute path="/debug" component={Debug}/>
+                            <AdminRoute path="/log" component={Log}/>
+                            <AdminRoute path="/gapcloser" component={Gapcloser}/>
+                            <AdminRoute path="/import" component={Playlist}/>
+                            <AdminRoute path="/songs" component={Songs}/>
+                            <AdminRoute path="/users/:page?" component={UserList}/>
+                            <Route component={NoMatch}/>
+                        </Switch>
+                    </BaseLayout>
                 </AlertContext.Provider>
             </AlertRenderContext.Provider>
         </Router>
