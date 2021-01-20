@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState} from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import Songs from './views/Songs';
 import NoMatch from './components/NoMatch';
@@ -87,18 +87,20 @@ function AppRouter() {
         });
     }
 
+    const beforeStompConnect = useCallback(function () {
+        if (keycloak.token) {
+            this.connectHeaders = {
+                'Authorization': "Bearer " + keycloak.token
+            }
+        } else {
+            this.connectHeaders = {}
+        }
+    }, []);
+
     return (
         <StompSessionProvider
             url={`/api/sock/`}
-            beforeConnect={function () {
-                if (keycloak.token) {
-                    this.connectHeaders = {
-                        'Authorization': "Bearer " + keycloak.token
-                    }
-                } else {
-                    this.connectHeaders = {}
-                }
-            }}
+            beforeConnect={beforeStompConnect}
         >
             <Router>
                 <AlertRenderContext.Provider value={alerts}>
