@@ -73,6 +73,7 @@ class Songs extends Component {
     sendSong(url) {
         let headers = getDefaultHeaders();
         headers.set("Content-Type", "text/plain");
+
         fetch(Config.apihost + "/api/v2/lockedsongs", {
             method: 'POST',
             body: url,

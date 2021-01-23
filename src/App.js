@@ -20,6 +20,7 @@ import keycloak from "./keycloak";
 import {AlertContext, AlertRenderContext} from "./context/AlertContext";
 import {StompSessionProvider} from "react-stomp-hooks";
 import ErrorBoundary from "./components/ErrorBoundary";
+import {getDefaultHeaders} from "./hooks/defaultHeaders";
 
 function App() {
     return (
@@ -41,6 +42,29 @@ function AppRouter() {
     const prevAlertsRef = useRef(alerts);
 
     const {keycloak} = useKeycloak();
+
+    useEffect(() => {
+        if (keycloak.authenticated) {
+            const guestToken = sessionStorage.getItem('guestToken');
+
+            if (guestToken) {
+                const headers = getDefaultHeaders();
+                headers.set("X-Guest-Token", guestToken);
+
+                fetch(Config.apihost + "/api/guest", {
+                    method: 'POST',
+                    headers: headers
+                })
+                    .then((res) => {
+                        if (!res.ok) throw Error(res.statusText);
+                        return res;
+                    })
+                    .catch(reason => {
+                        handleException(reason);
+                    });
+            }
+        }
+    }, [keycloak.authenticated])
 
     useEffect(() => {
         const diff = alerts.filter(x => !prevAlertsRef.current.includes(x));
@@ -95,7 +119,7 @@ function AppRouter() {
         } else {
             this.connectHeaders = {}
         }
-    }, []);
+    }, [keycloak]);
 
     return (
         <StompSessionProvider

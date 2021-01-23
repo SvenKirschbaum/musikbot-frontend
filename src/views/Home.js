@@ -129,12 +129,22 @@ function Home(props) {
     const sendSong = (url) => {
         let headers = getDefaultHeaders();
         headers.set("Content-Type", "text/plain");
+
+        const guestToken = sessionStorage.getItem('guestToken');
+        if (guestToken) headers.set("X-Guest-Token", guestToken);
+
         fetch(Config.apihost + "/api/v2/songs", {
             method: 'POST',
             body: url,
             headers: headers
         }).then((res) => {
             if (!res.ok) throw Error(res.statusText);
+            return res;
+        }).then(res => {
+            const responseGuestToken = res.headers.get("X-Guest-Token");
+            if (responseGuestToken) {
+                sessionStorage.setItem('guestToken', responseGuestToken);
+            }
             return res;
         })
             .then((res) => res.json())
