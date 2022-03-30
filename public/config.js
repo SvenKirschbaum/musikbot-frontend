@@ -8,7 +8,6 @@ var Config = {
     //rightslink: "https://datenschutz.elite12.de/",
 
     //showversion: true,
-    //showlogos: true,
     //showclock: true,
     //showrights: true,
     //showstats: true,

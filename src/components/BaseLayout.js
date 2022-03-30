@@ -7,8 +7,6 @@ import {CSSTransition} from 'react-transition-group';
 import Clock from './Clock.js';
 import Version from './Version.js';
 
-import reactlogo from '../res/react.png';
-import spotifylogo from '../res/spotify.svg';
 import GravatarIMG from "./GravatarIMG";
 import Alerts from "./Alerts";
 import Config from "./Configuration";
@@ -47,12 +45,6 @@ function Footer() {
 
     return (
         <Fragment>
-            {Config.showlogos &&
-            <Fragment>
-                <img className="spotify-logo d-none d-md-block" alt="spotify Logo" src={spotifylogo}/>
-                <img className="react-logo d-none d-md-block" alt="HTML5 Logo" src={reactlogo}/>
-            </Fragment>
-            }
             <CSSTransition
                 classNames="slideup"
                 timeout={300}

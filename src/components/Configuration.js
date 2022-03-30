@@ -7,7 +7,6 @@ const config = {
     rightslink: window.Config.rightslink || (process.env.REACT_APP_RIGHTS_LINK || "https://datenschutz.elite12.de/"),
 
     showversion: "showversion" in window.Config ? window.Config.showversion : (("REACT_APP_SHOW_VERSION" in process.env) ? process.env.REACT_APP_TITLE : true),
-    showlogos: "showlogos" in window.Config ? window.Config.showlogos : (("REACT_APP_SHOW_LOGOS" in process.env) ? process.env.REACT_APP_SHOW_LOGOS : true),
     showclock: "showclock" in window.Config ? window.Config.showversion : (("REACT_APP_SHOW_CLOCK" in process.env) ? process.env.REACT_APP_SHOW_CLOCK : true),
     showrights: "showrights" in window.Config ? window.Config.showrights : (("REACT_APP_SHOW_RIGHTS" in process.env) ? process.env.REACT_APP_SHOW_RIGHTS : true),
     showstats: "showstats" in window.Config ? window.Config.showstats : (("REACT_APP_SHOW_STATS" in process.env) ? process.env.REACT_APP_SHOW_STATS : true),
