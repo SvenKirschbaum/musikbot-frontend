@@ -7,7 +7,7 @@ const secure = host.includes('https');
 
 module.exports = function (app) {
     app.use(
-        '/api', // <-- or whatever path segment precedes your server side routes
+        '/api',
         createProxyMiddleware({
             target: host,
             secure,
@@ -15,7 +15,7 @@ module.exports = function (app) {
         })
     );
     app.use(
-        '/api/sock', // <-- or whatever path segment precedes your server side routes
+        '/api/sock',
         createProxyMiddleware({
             target: host,
             ws: true,
