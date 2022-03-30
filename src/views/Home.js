@@ -1,4 +1,4 @@
-import {Component, useContext, useRef, useState} from 'react';
+import {useContext, useRef, useState} from 'react';
 import Container from 'react-bootstrap/Container';
 import {Link} from "react-router-dom";
 import FlipMove from "react-flip-move";
@@ -8,12 +8,12 @@ import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
-import {Direction, PlayerIcon, Slider} from 'react-player-controls';
 import GravatarIMG from "../components/GravatarIMG";
 import AddSong from "../components/AddSong";
 import Header from "../components/Header";
 import DragFixedCell from "../components/DragFixedCell";
 import Config from "../components/Configuration";
+import VolumeControl from "../components/VolumeControl";
 
 import './Home.css';
 import {FaTrashAlt} from 'react-icons/fa';
@@ -37,7 +37,7 @@ function Home(props) {
         songlink: null,
         playlistdauer: 0,
         playlist: [],
-        volume: undefined
+        volume: 50
     });
 
     const statebuffer = useRef(null);
@@ -210,7 +210,7 @@ function Home(props) {
     }
 
     const setVolume = (volume) => {
-        setState(Object.assign({}, state, {volume: volume * 100}));
+        setState(Object.assign({}, state, {volume: volume}));
     }
 
     const onVolume = (volume) => {
@@ -222,7 +222,7 @@ function Home(props) {
             method: 'PUT',
             headers: headers,
             body: JSON.stringify({
-                'volume': volume * 100
+                'volume': volume
             })
         }).then((res) => {
             if (!res.ok) throw Error(res.statusText);
@@ -348,7 +348,7 @@ function Status(props) {
                 <Col className="Status" xl={{span: 5}} md={{span: 8}} xs={{span: 10}}>
                     <Row>
                         <Col>{props.state}</Col>
-                        <Col className="text-right" xs="auto"><span className="d-none d-lg-inline">Die Aktuelle Playlist umfasst </span>{props.duration} Minuten<span
+                        <Col className="text-end" xs="auto"><span className="d-none d-lg-inline">Die Aktuelle Playlist umfasst </span>{props.duration} Minuten<span
                             className="d-none d-lg-inline"> Musik!</span></Col>
                     </Row>
                     <Row>
@@ -366,7 +366,7 @@ function ControlElements(props) {
         <section>
             <Row className="justify-content-center">
                 <Col className="Control" xl={{span: 5}} md={{span: 8}} xs={{span: 10}}>
-                    <Row noGutters={false}>
+                    <Row>
                         <Col><Button onClick={props.onStart}>Start</Button></Col>
                         <Col><Button onClick={props.onPause}>Pause</Button></Col>
                         <Col><Button onClick={props.onStop}>Stop</Button></Col>
@@ -378,80 +378,20 @@ function ControlElements(props) {
     );
 }
 
-class VolumeControl extends Component{
-    constructor(props) {
-        super(props);
-        this.state = {
-            isDragging: false
-        };
-
-        this.onChange = this.onChange.bind(this);
-        this.onChangeStart = this.onChangeStart.bind(this);
-        this.onChangeEnd = this.onChangeEnd.bind(this);
-    }
-
-    onChange(volume) {
-        this.props.setVolume(volume);
-    }
-
-    onChangeStart(_volume) {
-        this.setState({
-            isDragging: true
-        });
-    }
-
-    onChangeEnd(volume) {
-        this.setState({
-            isDragging: false
-        });
-        this.props.onVolume(volume);
-    }
-
-    render() {
-        return (
-            <div className="d-none d-sm-inline volume-slider-container">
-                <PlayerIcon.SoundOn className="volume-slider-icon"/>
-                <div className="volume-slider-block">
-                    <Slider
-                        direction={Direction.HORIZONTAL}
-                        isEnabled
-                        onChange={this.onChange}
-                        onChangeStart={this.onChangeStart}
-                        onChangeEnd={this.onChangeEnd}
-                        className={this.state.isDragging ? "volume-slider active" : "volume-slider"}
-                    >
-                        <div
-                            className="volume-slider-bar"
-                            style={{
-                                width: `${this.props.volume}%`,
-                            }}
-                        />
-                        <div
-                            className="volume-slider-handle"
-                            style={{
-                                left: `${this.props.volume}%`,
-                            }}
-                        />
-                    </Slider>
-                </div>
-            </div>
-        );
-    }
-}
-
 function BottomControl(props) {
     return (
         <section>
             <Row className="justify-content-center">
                 <Col className="BottomControl" xl={{span: 9}} lg={{span: 10}} md={{span: 11}} xs={{span: 11}}>
-                    <Row noGutters={false}>
+                    <Row>
                         <Col xs={{span: 6}}>{Config.showarchive && <Link to="/archiv">Zum Archiv</Link>}</Col>
                         <Col xs={{span: 6}}>
                             {props.admin &&
-                                <Row noGutters={true}>
-                                    <VolumeControl onVolume={props.onVolume} setVolume={props.setVolume} volume={props.volume} />
+                                <div className="right-control">
+                                    <VolumeControl onVolume={props.onVolume} setVolume={props.setVolume}
+                                                   volume={props.volume}/>
                                     <Button onClick={props.onShuffle}>Shuffle</Button>
-                                </Row>
+                                </div>
                             }
                         </Col>
                     </Row>

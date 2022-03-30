@@ -146,9 +146,12 @@
 .BottomControl .col-6 {
     padding: 0;
 }
-.BottomControl .col-6:last-child > * {
-    float: right;
+
+.right-control {
+    display: flex;
+    justify-content: end;
 }
+
 .dragging {
     background-color: #ffab40a1;
     display: table;
@@ -205,55 +208,4 @@
 }
 .page-body {
     user-select: none;
-}
-.volume-slider-container {
-    z-index: 5000000;
-    padding-top: 5px;
-}
-.volume-slider-container * {
-    float: left;
-}
-.volume-slider-icon {
-    z-index: 5000000;
-    height: 20px;
-    width: 20px;
-    fill: #BDBDBD;
-    margin: 4px;
-}
-.volume-slider {
-    width: 130px;
-    height: 8px;
-    border-radius: 4px;
-    background-color: #121212;
-    cursor: pointer;
-    margin: 10px;
-    z-index: 0;
-}
-.volume-slider-block {
-    float: right;
-}
-.volume-slider-bar {
-    position: absolute;
-    background: #9E9E9E;
-    border-radius: 4px;
-    top: 0;
-    bottom: 0;
-    left: 0;
-}
-.volume-slider-handle {
-    position: absolute;
-    width: 12px;
-    height: 12px;
-    background: #BDBDBD;
-    border-radius: 100%;
-    top: 0;
-    margin-top: -2px;
-    margin-left: -6px;
-}
-.volume-slider > div {
-    transition-duration: 1s;
-    transition-property: width,left;
-}
-.volume-slider.active > div {
-    transition:none!important;
 }
