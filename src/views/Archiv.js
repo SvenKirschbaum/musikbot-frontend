@@ -7,10 +7,10 @@ import Moment from 'react-moment';
 import {withRouter} from "react-router";
 
 import Row from 'react-bootstrap/Row';
-import Pagination from "react-js-pagination";
 import Header from '../components/Header';
 import GravatarIMG from "../components/GravatarIMG";
 import Config from "../components/Configuration";
+import CustomPagination from '../components/CustomPagination';
 
 import './Archiv.css';
 import QuickAdd from "../components/QuickAdd";
@@ -78,17 +78,10 @@ class Archiv extends Component {
                 <Header />
                 <Archivlist songs={this.state.list} />
                 <Row className="justify-content-center archivepager">
-                    <Pagination
+                    <CustomPagination
                         activePage={this.state.page}
-                        itemsCountPerPage={25}
-                        totalItemsCount={25*this.state.pages}
-                        pageRangeDisplayed={5}
+                        pages={this.state.pages}
                         onChange={this.change}
-                        itemClass="page-item"
-                        linkClass="page-link"
-                        firstPageText="First"
-                        lastPageText="Last"
-                        hideNavigation={true}
                     />
                 </Row>
             </Container>

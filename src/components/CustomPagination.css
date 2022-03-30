@@ -1,0 +1,29 @@
+.page-item.disabled .page-link {
+    color: inherit;
+    border-color: #9f9f9f;
+}
+
+.page-item.active .page-link {
+    color: inherit;
+    border-color: #9f9f9f;
+    box-shadow: inset rgba(0, 0, 0, .5) 0 1px 4px !important;
+}
+
+.page-link:hover {
+    color: inherit;
+    border-color: #9f9f9f;
+}
+
+.page-link:focus {
+    box-shadow: none;
+    color: inherit;
+}
+
+.page-link {
+    color: #333;
+    background-color: #eee !important;
+    background-image: linear-gradient(#eee, #bbb 40%, #9f9f9f 70%);
+    border: 1px solid #9f9f9f;
+    background-position: 0 6px;
+    background-repeat: no-repeat;
+}

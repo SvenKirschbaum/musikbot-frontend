@@ -3,8 +3,8 @@ import Container from 'react-bootstrap/Container';
 import {withRouter} from "react-router";
 
 import Row from 'react-bootstrap/Row';
-import Pagination from "react-js-pagination";
 import Header from '../components/Header';
+import CustomPagination from '../components/CustomPagination';
 
 import './UserList.css';
 import {TransitionGroup} from "react-transition-group";
@@ -76,17 +76,10 @@ class UserList extends Component {
                 <Header />
                 <List data={this.state.list} />
                 <Row className="justify-content-center archivepager">
-                    <Pagination
+                    <CustomPagination
                         activePage={this.state.page}
-                        itemsCountPerPage={25}
-                        totalItemsCount={25*this.state.pages}
-                        pageRangeDisplayed={5}
+                        pages={this.state.pages}
                         onChange={this.change}
-                        itemClass="page-item"
-                        linkClass="page-link"
-                        firstPageText="First"
-                        lastPageText="Last"
-                        hideNavigation={true}
                     />
                 </Row>
             </Container>
