@@ -61,20 +61,20 @@ function Footer() {
                 <AMenu onItemClick={() => setIsMenuOpen(false)}/>
             </CSSTransition>
             {Config.showfooter &&
-            <footer className="d-flex flex-row justify-content-between no-gutters">
-                <Col className="text-left">
-                    {Config.enableusers &&
-                    <LoginFooter onMenu={() => setIsMenuOpen(!isMenuOpen)}/>}
-                </Col>
-                <Col className="text-center">
-                    {Config.showstats && <Link to="/statistik">Statistik</Link>}
-                </Col>
-                <Col className="text-right">
-                    {Config.showrights && <a href={Config.rightslink}>Impressum<span
-                        className="d-none d-sm-inline">/Disclaimer/Datenschutz</span></a>}
+                <footer className="d-flex flex-row justify-content-between g-0">
+                    <Col className="text-start">
+                        {Config.enableusers &&
+                            <LoginFooter onMenu={() => setIsMenuOpen(!isMenuOpen)}/>}
+                    </Col>
+                    <Col className="text-center">
+                        {Config.showstats && <Link to="/statistik">Statistik</Link>}
+                    </Col>
+                    <Col className="text-end">
+                        {Config.showrights && <a href={Config.rightslink}>Impressum<span
+                            className="d-none d-sm-inline">/Disclaimer/Datenschutz</span></a>}
 
-                    {Config.showclock && <Clock className="clock d-none d-md-inline"/>}
-                </Col>
+                        {Config.showclock && <Clock className="clock d-none d-md-inline"/>}
+                    </Col>
             </footer>
             }
         </Fragment>

@@ -97,14 +97,14 @@ class UserList extends Component {
 function List(props) {
     return (
         <Row className="justify-content-center">
-            <table className="mb-table col-xl-4 col-lg-6 col-md-8 lr-space text-left">
+            <table className="mb-table col-xl-4 col-lg-6 col-md-8 lr-space text-start">
                 <thead>
-                    <tr className="header">
-                        <th className="text-center">ID</th>
-                        <th className="">Name</th>
-                        <th className="d-none d-sm-table-cell">Email</th>
-                        <th className="">Admin</th>
-                    </tr>
+                <tr className="header">
+                    <th className="text-center">ID</th>
+                    <th className="">Name</th>
+                    <th className="d-none d-sm-table-cell">Email</th>
+                    <th className="">Admin</th>
+                </tr>
                 </thead>
                 <tbody>
                 <TransitionGroup component={null} exit={false}>

@@ -15,6 +15,7 @@ body {
 html, body, #root {
     height: 100%;
 }
+
 html, body, #root, .page-body {
     overflow-x: hidden;
 }
@@ -22,6 +23,14 @@ html, body, #root, .page-body {
 #root {
     display: flex;
     flex-direction: column;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
 }
 
 /*noinspection CssOverwrittenProperties,CssInvalidPropertyValue*/
@@ -306,6 +315,7 @@ button.close {
 .cross-fade-enter {
     opacity: 0;
 }
+
 .cross-fade-enter.cross-fade-enter-active {
     opacity: 1;
     transition: opacity 1s ease-in;
@@ -313,4 +323,8 @@ button.close {
 
 .cross-fade-height {
     transition: height 0.5s ease-in-out;
+}
+
+.pagination {
+    width: auto;
 }

@@ -84,8 +84,8 @@ class AddSong extends Component {
                 <Row className="space-top justify-content-center">
                     <Col className="addSong" xl={{span: 4}} md={{span: 6}} xs={{span: 11}}>
                         <form onSubmit={this.handleSubmit}>
-                            <Row noGutters>
-                                <Col xs={{span:12}} md={{span:8}}>
+                            <Row>
+                                <Col xs={{span: 12}} md={{span: 8}}>
                                     <Autosuggest
                                         suggestions={this.state.suggestions}
                                         onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
