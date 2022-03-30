@@ -13,7 +13,7 @@
     "moment-duration-format": "^2.3.2",
     "popper.js": "^1.16.1",
     "react": "^17.0.2",
-    "react-app-polyfill": "^2.0.0",
+    "react-app-polyfill": "^3.0.0",
     "react-autosuggest": "^10.1.0",
     "react-beautiful-dnd": "^13.1.0",
     "react-bootstrap": "^1.6.1",
