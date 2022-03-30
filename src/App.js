@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useRef, useState} from 'react';
+import {StrictMode, useCallback, useEffect, useRef, useState} from 'react';
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import Songs from './views/Songs';
 import NoMatch from './components/NoMatch';
@@ -24,16 +24,18 @@ import {getDefaultHeaders} from "./hooks/defaultHeaders";
 
 function App() {
     return (
-        <ReactKeycloakProvider authClient={keycloak} LoadingComponent={<div>"Loading..."</div>} initOptions={{
-            onLoad: 'check-sso',
-            promiseType: 'native',
-            flow: 'standard',
-            pkceMethod: 'S256',
-            checkLoginIframe: false,
-            silentCheckSsoRedirectUri: window.location.origin + '/silent-sso.html'
-        }}>
-            <AppRouter/>
-        </ReactKeycloakProvider>
+        <StrictMode>
+            <ReactKeycloakProvider authClient={keycloak} LoadingComponent={<div>"Loading..."</div>} initOptions={{
+                onLoad: 'check-sso',
+                promiseType: 'native',
+                flow: 'standard',
+                pkceMethod: 'S256',
+                checkLoginIframe: false,
+                silentCheckSsoRedirectUri: window.location.origin + '/silent-sso.html'
+            }}>
+                <AppRouter/>
+            </ReactKeycloakProvider>
+        </StrictMode>
     );
 }
 
