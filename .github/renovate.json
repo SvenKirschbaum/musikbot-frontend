@@ -18,6 +18,12 @@
         "@types/react-dom"
       ],
       "allowedVersions": "<18.0.0"
+    },
+    {
+      "matchPackageNames": [
+        "react-router-bootstrap"
+      ],
+      "allowedVersions": "<0.26.0"
     }
   ]
 }
