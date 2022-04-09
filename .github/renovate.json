@@ -9,6 +9,13 @@
         "react-router-dom"
       ],
       "allowedVersions": "<6.0.0"
+    },
+    {
+      "matchPackageNames": [
+        "react",
+        "react-dom"
+      ],
+      "allowedVersions": "<18.0.0"
     }
   ]
 }
