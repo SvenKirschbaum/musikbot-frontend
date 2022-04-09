@@ -13,7 +13,9 @@
     {
       "matchPackageNames": [
         "react",
-        "react-dom"
+        "react-dom",
+        "@types/react",
+        "@types/react-dom"
       ],
       "allowedVersions": "<18.0.0"
     }
