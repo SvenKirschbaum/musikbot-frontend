@@ -174,7 +174,6 @@ function Home(props) {
             statebuffer.current = null;
         }
 
-
         const {destination, source} = result;
         if (!destination) return;
         if (destination.droppableId === source.droppableId && destination.index === source.index) return;
@@ -183,24 +182,27 @@ function Home(props) {
         newList.splice(source.index, 1);
         newList.splice(destination.index, 0, state.playlist[source.index]);
 
+        const id = newList[destination.index].id;
+        const prevSort = (destination.index - 1) >= 0 ? newList[destination.index - 1].sort : 0;
+        const nextSort = (destination.index + 1) < newList.length ? newList[destination.index + 1].sort : (prevSort + 200);
+        const newSort = (prevSort + nextSort) / 2
+
+        newList[destination.index].sort = newSort;
+
         const newState = Object.assign({}, state, {playlist: newList});
         statebuffer.current = null
         setState(newState);
 
-        const prev = (destination.index - 1) >= 0 ? newList[destination.index - 1].id : -1;
-        const id = newList[destination.index].id;
-
-        sendSort(prev, id);
-
+        sendSort(id, newSort);
     }
 
-    const sendSort = (prev, id) => {
+    const sendSort = (id, newSort) => {
         let headers = getDefaultHeaders();
-        headers.set("Content-Type", "text/plain");
+        headers.set("Content-Type", "application/json");
         fetch(Config.apihost + "/api/v2/songs/" + id, {
             method: 'PUT',
             headers: headers,
-            body: prev
+            body: newSort
         }).then((res) => {
             if (!res.ok) throw Error(res.statusText);
         })
