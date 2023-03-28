@@ -7,8 +7,7 @@ const secure = host.includes('https');
 
 module.exports = function (app) {
     app.use(
-        '/api/sock',
-        createProxyMiddleware({
+        createProxyMiddleware('/api/sock', {
             target: host,
             ws: true,
             secure,
@@ -16,8 +15,7 @@ module.exports = function (app) {
         })
     );
     app.use(
-        '/api',
-        createProxyMiddleware({
+        createProxyMiddleware('/api', {
             target: host,
             secure,
             changeOrigin: secure,
