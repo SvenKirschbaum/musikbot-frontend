@@ -13,6 +13,16 @@ import Config from "./Configuration";
 import useUser from "../hooks/user";
 import {useKeycloak} from "@react-keycloak/web";
 
+import {TbPlaylist} from "react-icons/tb";
+import {MdPlaylistAdd, MdMusicOff} from "react-icons/md";
+import {IoStatsChart} from "react-icons/io5";
+import {AiOutlineFileText} from "react-icons/ai";
+import {BiLogOut} from "react-icons/bi";
+import {GiJumpAcross} from "react-icons/gi";
+import {FiUsers} from "react-icons/fi";
+import {FaHome, FaUserCog} from "react-icons/fa";
+import {BsBootstrapReboot} from "react-icons/bs";
+
 
 class BaseLayout extends Component {
 
@@ -67,7 +77,7 @@ function Footer() {
 
                         {Config.showclock && <Clock className="clock d-none d-md-inline"/>}
                     </Col>
-            </footer>
+                </footer>
             }
         </Fragment>
     );
@@ -105,28 +115,105 @@ function AMenu(props) {
 
     return (
         <nav className="AMenu">
-            <li><Link to="/" onClick={props.onItemClick}>Startseite</Link></li>
-            {Config.showarchive && <li><Link to="/archiv" onClick={props.onItemClick}>Archiv</Link></li>}
-            {Config.showstats && <li><Link to="/statistik" onClick={props.onItemClick}>Statistik</Link></li>}
-            {user && user.admin &&
-            <Fragment>
-                <li><Link to="/import" onClick={props.onItemClick}>Playlist Importieren</Link></li>
-                <li><Link to="/songs" onClick={props.onItemClick}>Gesperrte Songs</Link></li>
-                <li><Link to="/gapcloser" onClick={props.onItemClick}>Gapcloser</Link></li>
-                <li><Link to="/log" onClick={props.onItemClick}>Log</Link></li>
-                <li><Link to="/users" onClick={props.onItemClick}>User</Link></li>
-                <li><Link to="/debug" onClick={props.onItemClick}>Entwicklermenü</Link></li>
-            </Fragment>
+            <AMenuEntry
+                to="/"
+                icon={<FaHome/>}
+                displayName={'Startseite'}
+                onItemClick={props.onItemClick}
+            />
+            {Config.showarchive &&
+                <AMenuEntry
+                    to="/archiv"
+                    icon={<TbPlaylist/>}
+                    displayName={'Archiv'}
+                    onItemClick={props.onItemClick}
+                />
             }
-            {user && <li><Link to="#" onClick={() => {
-                props.onItemClick();
-                keycloak.accountManagement();
-            }}>Account bearbeiten</Link></li>}
-            {user && <li><Link to="#" onClick={() => {
-                props.onItemClick();
-                keycloak.logout()
-            }}>Logout</Link></li>}
+            {Config.showstats &&
+                <AMenuEntry
+                    to="/statistik"
+                    icon={<IoStatsChart/>}
+                    displayName={'Statistik'}
+                    onItemClick={props.onItemClick}
+                />
+            }
+            {user && user.admin &&
+                <Fragment>
+                    <AMenuEntry
+                        to="/import"
+                        icon={<MdPlaylistAdd/>}
+                        displayName={'Playlist Importieren'}
+                        onItemClick={props.onItemClick}
+                    />
+                    <AMenuEntry
+                        to="/songs"
+                        icon={<MdMusicOff/>}
+                        displayName={'Gesperrte Songs'}
+                        onItemClick={props.onItemClick}
+                    />
+                    <AMenuEntry
+                        to="/gapcloser"
+                        icon={<GiJumpAcross/>}
+                        displayName={'Gapcloser'}
+                        onItemClick={props.onItemClick}
+                    />
+                    <AMenuEntry
+                        to="/log"
+                        icon={<AiOutlineFileText/>}
+                        displayName={'Log'}
+                        onItemClick={props.onItemClick}
+                    />
+                    <AMenuEntry
+                        to="/users"
+                        icon={<FiUsers/>}
+                        displayName={'Users'}
+                        onItemClick={props.onItemClick}
+                    />
+                    <AMenuEntry
+                        to="/debug"
+                        icon={<BsBootstrapReboot/>}
+                        displayName={'Entwicklermenü'}
+                        onItemClick={props.onItemClick}
+                    />
+                </Fragment>
+            }
+            {user &&
+                <AMenuEntry
+                    to="#"
+                    icon={<FaUserCog/>}
+                    displayName={'Account bearbeiten'}
+                    onItemClick={() => {
+                        props.onItemClick();
+                        keycloak.accountManagement();
+                    }}
+                />
+            }
+            {user &&
+                <AMenuEntry
+                    to="#"
+                    icon={<BiLogOut/>}
+                    displayName={'Logout'}
+                    onItemClick={() => {
+                        props.onItemClick();
+                        keycloak.logout()
+                    }}
+                />
+            }
         </nav>
+    );
+}
+
+
+
+function AMenuEntry(props) {
+
+    return (
+        <li>
+            <Link to="/import" onClick={props.onItemClick}>
+                {props.icon}
+                <span className={'menuEntryDisplayName'}>{props.displayName}</span>
+            </Link>
+        </li>
     );
 }
 
