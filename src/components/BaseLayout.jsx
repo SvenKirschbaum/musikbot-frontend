@@ -4,8 +4,8 @@ import CookieConsent from 'react-cookie-consent';
 import Col from 'react-bootstrap/Col';
 import {CSSTransition} from 'react-transition-group';
 
-import Clock from './Clock.js';
-import Version from './Version.js';
+import Clock from './Clock';
+import Version from './Version';
 
 import GravatarIMG from "./GravatarIMG";
 import Alerts from "./Alerts";
