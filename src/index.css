@@ -238,9 +238,13 @@ footer a, footer a:hover {
     background-color: #222;
     min-width: 11em;
 }
+
 .menu a {
     color: inherit;
+    display: flex;
+    align-items: center;
 }
+
 .space-top {
     margin-top: 1.5em;
 }
