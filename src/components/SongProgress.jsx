@@ -2,7 +2,7 @@ import {useEffect, useState} from "react";
 import Row from "react-bootstrap/Row";
 
 import "./SongProgress.css";
-import * as moment from "moment";
+import moment from "moment";
 import 'moment-duration-format';
 import {Col} from "react-bootstrap";
 
