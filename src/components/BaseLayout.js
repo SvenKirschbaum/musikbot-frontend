@@ -60,7 +60,7 @@ function Footer() {
                 timeout={300}
                 unmountOnExit
                 in={isMenuOpen}>
-                <AMenu onItemClick={() => setIsMenuOpen(false)}/>
+                <Menu onItemClick={() => setIsMenuOpen(false)}/>
             </CSSTransition>
             {Config.showfooter &&
                 <footer className="d-flex flex-row justify-content-between g-0">
@@ -108,21 +108,21 @@ function LoginFooter(props) {
     }
 }
 
-function AMenu(props) {
+function Menu(props) {
 
     const user = useUser();
     const {keycloak} = useKeycloak();
 
     return (
-        <nav className="AMenu">
-            <AMenuEntry
+        <nav className="menu">
+            <MenuEntry
                 to="/"
                 icon={<FaHome/>}
                 displayName={'Startseite'}
                 onItemClick={props.onItemClick}
             />
             {Config.showarchive &&
-                <AMenuEntry
+                <MenuEntry
                     to="/archiv"
                     icon={<TbPlaylist/>}
                     displayName={'Archiv'}
@@ -130,7 +130,7 @@ function AMenu(props) {
                 />
             }
             {Config.showstats &&
-                <AMenuEntry
+                <MenuEntry
                     to="/statistik"
                     icon={<IoStatsChart/>}
                     displayName={'Statistik'}
@@ -139,37 +139,37 @@ function AMenu(props) {
             }
             {user && user.admin &&
                 <Fragment>
-                    <AMenuEntry
+                    <MenuEntry
                         to="/import"
                         icon={<MdPlaylistAdd/>}
                         displayName={'Playlist Importieren'}
                         onItemClick={props.onItemClick}
                     />
-                    <AMenuEntry
+                    <MenuEntry
                         to="/songs"
                         icon={<MdMusicOff/>}
                         displayName={'Gesperrte Songs'}
                         onItemClick={props.onItemClick}
                     />
-                    <AMenuEntry
+                    <MenuEntry
                         to="/gapcloser"
                         icon={<GiJumpAcross/>}
                         displayName={'Gapcloser'}
                         onItemClick={props.onItemClick}
                     />
-                    <AMenuEntry
+                    <MenuEntry
                         to="/log"
                         icon={<AiOutlineFileText/>}
                         displayName={'Log'}
                         onItemClick={props.onItemClick}
                     />
-                    <AMenuEntry
+                    <MenuEntry
                         to="/users"
                         icon={<FiUsers/>}
                         displayName={'Users'}
                         onItemClick={props.onItemClick}
                     />
-                    <AMenuEntry
+                    <MenuEntry
                         to="/debug"
                         icon={<BsBootstrapReboot/>}
                         displayName={'Entwicklermenü'}
@@ -178,7 +178,7 @@ function AMenu(props) {
                 </Fragment>
             }
             {user &&
-                <AMenuEntry
+                <MenuEntry
                     to="#"
                     icon={<FaUserCog/>}
                     displayName={'Account bearbeiten'}
@@ -189,7 +189,7 @@ function AMenu(props) {
                 />
             }
             {user &&
-                <AMenuEntry
+                <MenuEntry
                     to="#"
                     icon={<BiLogOut/>}
                     displayName={'Logout'}
@@ -203,10 +203,7 @@ function AMenu(props) {
     );
 }
 
-
-
-function AMenuEntry(props) {
-
+function MenuEntry(props) {
     return (
         <li>
             <Link to="/import" onClick={props.onItemClick}>

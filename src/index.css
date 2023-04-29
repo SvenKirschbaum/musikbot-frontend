@@ -224,7 +224,7 @@ footer a, footer a:hover {
     transition: all 300ms;
 }
 
-.AMenu {
+.menu {
     list-style: none;
     position: fixed;
     bottom: 30px;
@@ -238,7 +238,7 @@ footer a, footer a:hover {
     background-color: #222;
     min-width: 11em;
 }
-.AMenu a {
+.menu a {
     color: inherit;
 }
 .space-top {
