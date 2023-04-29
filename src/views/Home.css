@@ -209,3 +209,6 @@
 .page-body {
     user-select: none;
 }
+.menuEntryDisplayName{
+    margin-left: 0.3rem;
+}
