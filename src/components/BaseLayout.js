@@ -14,7 +14,7 @@ import useUser from "../hooks/user";
 import {useKeycloak} from "@react-keycloak/web";
 
 import {TbPlaylist} from "react-icons/tb";
-import {MdPlaylistAdd, MdMusicOff} from "react-icons/md";
+import {MdMusicOff, MdPlaylistAdd} from "react-icons/md";
 import {IoStatsChart} from "react-icons/io5";
 import {AiOutlineFileText} from "react-icons/ai";
 import {BiLogOut} from "react-icons/bi";
@@ -206,7 +206,7 @@ function Menu(props) {
 function MenuEntry(props) {
     return (
         <li>
-            <Link to="/import" onClick={props.onItemClick}>
+            <Link to={props.to} onClick={props.onItemClick}>
                 {props.icon}
                 <span className={'menuEntryDisplayName'}>{props.displayName}</span>
             </Link>
