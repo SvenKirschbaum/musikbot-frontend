@@ -6,7 +6,7 @@
     "@react-keycloak/web": "3.4.0",
     "autoprefixer": "10.4.14",
     "bootstrap": "5.2.3",
-    "jquery": "3.6.4",
+    "jquery": "3.7.0",
     "keycloak-js": "21.1.1",
     "md5": "2.3.0",
     "moment": "2.29.4",
