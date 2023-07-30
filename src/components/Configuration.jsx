@@ -15,7 +15,7 @@ const config = {
 
     enableusers: "enableusers" in window.Config ? window.Config.enableusers : (("REACT_APP_ENABLE_USERS" in import.meta.env) ? import.meta.env.REACT_APP_ENABLE_USERS : true),
 
-    version: import.meta.env.REACT_APP_VERSION || "dev",
+    version: import.meta.env.VITE_APP_VERSION || "dev",
 };
 
 export default config;
