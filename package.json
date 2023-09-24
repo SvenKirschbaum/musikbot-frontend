@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@react-keycloak/web": "3.4.0",
-    "autoprefixer": "10.4.15",
+    "autoprefixer": "10.4.16",
     "bootstrap": "5.3.2",
     "jquery": "3.7.1",
     "keycloak-js": "22.0.3",
