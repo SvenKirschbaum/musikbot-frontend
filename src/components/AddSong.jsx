@@ -81,7 +81,7 @@ class AddSong extends Component {
 
         return (
             <section>
-                <Row className="space-top justify-content-center">
+                <Row className="space-top space-bottom justify-content-center">
                     <Col className="addSong" xl={{span: 4}} md={{span: 6}} xs={{span: 11}}>
                         <form onSubmit={this.handleSubmit}>
                             <Row>

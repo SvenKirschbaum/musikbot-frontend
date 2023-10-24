@@ -248,6 +248,10 @@ footer a, footer a:hover {
 .space-top {
     margin-top: 1.5em;
 }
+
+.space-bottom {
+    margin-bottom: 1.5em;
+}
 input {
     padding: 4px 5px;
     border: 1px solid #888;
