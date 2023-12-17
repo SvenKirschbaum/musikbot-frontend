@@ -1,5 +1,5 @@
 .gapcloser {
-    max-width: 40ch;
+    max-width: 50ch;
     padding: 1em;
     margin-top: 10em;
     vertical-align: middle;
@@ -17,15 +17,43 @@
 .gapcloser form {
     justify-content: center;
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
 }
-.gapcloser form div {
+
+.gapcloser form > div {
     flex-grow: 1;
     display: flex;
     justify-content: space-between;
     margin-top: 1em;
 }
-.gapcloser form div *:last-child {
+
+.gapcloser .grow {
     flex-grow: 1;
     margin-left: 1em;
 }
+
+.gapcloser-playlist-list-entry {
+    /*border: 1px pink solid;*/
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    flex-direction: row;
+}
+
+.gapcloser-playlist-list-entry > div:first-child {
+    display: flex;
+}
+
+.gapcloser-playlist-list-entry input[type=text] {
+    width: 100%;
+}
+
+.gapcloser-playlist-list-entry > div:nth-child(2) {
+    margin-left: 1rem;
+}
+
+.gapcloser-playlist-list-entry:first-child > div:nth-child(2) {
+    flex-grow: 1;
+    padding: 2px 0;
+}
+
