@@ -7,7 +7,7 @@
     "autoprefixer": "10.4.16",
     "bootstrap": "5.3.2",
     "jquery": "3.7.1",
-    "keycloak-js": "23.0.1",
+    "keycloak-js": "23.0.3",
     "md5": "2.3.0",
     "moment": "2.29.4",
     "moment-duration-format": "2.3.2",
@@ -43,7 +43,7 @@
     "defaults"
   ],
   "devDependencies": {
-    "@types/react": "17.0.71",
+    "@types/react": "17.0.73",
     "@types/react-dom": "17.0.25",
     "@types/react-router-bootstrap": "0.26.6",
     "@vitejs/plugin-basic-ssl": "^1.0.1",
