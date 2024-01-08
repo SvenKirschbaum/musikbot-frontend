@@ -16,7 +16,6 @@ import {useKeycloak} from "@react-keycloak/web";
 import {TbPlaylist} from "react-icons/tb";
 import {MdMusicOff, MdPlaylistAdd} from "react-icons/md";
 import {IoStatsChart} from "react-icons/io5";
-import {AiOutlineFileText} from "react-icons/ai";
 import {BiLogOut} from "react-icons/bi";
 import {GiJumpAcross} from "react-icons/gi";
 import {FiUsers} from "react-icons/fi";
@@ -155,12 +154,6 @@ function Menu(props) {
                         to="/gapcloser"
                         icon={<GiJumpAcross/>}
                         displayName={'Gapcloser'}
-                        onItemClick={props.onItemClick}
-                    />
-                    <MenuEntry
-                        to="/log"
-                        icon={<AiOutlineFileText/>}
-                        displayName={'Log'}
                         onItemClick={props.onItemClick}
                     />
                     <MenuEntry
