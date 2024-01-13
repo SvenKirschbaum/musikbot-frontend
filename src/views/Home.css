@@ -195,7 +195,8 @@
 .mb-table .songid {
     width: 5em;
 }
-.mb-table .insertat {
+
+.mb-table .datetime {
     width: 10em;
 }
 .mb-table .author {

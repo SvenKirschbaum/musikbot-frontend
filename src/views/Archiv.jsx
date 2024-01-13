@@ -16,6 +16,7 @@ import './Archiv.css';
 import QuickAdd from "../components/QuickAdd";
 import {getDefaultHeaders} from "../hooks/defaultHeaders";
 import {AlertContext} from "../context/AlertContext";
+import moment from "moment/min/moment-with-locales";
 
 class Archiv extends Component {
 
@@ -96,7 +97,7 @@ function Archivlist(props) {
                 <thead>
                     <tr className="header">
                         <th className="d-none d-sm-table-cell songid">Song ID</th>
-                        <th className="insertat">Gespielt um</th>
+                        <th className="datetime">Gespielt um</th>
                         <th className="d-none d-sm-table-cell author">Eingefügt von</th>
                         <td className="d-none d-sm-table-cell"/>
                         <th className="songtitle">Titel</th>
@@ -124,7 +125,8 @@ function Song(props) {
     }
     return (
         <tr className={className}>
-            <td className="d-none d-sm-table-cell">{props.id}</td>
+            <td className="d-none d-sm-table-cell"
+                title={"Eingefügt am " + moment(props.insertedAt).format("DD.MM.YYYY - HH:mm:ss")}>{props.id}</td>
             <td className=""><span className="d-none d-sm-inline"><Moment format="DD.MM.YYYY">{props.playedAt}</Moment> - </span><Moment
                 format="HH:mm:ss">{props.playedAt}</Moment></td>
             <td className="d-none d-sm-inline-flex author">

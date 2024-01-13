@@ -2,8 +2,7 @@ import {useEffect, useState} from "react";
 import Row from "react-bootstrap/Row";
 
 import "./SongProgress.css";
-import moment from "moment";
-import 'moment-duration-format';
+import moment from "moment/min/moment-with-locales";
 import {Col} from "react-bootstrap";
 
 const SongProgress = (props) => {

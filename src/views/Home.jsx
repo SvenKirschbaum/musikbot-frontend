@@ -1,4 +1,4 @@
-import {useContext, useRef, useState} from 'react';
+import {useContext, useMemo, useRef, useState} from 'react';
 import Container from 'react-bootstrap/Container';
 import {Link} from "react-router-dom";
 import FlipMove from "react-flip-move";
@@ -24,6 +24,7 @@ import useUser, {withUser} from "../hooks/user";
 import {AlertContext} from "../context/AlertContext";
 import withDropSong from "../components/withDropSong";
 import {useSubscription} from "react-stomp-hooks";
+import moment from "moment/min/moment-with-locales";
 
 const HomeContainer = withDropSong(Container);
 
@@ -247,7 +248,7 @@ function Home(props) {
                 {props.user && props.user.admin &&
                 <ControlElements onStart={sendStart} onPause={sendPause} onStop={sendStop}
                                  onSkip={sendSkip}/>}
-                <Playlist onDragStart={onDragStart} onDragEnd={onDragEnd}
+                <Playlist state={state} onDragStart={onDragStart} onDragEnd={onDragEnd}
                           onDelete={sendDelete} songs={state.playlist}/>
                 <BottomControl onShuffle={sendShuffle} setVolume={setVolume} onVolume={onVolume}
                                volume={state.volume} admin={props.user && props.user.admin}/>
@@ -261,6 +262,33 @@ function Home(props) {
 function Playlist(props) {
 
     const user = useUser();
+
+    const enhancedSongs = useMemo(() => {
+        //Add the sum of the duration of all previous songs to each song
+        let sum = moment.duration(100, "milliseconds");
+
+        if (props.state.progress) {
+            sum.add(moment.duration(props.state.progress.duration, 'seconds'))
+            sum.subtract(moment.duration(props.state.progress.prepausedDuration));
+
+            if (!props.state.progress.paused) {
+                sum.subtract(moment.duration(moment(props.state.progress.current).diff(moment(props.state.progress.start))));
+            }
+        }
+
+        const playing = props.state.progress && !props.state.progress.paused
+
+        return props.songs.map((song) => {
+            const newSong = {
+                ...song,
+                startTime: playing ? moment().add(sum) : sum.clone()
+            };
+
+            sum.add(moment.duration(song.duration, "seconds"));
+
+            return newSong;
+        });
+    }, [props.state.progress?.paused, props.songs]);
 
     return (
         <section>
@@ -276,7 +304,7 @@ function Playlist(props) {
                                 <thead>
                                 <tr className="header">
                                     <th className="d-none d-sm-table-cell songid">Song ID</th>
-                                    <th className="d-none d-lg-table-cell insertat">Eingefügt am</th>
+                                    <th className="d-none d-sm-table-cell datetime">Startzeit</th>
                                     <th className="d-none d-sm-table-cell author">Eingefügt von</th>
                                     <th className="songtitle">Titel</th>
                                     <th className="d-none d-md-table-cell songlink">Link</th>
@@ -284,7 +312,7 @@ function Playlist(props) {
                                 </tr>
                                 </thead>
                                 <FlipMove typeName="tbody" enterAnimation="fade" leaveAnimation="none" duration={400}>
-                                    {props.songs.map((song, index) => {
+                                    {enhancedSongs.map((song, index) => {
                                         return (
                                             //This wrapper is required, because Draggable is a functional Component since version 11 of react-beautiful-dnd, and functional components can not be used as childs of FlipMove
                                             <ClassWrapper key={song.id}>
@@ -318,9 +346,20 @@ function Song(props) {
         <tr className={props.isDragging ? "song dragging" : "song"} {...props.provided.draggableProps}
             ref={props.provided.innerRef}>
             <DragFixedCell isDragOccurring={props.isDragging} className="d-none d-sm-table-cell"
-                           addToElem={props.provided.dragHandleProps}>{props.id}</DragFixedCell>
-            <DragFixedCell isDragOccurring={props.isDragging} className="d-none d-lg-table-cell"><Moment
-                format="DD.MM.YYYY - HH:mm:ss">{props.insertedAt}</Moment></DragFixedCell>
+                           addToElem={{
+                               ...props.provided.dragHandleProps,
+                               title: "Eingefügt am " + moment(props.insertedAt).format("DD.MM.YYYY - HH:mm:ss")
+                           }}
+            >{props.id}</DragFixedCell>
+            <DragFixedCell isDragOccurring={props.isDragging} className="d-none d-lg-table-cell"
+                           addToElem={{title: moment.isDuration(props.startTime) ? "" : props.startTime.format("DD.MM.YYYY - HH:mm:ss")}}>
+                {
+                    moment.isDuration(props.startTime) ?
+                        props.startTime.humanize(true)
+                        :
+                        <Moment fromNow>{props.startTime}</Moment>
+                }
+            </DragFixedCell>
             <DragFixedCell isDragOccurring={props.isDragging} className="d-none d-sm-inline-flex author">
                 <span>
                     <GravatarIMG>{props.gravatarId}</GravatarIMG>
