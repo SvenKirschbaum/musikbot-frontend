@@ -1,4 +1,4 @@
-import {Component, useEffect, useMemo} from 'react';
+import {useEffect, useMemo, useState} from 'react';
 import Container from 'react-bootstrap/Container';
 
 import Row from 'react-bootstrap/Row';
@@ -7,108 +7,55 @@ import Col from 'react-bootstrap/Col';
 import Header from '../components/Header';
 
 import './Gapcloser.css';
-import Config from "../components/Configuration";
-import {getDefaultHeaders} from "../hooks/defaultHeaders";
-import {AlertContext} from "../context/AlertContext";
+import {useStompClient, useSubscription} from "react-stomp-hooks";
 
-class Gapcloser extends Component {
+function Gapcloser() {
+    const [state, setState] = useState({})
 
-    static contextType = AlertContext;
+    const client = useStompClient()
+    useSubscription(['/topic/gapcloser', '/musikbot/gapcloser'], (msg) => {
+        setState(JSON.parse(msg.body));
+    });
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            playlist: "",
-            mode : ''
-        };
-
-        this.abortController = new AbortController();
-
-        this.load = this.load.bind(this);
-        this.save = this.save.bind(this);
-    }
-
-    componentDidMount() {
-        this.load();
-    }
-
-    componentWillUnmount() {
-        this.abortController.abort();
-    }
-
-    load() {
-        fetch(Config.apihost + "/api/v2/gapcloser", {
-            method: 'GET',
-            headers: getDefaultHeaders(),
-            signal: this.abortController.signal
-        })
-        .then((res) => {
-            if(!res.ok) throw Error(res.statusText);
-            return res;
-        })
-        .then((res) => res.json())
-        .then((res) => {
-            this.setState(res);
-        })
-        .catch(reason => {
-            this.context.handleException(reason);
-        });
-    }
-
-    save(e) {
+    const save = (e) => {
         e.preventDefault();
-        fetch(Config.apihost + "/api/v2/gapcloser", {
-            method: 'PUT',
-            body: JSON.stringify({mode: this.state.mode, playlist: this.state.playlist}),
-            headers: getDefaultHeaders(),
-            signal: this.abortController.signal
+        client.publish({
+            destination: '/musikbot/gapcloser',
+            body: JSON.stringify({mode: state.mode, playlist: state.playlist}),
         })
-        .then((res) => {
-            if(!res.ok) throw Error(res.statusText);
-            return res;
-        })
-        .then((res) => res.json())
-        .then((res) => {
-            this.setState(res);
-        })
-        .catch(reason => {
-            this.context.handleException(reason);
-        });
     }
 
-    render() {
-        return (
-            <Container fluid>
-                <Header />
-                <Row className="justify-content-center">
-                    <Col className="gapcloser">
-                        Gapcloser - Einstellungen
-                        <form>
-                            <div>
-                                <label>Modus:</label>
-                                <select className="grow" value={this.state.mode}
-                                        onChange={(e) => this.setState({mode: e.target.value})}>
-                                    <option value="OFF">Aus</option>
-                                    <option value="RANDOM">Zufällig</option>
-                                    <option value="RANDOM100">Zufällig - Top 100</option>
-                                    <option value="PLAYLIST">Playlist</option>
-                                </select>
-                            </div>
-                            {this.state.mode === "PLAYLIST" &&
-                                <PlaylistConfig
-                                    playlist={this.state.playlist}
-                                    playlistName={this.state.playlistName}
-                                    setPlaylist={(v) => this.setState({playlist: v})}
-                                    history={this.state.history}
-                                />
-                            }
-                            <button onClick={this.save}>Speichern</button>
-                        </form>
-                    </Col>
-                </Row>
-            </Container>
-        );
-    }
+    return (
+        <Container fluid>
+            <Header/>
+            <Row className="justify-content-center">
+                <Col className="gapcloser">
+                    Gapcloser - Einstellungen
+                    <form>
+                        <div>
+                            <label>Modus:</label>
+                            <select className="grow" value={state.mode}
+                                    onChange={(e) => setState((prev) => ({...prev, mode: e.target.value}))}>
+                                <option value="OFF">Aus</option>
+                                <option value="RANDOM">Zufällig</option>
+                                <option value="RANDOM100">Zufällig - Top 100</option>
+                                <option value="PLAYLIST">Playlist</option>
+                            </select>
+                        </div>
+                        {state.mode === "PLAYLIST" &&
+                            <PlaylistConfig
+                                playlist={state.playlist}
+                                playlistName={state.playlistName}
+                                setPlaylist={(v) => setState((prev) => ({...prev, playlist: v}))}
+                                history={state.history}
+                            />
+                        }
+                        <button onClick={save}>Speichern</button>
+                    </form>
+                </Col>
+            </Row>
+        </Container>
+    );
 }
 
 function PlaylistConfig(props) {
