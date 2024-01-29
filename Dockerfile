@@ -27,4 +27,4 @@ server {\
 
 WORKDIR /usr/share/nginx/html
 
-COPY --from=build /build/build/* ./
+COPY --from=build /build/build ./
