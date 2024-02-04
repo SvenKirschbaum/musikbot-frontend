@@ -38,6 +38,7 @@ function Home(props) {
         songlink: null,
         playlistdauer: 0,
         playlist: [],
+        preview: [],
         volume: 50
     });
 
@@ -249,7 +250,7 @@ function Home(props) {
                 <ControlElements onStart={sendStart} onPause={sendPause} onStop={sendStop}
                                  onSkip={sendSkip}/>}
                 <Playlist state={state} onDragStart={onDragStart} onDragEnd={onDragEnd}
-                          onDelete={sendDelete} songs={state.playlist}/>
+                          onDelete={sendDelete} songs={state.playlist} preview={state.preview}/>
                 <BottomControl onShuffle={sendShuffle} setVolume={setVolume} onVolume={onVolume}
                                volume={state.volume} admin={props.user && props.user.admin}/>
                 <AddSong handlefetchError={alertContext.handleException} sendSong={sendSong}
@@ -263,7 +264,7 @@ function Playlist(props) {
 
     const user = useUser();
 
-    const enhancedSongs = useMemo(() => {
+    const startOffset = useMemo(() => {
         //Add the sum of the duration of all previous songs to each song
         let sum = moment.duration(100, "milliseconds");
 
@@ -275,10 +276,14 @@ function Playlist(props) {
                 sum.subtract(moment.duration(moment(props.state.progress.current).diff(moment(props.state.progress.start))));
             }
         }
+        return sum;
+    }, [props.state.progress?.paused, props.state.progress?.current, props.state.progress?.start, props.state.progress?.duration, props.state.progress?.prepausedDuration]);
 
+    const calculateStartOffset = (songs, startOffset) => {
+        const sum = startOffset.clone();
         const playing = props.state.progress && !props.state.progress.paused
 
-        return props.songs.map((song) => {
+        return songs.map((song) => {
             const newSong = {
                 ...song,
                 startTime: playing ? moment().add(sum) : sum.clone()
@@ -288,7 +293,11 @@ function Playlist(props) {
 
             return newSong;
         });
-    }, [props.state.progress?.paused, props.songs]);
+    }
+
+    const enhancedSongs = useMemo(() => calculateStartOffset(props.songs, startOffset), [props.state.progress?.paused, props.songs, startOffset]);
+    const playlistDuration = useMemo(() => props.songs.reduce((acc, song) => acc + song.duration, 0), [props.songs]);
+    const enhancedPreview = useMemo(() => calculateStartOffset(props.preview, startOffset.clone().add(moment.duration(playlistDuration, "seconds"))), [props.state.progress?.paused, props.songs, props.preview, startOffset]);
 
     return (
         <section>
@@ -297,28 +306,28 @@ function Playlist(props) {
                     onDragStart={props.onDragStart}
                     onDragEnd={props.onDragEnd}
                 >
-                    <Droppable droppableId="droppable">
-                        {(provided) => (
-                            <table className="mb-table col-xl-9 col-lg-10 col-md-11 col-11"
-                                   ref={provided.innerRef} {...provided.droppableProps}>
-                                <thead>
-                                <tr className="header">
-                                    <th className="d-none d-sm-table-cell songid">Song ID</th>
-                                    <th className="d-none d-sm-table-cell datetime">Startzeit</th>
-                                    <th className="d-none d-sm-table-cell author">Eingefügt von</th>
-                                    <th className="songtitle">Titel</th>
-                                    <th className="d-none d-md-table-cell songlink">Link</th>
-                                    {user && user.admin && <th className="delete"/>}
-                                </tr>
-                                </thead>
-                                <FlipMove typeName="tbody" enterAnimation="fade" leaveAnimation="none" duration={400}>
+                    <table className="mb-table col-xl-9 col-lg-10 col-md-11 col-11">
+                        <thead>
+                        <tr className="header">
+                            <th className="d-none d-sm-table-cell songid">Song ID</th>
+                            <th className="d-none d-sm-table-cell datetime">Startzeit</th>
+                            <th className="d-none d-sm-table-cell author">Eingefügt von</th>
+                            <th className="songtitle">Titel</th>
+                            <th className="d-none d-md-table-cell songlink">Link</th>
+                            {user && user.admin && <th className="delete"/>}
+                        </tr>
+                        </thead>
+                        <Droppable droppableId="droppable">
+                            {(provided) => (
+                                <tbody ref={provided.innerRef} {...provided.droppableProps}>
+                                <FlipMove typeName={null} enterAnimation="fade" leaveAnimation="none" duration={400}>
                                     {enhancedSongs.map((song, index) => {
                                         return (
                                             //This wrapper is required, because Draggable is a functional Component since version 11 of react-beautiful-dnd, and functional components can not be used as childs of FlipMove
                                             <ClassWrapper key={song.id}>
                                                 <Draggable
-                                                    isDragDisabled={!(user && user.admin)}
-                                                    key={song.id} draggableId={song.id.toString()} index={index}>
+                                                    isDragDisabled={!(user && user.admin) || song.preview}
+                                                    key={song.id} draggableId={song.id?.toString()} index={index}>
                                                     {(provided, snapshot) => (
                                                         <Song onDelete={props.onDelete}
                                                               key={song.id} {...song} provided={provided}
@@ -332,9 +341,24 @@ function Playlist(props) {
                                     })}
                                     {provided.placeholder}
                                 </FlipMove>
-                            </table>
-                        )}
-                    </Droppable>
+                                </tbody>
+                            )}
+                        </Droppable>
+                        <FlipMove className={"preview"} typeName={"tbody"} enterAnimation="fade" leaveAnimation="none"
+                                  duration={400}>
+                            {enhancedPreview.map((song, index) => {
+                                return (
+                                    <ClassWrapper key={song.link}>
+                                        <Song preview={true}
+                                              key={song.link}
+                                              {...song}
+                                              user={user}
+                                        />
+                                    </ClassWrapper>
+                                );
+                            })}
+                        </FlipMove>
+                    </table>
                 </DragDropContext>
             </Row>
         </section>
@@ -343,12 +367,14 @@ function Playlist(props) {
 
 function Song(props) {
     return (
-        <tr className={props.isDragging ? "song dragging" : "song"} {...props.provided.draggableProps}
-            ref={props.provided.innerRef}>
+        <tr className={`song ${props.isDragging ? 'dragging' : ''} ${props.preview ? 'preview' : ''}`}
+            {...props.provided?.draggableProps}
+            ref={props.provided?.innerRef}
+        >
             <DragFixedCell isDragOccurring={props.isDragging} className="d-none d-sm-table-cell"
                            addToElem={{
-                               ...props.provided.dragHandleProps,
-                               title: "Eingefügt am " + moment(props.insertedAt).format("DD.MM.YYYY - HH:mm:ss")
+                               ...props.provided?.dragHandleProps,
+                               title: !props.preview ? "Eingefügt am " + moment(props.insertedAt).format("DD.MM.YYYY - HH:mm:ss") : ""
                            }}
             >{props.id}</DragFixedCell>
             <DragFixedCell isDragOccurring={props.isDragging} className="d-none d-lg-table-cell"
@@ -375,9 +401,12 @@ function Song(props) {
             <DragFixedCell isDragOccurring={props.isDragging} className="d-none d-md-table-cell songlink"><a
                 href={props.link}>{props.link}</a></DragFixedCell>
             {props.user && props.user.admin &&
-            <DragFixedCell isDragOccurring={props.isDragging} className="d-inline-flex deleteicon" onClick={(e) => {
-                props.onDelete(props.id, e.shiftKey)
-            }}><FaTrashAlt/></DragFixedCell>}
+                <DragFixedCell isDragOccurring={props.isDragging} className="d-inline-flex deleteicon" onClick={(e) => {
+                    props.onDelete && props.onDelete(props.id, e.shiftKey)
+                }}>
+                    {props.onDelete && <FaTrashAlt/>}
+                </DragFixedCell>
+            }
         </tr>
     );
 }

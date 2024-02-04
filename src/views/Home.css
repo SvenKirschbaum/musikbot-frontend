@@ -213,3 +213,15 @@
 .menuEntryDisplayName{
     margin-left: 0.3rem;
 }
+
+tbody.preview {
+    mask: linear-gradient(to bottom,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 0.5) 90%
+    ) 100% 100% / 100% 100% repeat-x;
+    font-style: italic;
+}
+
+.song.preview {
+    background-color: #A6A6A6;
+}
