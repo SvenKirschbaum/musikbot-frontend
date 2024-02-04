@@ -39,10 +39,11 @@ function Gapcloser() {
                                 <option value="OFF">Aus</option>
                                 <option value="RANDOM">Zufällig</option>
                                 <option value="RANDOM100">Zufällig - Top 100</option>
-                                <option value="PLAYLIST">Playlist</option>
+                                <option value="PLAYLIST_STATIC">Playlist (Statisch)</option>
+                                <option value="PLAYLIST">Playlist (Zufallswiedergabe)</option>
                             </select>
                         </div>
-                        {state.mode === "PLAYLIST" &&
+                        {state.mode?.startsWith("PLAYLIST") &&
                             <PlaylistConfig
                                 playlist={state.playlist}
                                 playlistName={state.playlistName}
