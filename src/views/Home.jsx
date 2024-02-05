@@ -165,7 +165,7 @@ function Home(props) {
             })
     }
 
-    const onDragStart = (_start, _provided) => {
+    const onBeforeDragStart = (_start, _provided) => {
         isdragging.current = true;
     }
 
@@ -249,7 +249,7 @@ function Home(props) {
                 {props.user && props.user.admin &&
                 <ControlElements onStart={sendStart} onPause={sendPause} onStop={sendStop}
                                  onSkip={sendSkip}/>}
-                <Playlist state={state} onDragStart={onDragStart} onDragEnd={onDragEnd}
+                <Playlist state={state} onBeforeDragStart={onBeforeDragStart} onDragEnd={onDragEnd}
                           onDelete={sendDelete} songs={state.playlist} preview={state.preview}/>
                 <BottomControl onShuffle={sendShuffle} setVolume={setVolume} onVolume={onVolume}
                                volume={state.volume} admin={props.user && props.user.admin}/>
@@ -303,7 +303,7 @@ function Playlist(props) {
         <section>
             <Row className="space-top justify-content-center">
                 <DragDropContext
-                    onDragStart={props.onDragStart}
+                    onBeforeDragStart={props.onBeforeDragStart}
                     onDragEnd={props.onDragEnd}
                 >
                     <table className="mb-table col-xl-9 col-lg-10 col-md-11 col-11">
@@ -386,7 +386,7 @@ function Song(props) {
                         <Moment fromNow>{props.startTime}</Moment>
                 }
             </DragFixedCell>
-            <DragFixedCell isDragOccurring={props.isDragging} className="d-none d-sm-inline-flex author">
+            <DragFixedCell isDragOccurring={props.isDragging} className="d-none d-sm-table-cell author">
                 <span>
                     <GravatarIMG>{props.gravatarId}</GravatarIMG>
                 </span>
@@ -401,7 +401,7 @@ function Song(props) {
             <DragFixedCell isDragOccurring={props.isDragging} className="d-none d-md-table-cell songlink"><a
                 href={props.link}>{props.link}</a></DragFixedCell>
             {props.user && props.user.admin &&
-                <DragFixedCell isDragOccurring={props.isDragging} className="d-inline-flex deleteicon" onClick={(e) => {
+                <DragFixedCell isDragOccurring={props.isDragging} className="d-table-cell deleteicon" onClick={(e) => {
                     props.onDelete && props.onDelete(props.id, e.shiftKey)
                 }}>
                     {props.onDelete && <FaTrashAlt/>}

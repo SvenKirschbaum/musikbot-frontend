@@ -154,7 +154,6 @@
 
 .dragging {
     background-color: #ffab40a1;
-    display: table;
 }
 .lr-space {
     margin-left: 10px;
@@ -187,7 +186,6 @@
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
-    max-width: 20em;
 }
 .mb-table img {
     margin-right: 1ch;
@@ -212,6 +210,10 @@
 }
 .menuEntryDisplayName{
     margin-left: 0.3rem;
+}
+
+tbody {
+    position: relative;
 }
 
 tbody.preview {
