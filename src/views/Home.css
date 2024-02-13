@@ -84,7 +84,6 @@
     margin: 0;
 }
 
-
 .nolink a {
     color: #212121!important;
 }
@@ -94,37 +93,6 @@
     text-decoration: none;
 }
 .deleteicon {
-    cursor: pointer;
-}
-.react-autosuggest__suggestions-list {
-    position: absolute !important;
-    top: auto !important;
-    padding:0;
-    margin-top: 0.5rem;
-    background-color: white;
-    width: 38rem;
-    text-overflow: ellipsis;
-    list-style: none;
-    overflow-y: auto;
-    overflow-x: hidden;
-    max-height: 20em;
-    z-index: 100;
-}
-.ac-entry {
-    position: relative;
-    padding: 3px 1em 3px .4em;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    width: 38rem;
-    overflow: hidden;
-}
-.ac-title {
-    font-weight: bold;
-}
-.ac-link {
-    padding-left: 1em;
-}
-.react-autosuggest__suggestion {
     cursor: pointer;
 }
 

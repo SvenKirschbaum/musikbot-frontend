@@ -1,108 +1,113 @@
-import {Component} from "react";
+import {useCallback, useState} from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import Autosuggest from "react-autosuggest";
 import Button from "react-bootstrap/Button";
 import {debounce, throttle} from "throttle-debounce";
 
 import './AddSong.css';
-import {withStompClient, withSubscription} from "react-stomp-hooks";
+import {useStompClient, useSubscription} from "react-stomp-hooks";
+import {useCombobox} from "downshift";
 
-class AddSong extends Component {
+export default function AddSong(props) {
+    const [inputValue, setInputValue] = useState('');
+    const [suggestions, setSuggestions] = useState([]);
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            value: '',
-            suggestions: []
-        };
-
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.loadSuggestions = this.loadSuggestions.bind(this);
-
-        this.loadDebounced = debounce(500, this.loadSuggestions);
-        this.loadThrottled = throttle(500, this.loadSuggestions);
-    }
-
-    handleChange(event, {newValue}) {
-        this.setState({value: newValue});
-    }
-
-    onSuggestionsFetchRequested = ({ value }) => {
-        if (value.length < 5 || value.endsWith(' ')) {
-            this.loadThrottled(value);
-        } else {
-            this.loadDebounced(value);
-        }
-    };
-
-    loadSuggestions(value) {
-        this.props.stompClient.publish({destination: '/musikbot/search', body: value});
-    }
-
-    onMessage = (message) => {
+    const client = useStompClient();
+    useSubscription('/user/queue/search', (message) => {
         const content = JSON.parse(message.body);
-        this.setState({
-            suggestions: content
-        });
+        setSuggestions(content);
+    });
+
+    const loadSuggestions = useCallback((value) => {
+        client.publish({destination: '/musikbot/search', body: value});
+    }, [client]);
+
+    const loadThrottled = useCallback(throttle(500, loadSuggestions), [loadSuggestions]);
+    const loadDebounced = useCallback(debounce(500, loadSuggestions), [loadSuggestions]);
+
+    const submit = (e) => {
+        e.preventDefault();
+        props.sendSong(inputValue);
+        setInputValue('');
     }
 
-    onSuggestionsClearRequested = () => {
-        this.setState({
-            suggestions: []
-        });
-    };
+    let {
+        isOpen,
+        getToggleButtonProps,
+        getMenuProps,
+        getInputProps,
+        highlightedIndex,
+        getItemProps,
+    } = useCombobox({
+        onInputValueChange({inputValue}) {
+            setInputValue(inputValue);
+            if (inputValue.trim().length === 0) {
+                setSuggestions([]);
+                loadDebounced('');
+            } else if (inputValue.length < 5 || inputValue.endsWith(' ')) {
+                loadThrottled(inputValue);
+            } else {
+                loadDebounced(inputValue);
+            }
+        },
+        items: suggestions,
+        itemToString(item) {
+            return item ? item.value : ''
+        },
+        inputValue
+    })
 
-    getSuggestionValue(suggestion) {
-        return suggestion.value;
-    }
-
-    renderSuggestion = suggestion => (
-        <div className="ac-entry">
-            <span className="ac-title">{suggestion.label}</span><br />
-            <span className="ac-link">{suggestion.value}</span>
-        </div>
+    return (
+        <section>
+            <Row className="space-top space-bottom justify-content-center">
+                <Col className="addSong" xl={{span: 4}} md={{span: 6}} xs={{span: 11}}>
+                    <Row>
+                        <Col xs={{span: 12}} md={{span: 8}}>
+                            <input
+                                className="addSongInput w-full p-1.5"
+                                {...getInputProps({
+                                    onKeyDown: (e) => {
+                                        if ((!isOpen || suggestions.length === 0) && e.key === 'Enter') {
+                                            submit(e);
+                                        }
+                                    }
+                                })}
+                            />
+                        </Col>
+                        <Col xs={{span: 12}} md={{span: 4}}>
+                            <Button
+                                aria-label="toggle menu"
+                                className="px-2"
+                                type="button"
+                                {...getToggleButtonProps()}
+                                onClick={submit}
+                            >
+                                {props.buttontext}
+                            </Button>
+                        </Col>
+                        <Col>
+                            <ul
+                                className={`absolute w-72 bg-white mt-1 shadow-md max-h-80 p-0 z-10 ${
+                                    !(isOpen && suggestions.length) && 'hidden'
+                                }`}
+                                {...getMenuProps()}
+                            >
+                                {isOpen &&
+                                    suggestions.map((item, index) => (
+                                        <li
+                                            className={`suggestion py-2 px-3 shadow-sm flex flex-col ${index === highlightedIndex ? 'highlighted' : ''}`}
+                                            key={item.value}
+                                            {...getItemProps({item, index})}
+                                        >
+                                            <div className="suggestion-label">{item.label}</div>
+                                            <div className="suggestion-link">{item.value}</div>
+                                        </li>
+                                    ))}
+                            </ul>
+                        </Col>
+                    </Row>
+                </Col>
+            </Row>
+        </section>
     );
-
-    handleSubmit(event) {
-        event.preventDefault();
-        this.props.sendSong(this.state.value);
-        this.setState({value: ""});
-    }
-
-    render() {
-        const inputProps = {
-            value: (this.state.value === undefined) ? '' : this.state.value,
-            onChange: this.handleChange,
-            className: "w-100 h-100",
-            'aria-label': "Song Link"
-        };
-
-        return (
-            <section>
-                <Row className="space-top space-bottom justify-content-center">
-                    <Col className="addSong" xl={{span: 4}} md={{span: 6}} xs={{span: 11}}>
-                        <form onSubmit={this.handleSubmit}>
-                            <Row>
-                                <Col xs={{span: 12}} md={{span: 8}}>
-                                    <Autosuggest
-                                        suggestions={this.state.suggestions}
-                                        onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
-                                        onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-                                        getSuggestionValue={this.getSuggestionValue}
-                                        renderSuggestion={this.renderSuggestion}
-                                        inputProps={inputProps}
-                                    />
-                                </Col>
-                                <Col xs={{span:12}} md={{span:4}}><Button type="submit">{this.props.buttontext}</Button></Col>
-                            </Row>
-                        </form>
-                    </Col>
-                </Row>
-            </section>
-        );
-    }
 }
-
-export default withStompClient(withSubscription(AddSong, '/user/queue/search'));
