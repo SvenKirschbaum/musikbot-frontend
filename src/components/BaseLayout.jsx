@@ -21,6 +21,7 @@ import {GiJumpAcross} from "react-icons/gi";
 import {FiUsers} from "react-icons/fi";
 import {FaHome, FaUserCog} from "react-icons/fa";
 import {BsBootstrapReboot} from "react-icons/bs";
+import ConnectionIndicator from "./ConnectionIndicator";
 
 
 class BaseLayout extends Component {
@@ -40,6 +41,7 @@ class BaseLayout extends Component {
                     </CookieConsent>
                     {Config.showversion && <Version/>}
                     <Alerts/>
+                    <ConnectionIndicator/>
                     {this.props.children}
                 </div>
                 <Footer/>
