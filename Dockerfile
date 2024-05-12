@@ -1,4 +1,4 @@
-FROM node:20.12.2-alpine@sha256:e18f74fc454fddd8bf66f5c632dfc78a32d8c2737d1ba4e028ee60cfc6f95a9b as build
+FROM node:20.13.1-alpine@sha256:291e84d956f1aff38454bbd3da38941461ad569a185c20aa289f71f37ea08e23 as build
 
 ARG VERSION=dev
 ENV VITE_APP_VERSION=${VERSION}
@@ -11,7 +11,7 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
-FROM nginx:1.26.0-alpine-slim@sha256:8545de7d520d684e2683e05447696dcaeab9d9776a9562682f70944966043666
+FROM nginx:1.26.0-alpine-slim@sha256:be13c98f606eef87521627d5c794a98ac1e5a8fcb085e75acdc0c9d66a28666c
 
 RUN echo -e "\
 server_tokens off;\
