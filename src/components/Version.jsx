@@ -2,8 +2,8 @@ import {Component} from 'react';
 
 import './Version.css';
 import Config from './Configuration';
-import {getDefaultHeaders} from "../hooks/defaultHeaders";
 import {AlertContext} from "../context/AlertContext";
+import {withDefaultHeaders} from "../hooks/defaultHeaders";
 
 class Version extends Component {
 
@@ -27,7 +27,7 @@ class Version extends Component {
     componentDidMount() {
         fetch(Config.apihost + "/api/version", {
             method: 'GET',
-            headers: getDefaultHeaders(),
+            headers: this.props.defaultHeaders,
             signal: this.abortController.signal
         })
         .then((res) => {
@@ -51,4 +51,4 @@ class Version extends Component {
     }
 }
 
-export default Version;
+export default withDefaultHeaders(Version);

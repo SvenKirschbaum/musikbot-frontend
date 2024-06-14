@@ -1,18 +1,18 @@
-import {useKeycloak} from "@react-keycloak/web";
 import md5 from "md5";
+import {useAuth} from "react-oidc-context";
 
 function useUser() {
-    const {keycloak} = useKeycloak();
+    const auth = useAuth();
 
 
-    if (!keycloak.authenticated) return false;
+    if (!auth.isAuthenticated) return false;
 
     let user = {};
 
-    user.name = keycloak.tokenParsed.preferred_username;
-    user.email = keycloak.tokenParsed.email;
-    user.gravatarId = md5(keycloak.tokenParsed.email);
-    user.admin = keycloak.hasResourceRole("admin", "musikbot-backend");
+    user.name = auth.user.profile.preferred_username;
+    user.email = auth.user.profile.email;
+    user.gravatarId = md5(auth.user.profile.email);
+    user.admin = auth.user.profile.resource_access[import.meta.env.VITE_BACKEND_CLIENT_ID]?.roles?.includes("admin") ?? false;
 
     return user;
 }

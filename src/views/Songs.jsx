@@ -6,8 +6,8 @@ import './Songs.css';
 import {FaTrashAlt} from "react-icons/fa";
 import AddSong from "../components/AddSong";
 import Config from "../components/Configuration";
-import {getDefaultHeaders} from "../hooks/defaultHeaders";
 import {AlertContext} from "../context/AlertContext";
+import {withDefaultHeaders} from "../hooks/defaultHeaders";
 
 class Songs extends Component {
 
@@ -37,7 +37,7 @@ class Songs extends Component {
     load() {
         fetch(Config.apihost + "/api/v2/lockedsongs", {
             method: 'GET',
-            headers: getDefaultHeaders(),
+            headers: this.props.defaultHeaders,
             signal: this.abortController.signal
         })
         .then((res) => {
@@ -60,7 +60,7 @@ class Songs extends Component {
     sendDelete(id) {
         fetch(Config.apihost + "/api/v2/lockedsongs/" + id, {
             method: 'DELETE',
-            headers: getDefaultHeaders()
+            headers: this.props.defaultHeaders
         }).then((res) => {
             if (!res.ok) throw Error(res.statusText);
             this.load();
@@ -71,7 +71,7 @@ class Songs extends Component {
     }
 
     sendSong(url) {
-        let headers = getDefaultHeaders();
+        let headers = new Headers(this.props.defaultHeaders);
         headers.set("Content-Type", "text/plain");
 
         fetch(Config.apihost + "/api/v2/lockedsongs", {
@@ -137,4 +137,4 @@ function SongList(props) {
     );
 }
 
-export default Songs;
+export default withDefaultHeaders(Songs);

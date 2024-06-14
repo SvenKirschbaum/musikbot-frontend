@@ -9,8 +9,8 @@ import './Stats.css';
 import {Link} from "react-router-dom";
 import Config from "../components/Configuration";
 import EntryCard from "../components/EntryCard";
-import {getDefaultHeaders} from "../hooks/defaultHeaders";
 import {AlertContext} from "../context/AlertContext";
+import {withDefaultHeaders} from "../hooks/defaultHeaders";
 
 class StatsOverview extends Component {
 
@@ -41,7 +41,7 @@ class StatsOverview extends Component {
     load() {
         fetch(Config.apihost + "/api/v2/stats", {
             method: 'GET',
-            headers: getDefaultHeaders(),
+            headers: this.props.defaultHeaders,
             signal: this.abortController.signal
         })
         .then((res) => {
@@ -136,4 +136,4 @@ class StatsOverview extends Component {
     }
 }
 
-export default StatsOverview;
+export default withDefaultHeaders(StatsOverview);

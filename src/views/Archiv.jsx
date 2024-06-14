@@ -14,9 +14,9 @@ import CustomPagination from '../components/CustomPagination';
 
 import './Archiv.css';
 import QuickAdd from "../components/QuickAdd";
-import {getDefaultHeaders} from "../hooks/defaultHeaders";
 import {AlertContext} from "../context/AlertContext";
 import moment from "moment/min/moment-with-locales";
+import {withDefaultHeaders} from "../hooks/defaultHeaders";
 
 class Archiv extends Component {
 
@@ -48,7 +48,7 @@ class Archiv extends Component {
         this.abortController = new AbortController();
         fetch(Config.apihost + "/api/v2/archiv/"+page, {
             method: 'GET',
-            headers: getDefaultHeaders(),
+            headers: this.props.defaultHeaders,
             signal: this.abortController.signal
         })
             .then((res) => {
@@ -148,4 +148,4 @@ function Song(props) {
     );
 }
 
-export default withRouter(Archiv);
+export default withRouter(withDefaultHeaders(Archiv));

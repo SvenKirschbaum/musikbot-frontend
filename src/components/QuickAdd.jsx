@@ -4,15 +4,16 @@ import './QuickAdd.css';
 
 import {FaPlus} from 'react-icons/fa';
 import Config from "./Configuration";
-import {getDefaultHeaders} from "../hooks/defaultHeaders";
 import {AlertContext} from "../context/AlertContext";
+import useDefaultHeaders from "../hooks/defaultHeaders";
 
 function QuickAdd(props) {
 
     const alerts = useContext(AlertContext);
+    const defaultHeaders = useDefaultHeaders();
 
     const onClick = () => {
-        let headers = getDefaultHeaders();
+        let headers = new Headers(defaultHeaders);
         headers.set("Content-Type", "text/plain");
         fetch(Config.apihost + "/api/v2/songs", {
             method: 'POST',

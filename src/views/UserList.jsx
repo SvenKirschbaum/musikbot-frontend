@@ -12,8 +12,8 @@ import CSSTransition from "react-transition-group/CSSTransition";
 import GravatarIMG from "../components/GravatarIMG";
 import {Link} from "react-router-dom";
 import Config from "../components/Configuration";
-import {getDefaultHeaders} from "../hooks/defaultHeaders";
 import {AlertContext} from "../context/AlertContext";
+import {withDefaultHeaders} from "../hooks/defaultHeaders";
 
 class UserList extends Component {
 
@@ -45,7 +45,7 @@ class UserList extends Component {
         this.abortController = new AbortController();
         fetch(Config.apihost + "/api/v2/users/"+page, {
             method: 'GET',
-            headers: getDefaultHeaders(),
+            headers: this.props.defaultHeaders,
             signal: this.abortController.signal
         })
             .then((res) => {
@@ -124,4 +124,4 @@ function User(props) {
     );
 }
 
-export default withRouter(UserList);
+export default withRouter(withDefaultHeaders(UserList));

@@ -11,7 +11,6 @@ import GravatarIMG from "./GravatarIMG";
 import Alerts from "./Alerts";
 import Config from "./Configuration";
 import useUser from "../hooks/user";
-import {useKeycloak} from "@react-keycloak/web";
 
 import {TbPlaylist} from "react-icons/tb";
 import {MdMusicOff, MdPlaylistAdd} from "react-icons/md";
@@ -22,6 +21,7 @@ import {FiUsers} from "react-icons/fi";
 import {FaHome, FaUserCog} from "react-icons/fa";
 import {BsBootstrapReboot} from "react-icons/bs";
 import ConnectionIndicator from "./ConnectionIndicator";
+import {useAuth} from "react-oidc-context";
 
 
 class BaseLayout extends Component {
@@ -87,7 +87,7 @@ function Footer() {
 function LoginFooter(props) {
 
     const user = useUser();
-    const {keycloak} = useKeycloak();
+    const auth = useAuth();
 
     if (user) {
         return (
@@ -103,7 +103,7 @@ function LoginFooter(props) {
     else {
         return (
             <span className="LoginFooter">
-                <Link to="#" onClick={keycloak.login}>Login</Link>
+                <Link to="#" onClick={auth.signinRedirect}>Login</Link>
             </span>
         );
     }
@@ -112,7 +112,7 @@ function LoginFooter(props) {
 function Menu(props) {
 
     const user = useUser();
-    const {keycloak} = useKeycloak();
+    const auth = useAuth();
 
     return (
         <nav className="menu">
@@ -179,7 +179,7 @@ function Menu(props) {
                     displayName={'Account bearbeiten'}
                     onItemClick={() => {
                         props.onItemClick();
-                        keycloak.accountManagement();
+                        window.location.href = `${import.meta.env.VITE_OIDC_AUTHORITY}/account?referrer=${encodeURIComponent(import.meta.env.VITE_OIDC_CLIENT_ID)}`;
                     }}
                 />
             }
@@ -190,7 +190,7 @@ function Menu(props) {
                     displayName={'Logout'}
                     onItemClick={() => {
                         props.onItemClick();
-                        keycloak.logout()
+                        auth.signoutSilent();
                     }}
                 />
             }

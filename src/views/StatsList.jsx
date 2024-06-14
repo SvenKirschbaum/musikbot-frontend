@@ -8,9 +8,9 @@ import Container from "react-bootstrap/Container";
 import './Stats.css';
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import {getDefaultHeaders} from "../hooks/defaultHeaders";
 import {useRouteMatch} from "react-router";
 import {AlertContext} from "../context/AlertContext";
+import defaultHeaders from "../hooks/defaultHeaders";
 
 function StatsList(props) {
 
@@ -49,6 +49,7 @@ function StatsList(props) {
 
 function UserStatsDetails(props) {
     const context = useContext(AlertContext);
+    const defaultHeaders = useDefaultHeaders();
 
     const [data, setData] = useState([]);
     const match = useRouteMatch();
@@ -60,7 +61,7 @@ function UserStatsDetails(props) {
 
         fetch(Config.apihost + "/api/v2/user/" + userName + "/" + props.subRoute, {
             method: 'GET',
-            headers: getDefaultHeaders(),
+            headers: defaultHeaders,
             signal: abortController.signal
         })
             .then((res) => {
@@ -94,7 +95,7 @@ function StatsDetails(props) {
 
         fetch(Config.apihost + "/api/v2/stats/" + props.subRoute, {
             method: 'GET',
-            headers: getDefaultHeaders(),
+            headers: defaultHeaders(),
             signal: abortController.signal
         })
             .then((res) => {

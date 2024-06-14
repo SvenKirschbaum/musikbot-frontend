@@ -13,12 +13,12 @@ import {TransitionGroup} from "react-transition-group";
 import CSSTransition from "react-transition-group/CSSTransition";
 import QuickAdd from "../components/QuickAdd";
 import Config from "../components/Configuration";
-import {getDefaultHeaders} from "../hooks/defaultHeaders";
 import {withUser} from "../hooks/user";
 import {Link, Route} from "react-router-dom";
 import {UserStatsDetails} from "./StatsList";
 import NoMatch from "../components/NoMatch";
 import {AlertContext} from "../context/AlertContext";
+import {withDefaultHeaders} from "../hooks/defaultHeaders";
 
 class UserPage extends Component {
 
@@ -67,7 +67,7 @@ class UserPage extends Component {
         this.abortController = new AbortController();
         fetch(Config.apihost + "/api/v2/user/" + username, {
             method: 'GET',
-            headers: getDefaultHeaders(),
+            headers: this.props.defaultHeaders,
             signal: this.abortController.signal
         })
             .then((res) => {
@@ -286,4 +286,4 @@ function User() {
     );
 }
 
-export default withRouter(User);
+export default withRouter(withDefaultHeaders(User));

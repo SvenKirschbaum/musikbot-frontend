@@ -19,18 +19,19 @@ import './Home.css';
 import {FaTrashAlt} from 'react-icons/fa';
 import ClassWrapper from "../components/ClassWrapper";
 import SongProgress from "../components/SongProgress";
-import {getDefaultHeaders} from "../hooks/defaultHeaders";
 import useUser, {withUser} from "../hooks/user";
 import {AlertContext} from "../context/AlertContext";
 import withDropSong from "../components/withDropSong";
 import {useSubscription} from "react-stomp-hooks";
 import moment from "moment/min/moment-with-locales";
+import useDefaultHeaders from "../hooks/defaultHeaders";
 
 const HomeContainer = withDropSong(Container);
 
 function Home(props) {
 
     const alertContext = useContext(AlertContext);
+    const defaultHeaders = useDefaultHeaders();
 
     const [state, setState] = useState({
         status: 'Loading...',
@@ -59,7 +60,7 @@ function Home(props) {
     const sendStart = () => {
         fetch(Config.apihost + "/api/control/start", {
             method: 'POST',
-            headers: getDefaultHeaders()
+            headers: defaultHeaders
         }).then((res) => {
             if (!res.ok) throw Error(res.statusText);
         })
@@ -71,7 +72,7 @@ function Home(props) {
     const sendPause = () => {
         fetch(Config.apihost + "/api/control/pause", {
             method: 'POST',
-            headers: getDefaultHeaders()
+            headers: defaultHeaders
         }).then((res) => {
             if (!res.ok) throw Error(res.statusText);
         })
@@ -83,7 +84,7 @@ function Home(props) {
     const sendStop = () => {
         fetch(Config.apihost + "/api/control/stop", {
             method: 'POST',
-            headers: getDefaultHeaders()
+            headers: defaultHeaders
         }).then((res) => {
             if (!res.ok) throw Error(res.statusText);
         })
@@ -95,7 +96,7 @@ function Home(props) {
     const sendSkip = () => {
         fetch(Config.apihost + "/api/control/skip", {
             method: 'POST',
-            headers: getDefaultHeaders()
+            headers: defaultHeaders
         }).then((res) => {
             if (!res.ok) throw Error(res.statusText);
         })
@@ -107,7 +108,7 @@ function Home(props) {
     const sendShuffle = () => {
         fetch(Config.apihost + "/api/control/shuffle", {
             method: 'POST',
-            headers: getDefaultHeaders()
+            headers: defaultHeaders
         }).then((res) => {
             if (!res.ok) throw Error(res.statusText);
         })
@@ -119,7 +120,7 @@ function Home(props) {
     const sendDelete = (id, lock) => {
         fetch(Config.apihost + "/api/v2/songs/" + id + (lock ? "?lock=true" : ""), {
             method: 'DELETE',
-            headers: getDefaultHeaders()
+            headers: defaultHeaders
         }).then((res) => {
             if (!res.ok) throw Error(res.statusText);
         })
@@ -129,7 +130,7 @@ function Home(props) {
     }
 
     const sendSong = (url) => {
-        let headers = getDefaultHeaders();
+        let headers = defaultHeaders
         headers.set("Content-Type", "text/plain");
 
         const guestToken = sessionStorage.getItem('guestToken');
@@ -199,7 +200,7 @@ function Home(props) {
     }
 
     const sendSort = (id, newSort) => {
-        let headers = getDefaultHeaders();
+        let headers = defaultHeaders
         headers.set("Content-Type", "application/json");
         fetch(Config.apihost + "/api/v2/songs/" + id, {
             method: 'PUT',
@@ -220,7 +221,7 @@ function Home(props) {
     const onVolume = (volume) => {
         if (volume == null) return;
 
-        let headers = getDefaultHeaders();
+        let headers = defaultHeaders
         headers.set("Content-Type", "application/json");
         fetch(Config.apihost + "/api/control/volume", {
             method: 'PUT',

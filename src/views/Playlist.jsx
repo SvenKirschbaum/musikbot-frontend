@@ -9,8 +9,8 @@ import Button from "react-bootstrap/Button";
 import TransitionGroup from "react-transition-group/TransitionGroup";
 import CSSTransition from "react-transition-group/CSSTransition";
 import Config from "../components/Configuration";
-import {getDefaultHeaders} from "../hooks/defaultHeaders";
 import {AlertContext} from "../context/AlertContext";
+import {withDefaultHeaders} from "../hooks/defaultHeaders";
 
 class Playlist extends Component {
     static contextType = AlertContext;
@@ -54,7 +54,7 @@ class Playlist extends Component {
         e.preventDefault();
         fetch(Config.apihost + "/api/v2/playlist?url=" + encodeURIComponent(this.state.url), {
             method: 'GET',
-            headers: getDefaultHeaders(),
+            headers: this.props.defaultHeaders,
             signal: this.abortController.signal
         })
         .then((res) => {
@@ -79,7 +79,7 @@ class Playlist extends Component {
     onSubmit() {
         fetch(Config.apihost + "/api/v2/playlist", {
             method: 'POST',
-            headers: getDefaultHeaders(),
+            headers: this.props.defaultHeaders,
             body: JSON.stringify(this.state.songs.filter((value, index) => this.state.checkboxes[index]))
         })
         .then((res) => {
@@ -193,4 +193,4 @@ function Song(props) {
     );
 }
 
-export default Playlist;
+export default withDefaultHeaders(Playlist);

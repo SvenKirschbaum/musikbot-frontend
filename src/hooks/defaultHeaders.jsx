@@ -1,26 +1,24 @@
-import {useKeycloak} from "@react-keycloak/web";
-import globalKeycloak from "../keycloak";
+import {useAuth} from "react-oidc-context";
 
-function getHeadersFromKeycloak(instance) {
+function useDefaultHeaders() {
+    const auth = useAuth();
+
     const defaultHeaders = new Headers();
     defaultHeaders.append("Content-Type", "application/json");
 
-    if (instance.authenticated) {
-        defaultHeaders.set("Authorization", "Bearer " + instance.token);
+    if (auth.isAuthenticated) {
+        defaultHeaders.set("Authorization", "Bearer " + auth.user.access_token);
     }
 
     return defaultHeaders;
 }
 
-function useDefaultHeaders() {
-    const {keycloak} = useKeycloak();
-
-    return getHeadersFromKeycloak(keycloak);
-}
-
-function getDefaultHeaders() {
-    return getHeadersFromKeycloak(globalKeycloak);
+function withDefaultHeaders(Component) {
+    return function WrappedComponent(props) {
+        const defaultHeaders = useDefaultHeaders();
+        return <Component {...props} defaultHeaders={defaultHeaders}/>;
+    }
 }
 
 export default useDefaultHeaders;
-export {useDefaultHeaders, getDefaultHeaders};
+export {useDefaultHeaders, withDefaultHeaders};
