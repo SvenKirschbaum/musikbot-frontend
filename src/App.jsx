@@ -50,6 +50,10 @@ function AppRouter() {
     const defaultHeaders = useDefaultHeaders();
 
     useEffect(() => {
+        if (!auth.isAuthenticated) auth.signinSilent();
+    }, []);
+
+    useEffect(() => {
         if (auth.isAuthenticated) {
             const guestToken = sessionStorage.getItem('guestToken');
 
