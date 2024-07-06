@@ -2,6 +2,7 @@
   "name": "mbfrontend",
   "version": "0.0.1",
   "private": true,
+  "type": "module",
   "dependencies": {
     "autoprefixer": "10.4.19",
     "bootstrap": "5.3.3",
