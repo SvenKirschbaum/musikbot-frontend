@@ -37,10 +37,6 @@ export default defineConfig({
     },
     resolve: {
         // Required for react-moment: https://github.com/vitejs/vite/issues/7376
-        mainFields: [],
-        alias: {
-            // See https://github.com/sockjs/sockjs-client/issues/439
-            'sockjs-client': 'node_modules/sockjs-client/dist/sockjs.js'
-        }
+        mainFields: []
     }
 });
