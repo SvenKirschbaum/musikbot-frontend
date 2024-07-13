@@ -131,6 +131,8 @@ function AppRouter() {
         }
     }, [auth?.user?.access_token]);
 
+    if (auth.isLoading) return (<div>Loading...</div>);
+
     return (
         <StompSessionProvider
             url={`/api/sock/`}
