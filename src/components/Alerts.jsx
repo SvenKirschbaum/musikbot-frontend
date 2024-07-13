@@ -7,11 +7,23 @@ import Alert from "react-bootstrap/Alert";
 
 import "./Alerts.css";
 import {AlertContext, AlertRenderContext} from "../context/AlertContext";
+import {useSubscription} from "react-stomp-hooks";
 
 function Alerts() {
 
     const alertsFunctions = useContext(AlertContext);
     const alerts = useContext(AlertRenderContext);
+
+    useSubscription('/user/queue/errors', (message) => {
+        const content = JSON.parse(message.body);
+        alertsFunctions.addAlert({
+            id: Math.random().toString(36),
+            type: content.type || 'danger',
+            head: content.header || 'Es ist ein Fehler aufgetreten',
+            text: content.message || '',
+            autoclose: true
+        });
+    });
 
     return (
         <Row className="justify-content-center">
