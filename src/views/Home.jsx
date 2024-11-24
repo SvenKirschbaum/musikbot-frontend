@@ -129,6 +129,21 @@ function Home(props) {
             })
     }
 
+    const sendPreviewDelete = (url) => {
+        fetch(Config.apihost + "/api/v2/gapcloser", {
+            body: JSON.stringify({
+                link: url
+            }),
+            method: 'DELETE',
+            headers: defaultHeaders
+        }).then((res) => {
+            if (!res.ok) throw Error(res.statusText);
+        })
+        .catch(reason => {
+            alertContext.handleException(reason);
+        })
+    }
+
     const sendSong = (url) => {
         let headers = defaultHeaders
         headers.set("Content-Type", "text/plain");
@@ -251,7 +266,7 @@ function Home(props) {
                 <ControlElements onStart={sendStart} onPause={sendPause} onStop={sendStop}
                                  onSkip={sendSkip}/>}
                 <Playlist state={state} onBeforeDragStart={onBeforeDragStart} onDragEnd={onDragEnd}
-                          onDelete={sendDelete} songs={state.playlist} preview={state.preview}/>
+                          onDelete={sendDelete} songs={state.playlist} preview={state.preview} onPreviewDelete={sendPreviewDelete} />
                 <BottomControl onShuffle={sendShuffle} setVolume={setVolume} onVolume={onVolume}
                                volume={state.volume} admin={props.user && props.user.admin}/>
                 <AddSong handlefetchError={alertContext.handleException} sendSong={sendSong}
@@ -354,6 +369,7 @@ function Playlist(props) {
                                               key={song.link}
                                               {...song}
                                               user={user}
+                                              onDelete={props.onPreviewDelete}
                                         />
                                     </ClassWrapper>
                                 );
@@ -403,7 +419,7 @@ function Song(props) {
                 href={props.link}>{props.link}</a></DragFixedCell>
             {props.user && props.user.admin &&
                 <DragFixedCell isDragOccurring={props.isDragging} className="d-table-cell deleteicon" onClick={(e) => {
-                    props.onDelete && props.onDelete(props.id, e.shiftKey)
+                    props.onDelete && props.onDelete(props.id || props.link, e.shiftKey)
                 }}>
                     {props.onDelete && <FaTrashAlt/>}
                 </DragFixedCell>

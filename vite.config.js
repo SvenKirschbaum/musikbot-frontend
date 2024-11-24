@@ -3,8 +3,8 @@ import react from '@vitejs/plugin-react';
 import svgrPlugin from 'vite-plugin-svgr';
 import basicSsl from '@vitejs/plugin-basic-ssl'
 
-const apiHost = 'https://musikbot.elite12.de';
-// const apiHost = 'http://localhost:8080';
+// const apiHost = 'https://musikbot.elite12.de';
+const apiHost = 'http://localhost:8080';
 
 const secure = apiHost.includes('https');
 
