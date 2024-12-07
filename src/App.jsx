@@ -1,5 +1,5 @@
 import {StrictMode, useCallback, useEffect, useRef, useState} from 'react';
-import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
+import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
 import Songs from './views/Songs';
 import NoMatch from './components/NoMatch';
 import Config from "./components/Configuration";
@@ -11,7 +11,7 @@ import Gapcloser from './views/Gapcloser';
 import Stats from './components/Stats';
 import Playlist from './views/Playlist';
 import UserPage from './views/User';
-import {AdminRoute} from "./components/Routes";
+import {RequireAdmin} from "./components/Routes";
 import UserList from "./views/UserList";
 
 import {AlertContext, AlertRenderContext} from "./context/AlertContext";
@@ -138,7 +138,16 @@ function AppRouter() {
             url={`/api/sock/`}
             beforeConnect={beforeStompConnect}
         >
-            <Router>
+            <Router
+                future={{
+                    v7_relativeSplatPath: true,
+                    v7_startTransition: true,
+                    v7_fetcherPersist: true,
+                    v7_normalizeFormMethod: true,
+                    v7_partialHydration: true,
+                    v7_skipActionStatusRevalidation: true,
+                }}
+            >
                 <AlertRenderContext.Provider value={alerts}>
                     <AlertContext.Provider value={{
                         addAlert: addAlert,
@@ -147,19 +156,19 @@ function AppRouter() {
                     }}>
                         <BaseLayout>
                             <ErrorBoundary>
-                                <Switch>
-                                    <Route path="/" exact component={Home}/>
-                                    <Route path="/join" exact component={Join}/>
-                                    {Config.enableusers && <Route path="/user/:name" component={UserPage}/>}
-                                    {Config.showarchive && <Route path="/archiv/:page?" component={Archiv}/>}
-                                    {Config.showstats && <Route path="/statistik" component={Stats}/>}
-                                    <AdminRoute path="/debug" component={Debug}/>
-                                    <AdminRoute path="/gapcloser" component={Gapcloser}/>
-                                    <AdminRoute path="/import" component={Playlist}/>
-                                    <AdminRoute path="/songs" component={Songs}/>
-                                    <AdminRoute path="/users/:page?" component={UserList}/>
+                                <Routes>
+                                    <Route path="/" exact element={<Home/>}/>
+                                    <Route path="/join" exact element={<Join/>}/>
+                                    {Config.enableusers && <Route path="/user/:name/*" element={<UserPage/>}/>}
+                                    {Config.showarchive && <Route path="/archiv/:page?" element={<Archiv/>}/>}
+                                    {Config.showstats && <Route path="/statistik/*" element={<Stats/>}/>}
+                                    <Route path="/debug" element={<RequireAdmin><Debug/></RequireAdmin>}/>
+                                    <Route path="/gapcloser" element={<RequireAdmin><Gapcloser/></RequireAdmin>}/>
+                                    <Route path="/import" element={<RequireAdmin><Playlist/></RequireAdmin>}/>
+                                    <Route path="/songs" element={<RequireAdmin><Songs/></RequireAdmin>}/>
+                                    <Route path="/users/:page?" element={<RequireAdmin><UserList/></RequireAdmin>}/>
                                     <Route component={NoMatch}/>
-                                </Switch>
+                                </Routes>
                             </ErrorBoundary>
                         </BaseLayout>
                     </AlertContext.Provider>

@@ -1,6 +1,5 @@
 import {Component} from 'react';
 import Container from 'react-bootstrap/Container';
-import {withRouter} from "react-router";
 
 import Row from 'react-bootstrap/Row';
 import Header from '../components/Header';
@@ -10,7 +9,7 @@ import './UserList.css';
 import {TransitionGroup} from "react-transition-group";
 import CSSTransition from "react-transition-group/CSSTransition";
 import GravatarIMG from "../components/GravatarIMG";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import Config from "../components/Configuration";
 import {AlertContext} from "../context/AlertContext";
 import {withDefaultHeaders} from "../hooks/defaultHeaders";
@@ -64,7 +63,7 @@ class UserList extends Component {
     }
 
     change(page) {
-        this.props.history.push('/users/'+(page));
+        this.props.navigate('/users/' + (page));
         this.load(page);
     }
 
@@ -122,4 +121,10 @@ function User(props) {
     );
 }
 
-export default withRouter(withDefaultHeaders(UserList));
+export default (props) => {
+    const navigate = useNavigate();
+
+    const Component = withDefaultHeaders(UserList);
+
+    return <Component navigate={navigate} {...props}></Component>;
+}

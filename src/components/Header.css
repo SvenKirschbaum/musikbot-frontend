@@ -18,6 +18,11 @@
 .Header *:last-child {
     color: rgb(249,235,198);
 }
-.Header span {
+
+.Header a {
     cursor: pointer;
+}
+
+.Header a:hover {
+    text-decoration: none !important;
 }

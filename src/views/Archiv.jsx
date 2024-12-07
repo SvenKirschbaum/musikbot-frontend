@@ -1,10 +1,9 @@
 import {Component} from 'react';
 import Container from 'react-bootstrap/Container';
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {TransitionGroup} from "react-transition-group";
 import CSSTransition from "react-transition-group/CSSTransition";
 import Moment from 'react-moment';
-import {withRouter} from "react-router";
 
 import Row from 'react-bootstrap/Row';
 import Header from '../components/Header';
@@ -17,6 +16,7 @@ import QuickAdd from "../components/QuickAdd";
 import {AlertContext} from "../context/AlertContext";
 import moment from "moment/min/moment-with-locales";
 import {withDefaultHeaders} from "../hooks/defaultHeaders";
+import {useMatch} from "react-router";
 
 class Archiv extends Component {
 
@@ -67,7 +67,7 @@ class Archiv extends Component {
     }
 
     change(page) {
-        this.props.history.push('/archiv/'+(page));
+        this.props.navigate('/archiv/' + (page));
         this.load(page);
     }
 
@@ -146,4 +146,11 @@ function Song(props) {
     );
 }
 
-export default withRouter(withDefaultHeaders(Archiv));
+export default (props) => {
+    const navigate = useNavigate();
+    const match = useMatch("/archiv/:page?");
+
+    const Component = withDefaultHeaders(Archiv);
+
+    return <Component match={match} navigate={navigate} {...props}></Component>;
+}

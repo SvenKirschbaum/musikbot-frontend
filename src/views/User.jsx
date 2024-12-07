@@ -1,6 +1,5 @@
 import {Component, useMemo} from 'react';
 import Container from 'react-bootstrap/Container';
-import {Switch, useRouteMatch, withRouter} from "react-router";
 import Header from '../components/Header';
 
 import Row from 'react-bootstrap/Row';
@@ -14,11 +13,11 @@ import CSSTransition from "react-transition-group/CSSTransition";
 import QuickAdd from "../components/QuickAdd";
 import Config from "../components/Configuration";
 import {withUser} from "../hooks/user";
-import {Link, Route} from "react-router-dom";
+import {Link, Route, Routes} from "react-router-dom";
 import {UserStatsDetails} from "./StatsList";
 import NoMatch from "../components/NoMatch";
 import {AlertContext} from "../context/AlertContext";
-import {withDefaultHeaders} from "../hooks/defaultHeaders";
+import {useMatch} from "react-router";
 
 class UserPage extends Component {
 
@@ -194,7 +193,7 @@ class UserPage extends Component {
                                 <Col className="usercardcol">
                                     <Card className="usercard">
                                         <Card.Body>
-                                            <Card.Title><Link to={this.props.match.url + "/played"}>Am meisten
+                                            <Card.Title><Link to={"played"}>Am meisten
                                                 gewünscht:</Link></Card.Title>
                                             <table>
                                                 <thead>
@@ -226,7 +225,7 @@ class UserPage extends Component {
                                     </Card>
                                     <Card className="usercard">
                                         <Card.Body>
-                                            <Card.Title><Link to={this.props.match.url + "/skipped"}>Am meisten
+                                            <Card.Title><Link to={"skipped"}>Am meisten
                                                 geskippt:</Link></Card.Title>
                                             <table>
                                                 <thead>
@@ -267,21 +266,21 @@ class UserPage extends Component {
 }
 
 function User() {
-    const match = useRouteMatch();
-    const UserRouteComponent = useMemo(() => withUser(UserPage), []);
+    const UserRouteComponent = useMemo(() => (props) => {
+        const Component = withUser(UserPage);
+        const match = useMatch("/user/:name/*")
+
+        return <Component match={match} {...props} />;
+    }, []);
 
     return (
-        <Switch>
-            <Route path={`${match.path}/`} exact component={UserRouteComponent}/>
-            <Route path={`${match.path}/played`}>
-                <UserStatsDetails subRoute="played"/>
-            </Route>
-            <Route path={`${match.path}/skipped`}>
-                <UserStatsDetails subRoute="skipped"/>
-            </Route>
-            <Route component={NoMatch}/>
-        </Switch>
+        <Routes>
+            <Route path={`/`} exact element={<UserRouteComponent/>}/>
+            <Route path={`/played`} element={<UserStatsDetails subRoute="played"/>}/>
+            <Route path={`/skipped`} element={<UserStatsDetails subRoute="skipped"/>}/>
+            <Route element={<NoMatch/>}/>
+        </Routes>
     );
 }
 
-export default withRouter(withDefaultHeaders(User));
+export default User;

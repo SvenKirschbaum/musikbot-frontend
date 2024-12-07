@@ -8,7 +8,7 @@ import Container from "react-bootstrap/Container";
 import './Stats.css';
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import {useRouteMatch} from "react-router";
+import {useMatch} from "react-router";
 import {AlertContext} from "../context/AlertContext";
 import useDefaultHeaders from "../hooks/defaultHeaders.jsx";
 
@@ -52,7 +52,7 @@ function UserStatsDetails(props) {
     const defaultHeaders = useDefaultHeaders();
 
     const [data, setData] = useState([]);
-    const match = useRouteMatch();
+    const match = useMatch("/user/:name/:subpage");
     const userName = match.params.name;
 
 
