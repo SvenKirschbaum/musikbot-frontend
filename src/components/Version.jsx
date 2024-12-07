@@ -12,8 +12,6 @@ class Version extends Component {
     constructor(props) {
         super(props);
 
-        this.abortController = new AbortController();
-
         this.state = {
             frontend: Config.version,
             backend: "~",
@@ -21,10 +19,11 @@ class Version extends Component {
     }
 
     componentWillUnmount() {
-        this.abortController.abort();
+        this.abortController?.abort();
     }
 
     componentDidMount() {
+        this.abortController = new AbortController();
         fetch(Config.apihost + "/api/version", {
             method: 'GET',
             headers: this.props.defaultHeaders,

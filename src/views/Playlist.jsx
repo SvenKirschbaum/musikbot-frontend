@@ -27,8 +27,6 @@ class Playlist extends Component {
             link: ""
         };
 
-        this.abortController = new AbortController();
-
         this.onCheckbox = this.onCheckbox.bind(this);
         this.onSelectAll = this.onSelectAll.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -37,7 +35,7 @@ class Playlist extends Component {
     }
 
     componentWillUnmount() {
-        this.abortController.abort();
+        this.abortController?.abort();
     }
 
     handleInputChange(event) {
@@ -52,6 +50,7 @@ class Playlist extends Component {
 
     handleLoad(e) {
         e.preventDefault();
+        this.abortController = new AbortController();
         fetch(Config.apihost + "/api/v2/playlist?url=" + encodeURIComponent(this.state.url), {
             method: 'GET',
             headers: this.props.defaultHeaders,

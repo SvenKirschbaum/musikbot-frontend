@@ -27,13 +27,11 @@ class UserList extends Component {
             pages: 1,
         };
 
-        this.abortController = new AbortController();
-
         this.change = this.change.bind(this);
     }
 
     componentWillUnmount() {
-        this.abortController.abort();
+        this.abortController?.abort();
     }
 
     componentDidMount() {
@@ -41,7 +39,7 @@ class UserList extends Component {
     }
 
     load(page) {
-        this.abortController.abort();
+        this.abortController?.abort();
         this.abortController = new AbortController();
         fetch(Config.apihost + "/api/v2/users/"+page, {
             method: 'GET',

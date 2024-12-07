@@ -30,8 +30,6 @@ class Archiv extends Component {
             pages: 1,
         };
 
-        this.abortController = new AbortController();
-
         this.change = this.change.bind(this);
     }
 
@@ -40,11 +38,11 @@ class Archiv extends Component {
     }
 
     componentWillUnmount() {
-        this.abortController.abort();
+        this.abortController?.abort();
     }
 
     load(page) {
-        this.abortController.abort();
+        this.abortController?.abort();
         this.abortController = new AbortController();
         fetch(Config.apihost + "/api/v2/archiv/"+page, {
             method: 'GET',

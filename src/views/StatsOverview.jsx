@@ -25,8 +25,6 @@ class StatsOverview extends Component {
             general: []
         };
 
-        this.abortController = new AbortController();
-
         this.load = this.load.bind(this);
     }
 
@@ -35,10 +33,11 @@ class StatsOverview extends Component {
     }
 
     componentWillUnmount() {
-        this.abortController.abort();
+        this.abortController?.abort();
     }
 
     load() {
+        this.abortController = new AbortController();
         fetch(Config.apihost + "/api/v2/stats", {
             method: 'GET',
             headers: this.props.defaultHeaders,

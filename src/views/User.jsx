@@ -35,8 +35,6 @@ class UserPage extends Component {
             }
         };
 
-        this.abortController = new AbortController();
-
         this.load = this.load.bind(this);
     }
 
@@ -45,7 +43,7 @@ class UserPage extends Component {
     }
 
     componentWillUnmount() {
-        this.abortController.abort();
+        this.abortController?.abort();
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -63,7 +61,7 @@ class UserPage extends Component {
     }
 
     load(username) {
-        this.abortController.abort();
+        this.abortController?.abort();
         this.abortController = new AbortController();
         fetch(Config.apihost + "/api/v2/user/" + username, {
             method: 'GET',
