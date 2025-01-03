@@ -146,11 +146,9 @@ function Song(props) {
     );
 }
 
-export default (props) => {
+export default withDefaultHeaders((props) => {
     const navigate = useNavigate();
     const match = useMatch("/archiv/:page?");
 
-    const Component = withDefaultHeaders(Archiv);
-
-    return <Component match={match} navigate={navigate} {...props}></Component>;
-}
+    return <Archiv match={match} navigate={navigate} {...props}></Archiv>;
+});

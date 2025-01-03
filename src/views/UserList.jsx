@@ -121,10 +121,8 @@ function User(props) {
     );
 }
 
-export default (props) => {
+export default withDefaultHeaders((props) => {
     const navigate = useNavigate();
 
-    const Component = withDefaultHeaders(UserList);
-
-    return <Component navigate={navigate} {...props}></Component>;
-}
+    return <UserList navigate={navigate} {...props}></UserList>;
+});
