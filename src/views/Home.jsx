@@ -1,9 +1,7 @@
 import {useContext, useMemo, useRef, useState} from 'react';
 import Container from 'react-bootstrap/Container';
 import {Link} from "react-router-dom";
-import FlipMove from "react-flip-move";
 import Moment from 'react-moment';
-import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd";
 
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -11,13 +9,11 @@ import Button from 'react-bootstrap/Button';
 import GravatarIMG from "../components/GravatarIMG";
 import AddSong from "../components/AddSong";
 import Header from "../components/Header";
-import DragFixedCell from "../components/DragFixedCell";
 import Config from "../components/Configuration";
 import VolumeControl from "../components/VolumeControl";
 
 import './Home.css';
 import {FaTrashAlt} from 'react-icons/fa';
-import ClassWrapper from "../components/ClassWrapper";
 import SongProgress from "../components/SongProgress";
 import useUser, {withUser} from "../hooks/user";
 import {AlertContext} from "../context/AlertContext";
@@ -181,39 +177,6 @@ function Home(props) {
             })
     }
 
-    const onBeforeDragStart = (_start, _provided) => {
-        isdragging.current = true;
-    }
-
-    const onDragEnd = (result) => {
-        isdragging.current = false;
-        if (statebuffer.current !== null) {
-            setState(statebuffer.current);
-            statebuffer.current = null;
-        }
-
-        const {destination, source} = result;
-        if (!destination) return;
-        if (destination.droppableId === source.droppableId && destination.index === source.index) return;
-
-        const newList = Array.from(state.playlist);
-        newList.splice(source.index, 1);
-        newList.splice(destination.index, 0, state.playlist[source.index]);
-
-        const id = newList[destination.index].id;
-        const prevSort = (destination.index - 1) >= 0 ? newList[destination.index - 1].sort : 0;
-        const nextSort = (destination.index + 1) < newList.length ? newList[destination.index + 1].sort : (prevSort + 200);
-        const newSort = (prevSort + nextSort) / 2
-
-        newList[destination.index].sort = newSort;
-
-        const newState = Object.assign({}, state, {playlist: newList});
-        statebuffer.current = null
-        setState(newState);
-
-        sendSort(id, newSort);
-    }
-
     const sendSort = (id, newSort) => {
         let headers = defaultHeaders
         headers.set("Content-Type", "application/json");
@@ -265,8 +228,8 @@ function Home(props) {
                 {props.user && props.user.admin &&
                 <ControlElements onStart={sendStart} onPause={sendPause} onStop={sendStop}
                                  onSkip={sendSkip}/>}
-                <Playlist state={state} onBeforeDragStart={onBeforeDragStart} onDragEnd={onDragEnd}
-                          onDelete={sendDelete} songs={state.playlist} preview={state.preview} onPreviewDelete={sendPreviewDelete} />
+                <Playlist state={state} onDelete={sendDelete} songs={state.playlist} preview={state.preview}
+                          onPreviewDelete={sendPreviewDelete}/>
                 <BottomControl onShuffle={sendShuffle} setVolume={setVolume} onVolume={onVolume}
                                volume={state.volume} admin={props.user && props.user.admin}/>
                 <AddSong handlefetchError={alertContext.handleException} sendSong={sendSong}
@@ -318,65 +281,40 @@ function Playlist(props) {
     return (
         <section>
             <Row className="space-top justify-content-center">
-                <DragDropContext
-                    onBeforeDragStart={props.onBeforeDragStart}
-                    onDragEnd={props.onDragEnd}
-                >
-                    <table className="mb-table col-xl-9 col-lg-10 col-md-11 col-11">
-                        <thead>
-                        <tr className="header">
-                            <th className="d-none d-sm-table-cell songid">Song ID</th>
-                            <th className="d-none d-sm-table-cell datetime">Startzeit</th>
-                            <th className="d-none d-sm-table-cell author">Eingefügt von</th>
-                            <th className="songtitle">Titel</th>
-                            <th className="d-none d-md-table-cell songlink">Link</th>
-                            {user && user.admin && <th className="delete"/>}
-                        </tr>
-                        </thead>
-                        <Droppable droppableId="droppable">
-                            {(provided) => (
-                                <tbody ref={provided.innerRef} {...provided.droppableProps}>
-                                <FlipMove typeName={null} enterAnimation="fade" leaveAnimation="none" duration={400}>
-                                    {enhancedSongs.map((song, index) => {
-                                        return (
-                                            //This wrapper is required, because Draggable is a functional Component since version 11 of react-beautiful-dnd, and functional components can not be used as childs of FlipMove
-                                            <ClassWrapper key={song.id}>
-                                                <Draggable
-                                                    isDragDisabled={!(user && user.admin) || song.preview}
-                                                    key={song.id} draggableId={song.id?.toString()} index={index}>
-                                                    {(provided, snapshot) => (
-                                                        <Song onDelete={props.onDelete}
-                                                              key={song.id} {...song} provided={provided}
-                                                              isDragging={snapshot.isDragging}
-                                                              user={user}
-                                                        />
-                                                    )}
-                                                </Draggable>
-                                            </ClassWrapper>
-                                        );
-                                    })}
-                                    {provided.placeholder}
-                                </FlipMove>
-                                </tbody>
-                            )}
-                        </Droppable>
-                        <FlipMove className={"preview"} typeName={"tbody"} enterAnimation="fade" leaveAnimation="none"
-                                  duration={400}>
-                            {enhancedPreview.map((song, index) => {
-                                return (
-                                    <ClassWrapper key={song.link}>
-                                        <Song preview={true}
-                                              key={song.link}
-                                              {...song}
-                                              user={user}
-                                              onDelete={props.onPreviewDelete}
-                                        />
-                                    </ClassWrapper>
-                                );
-                            })}
-                        </FlipMove>
-                    </table>
-                </DragDropContext>
+                <table className="mb-table col-xl-9 col-lg-10 col-md-11 col-11">
+                    <thead>
+                    <tr className="header">
+                        <th className="d-none d-sm-table-cell songid">Song ID</th>
+                        <th className="d-none d-sm-table-cell datetime">Startzeit</th>
+                        <th className="d-none d-sm-table-cell author">Eingefügt von</th>
+                        <th className="songtitle">Titel</th>
+                        <th className="d-none d-md-table-cell songlink">Link</th>
+                        {user && user.admin && <th className="delete"/>}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {enhancedSongs.map((song) => {
+                        return (
+                            <Song onDelete={props.onDelete}
+                                  key={song.id} {...song}
+                                  user={user}
+                            />
+                        );
+                    })}
+                    </tbody>
+                    <tbody className={"preview"}>
+                    {enhancedPreview.map((song) => {
+                        return (
+                            <Song preview={true}
+                                  key={song.link}
+                                  {...song}
+                                  user={user}
+                                  onDelete={props.onPreviewDelete}
+                            />
+                        );
+                    })}
+                    </tbody>
+                </table>
             </Row>
         </section>
     );
@@ -384,26 +322,21 @@ function Playlist(props) {
 
 function Song(props) {
     return (
-        <tr className={`song ${props.isDragging ? 'dragging' : ''} ${props.preview ? 'preview' : ''}`}
-            {...props.provided?.draggableProps}
-            ref={props.provided?.innerRef}
-        >
-            <DragFixedCell isDragOccurring={props.isDragging} className="d-none d-sm-table-cell"
-                           addToElem={{
-                               ...props.provided?.dragHandleProps,
-                               title: !props.preview ? "Eingefügt am " + moment(props.insertedAt).format("DD.MM.YYYY - HH:mm:ss") : ""
-                           }}
-            >{props.id}</DragFixedCell>
-            <DragFixedCell isDragOccurring={props.isDragging} className="d-none d-lg-table-cell"
-                           addToElem={{title: moment.isDuration(props.startTime) ? "" : props.startTime.format("DD.MM.YYYY - HH:mm:ss")}}>
+        <tr className={`song ${props.preview ? 'preview' : ''}`}>
+            <td className="d-none d-sm-table-cell"
+                title={!props.preview ? "Eingefügt am " + moment(props.insertedAt).format("DD.MM.YYYY - HH:mm:ss") : ""}>
+                {props.id}
+            </td>
+            <td className="d-none d-lg-table-cell"
+                title={moment.isDuration(props.startTime) ? "" : props.startTime.format("DD.MM.YYYY - HH:mm:ss")}>
                 {
                     moment.isDuration(props.startTime) ?
                         props.startTime.humanize(true)
                         :
                         <Moment fromNow>{props.startTime}</Moment>
                 }
-            </DragFixedCell>
-            <DragFixedCell isDragOccurring={props.isDragging} className="d-none d-sm-table-cell author">
+            </td>
+            <td className="d-none d-sm-table-cell author">
                 <span>
                     <GravatarIMG>{props.gravatarId}</GravatarIMG>
                 </span>
@@ -412,17 +345,17 @@ function Song(props) {
                     :
                     props.author
                 }
-            </DragFixedCell>
-            <DragFixedCell isDragOccurring={props.isDragging} className="nolink songtitle"><a
-                href={props.link}>{props.title}</a></DragFixedCell>
-            <DragFixedCell isDragOccurring={props.isDragging} className="d-none d-md-table-cell songlink"><a
-                href={props.link}>{props.link}</a></DragFixedCell>
+            </td>
+            <td className="nolink songtitle"><a
+                href={props.link}>{props.title}</a></td>
+            <td className="d-none d-md-table-cell songlink"><a
+                href={props.link}>{props.link}</a></td>
             {props.user && props.user.admin &&
-                <DragFixedCell isDragOccurring={props.isDragging} className="d-table-cell deleteicon" onClick={(e) => {
+                <td className="d-table-cell deleteicon" onClick={(e) => {
                     props.onDelete && props.onDelete(props.id || props.link, e.shiftKey)
                 }}>
                     {props.onDelete && <FaTrashAlt/>}
-                </DragFixedCell>
+                </td>
             }
         </tr>
     );
