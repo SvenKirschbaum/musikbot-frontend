@@ -6,13 +6,11 @@ function withDropSong(WrappedComponent) {
     return function (props) {
         const {sendSong, ...passThroughProps} = props;
 
-        const [isDropping, setIsDropping] = useState(false);
-        const [lastEnter, setLastEnter] = useState(undefined);
+        const [dropCount, setDropCount] = useState(0);
 
         const onDragEnter = (e) => {
             if (e.dataTransfer.types.includes("text/uri-list")) {
-                setLastEnter(e.target);
-                setIsDropping(true);
+                setDropCount((c) => c + 1);
                 e.preventDefault();
                 e.stopPropagation();
             }
@@ -22,10 +20,7 @@ function withDropSong(WrappedComponent) {
             if (e.dataTransfer.types.includes("text/uri-list")) {
                 e.preventDefault();
                 e.stopPropagation();
-                if (lastEnter === e.target) {
-                    setIsDropping(false);
-                    setLastEnter(undefined);
-                }
+                setDropCount((c) => c > 1 ? c - 1 : 0);
             }
         }
 
@@ -41,7 +36,7 @@ function withDropSong(WrappedComponent) {
                 e.preventDefault();
                 e.stopPropagation();
 
-                setIsDropping(false);
+                setDropCount(0);
                 sendSong(e.dataTransfer.getData("text/uri-list"));
             }
         }
@@ -50,7 +45,7 @@ function withDropSong(WrappedComponent) {
             <React.Fragment>
                 <WrappedComponent {...passThroughProps} onDragEnter={onDragEnter} onDragLeave={onDragLeave}
                                   onDrop={onDrop} onDragOver={onDragOver}/>
-                {isDropping && <DropNotification/>}
+                {dropCount > 0 && <DropNotification/>}
             </React.Fragment>
         );
 
