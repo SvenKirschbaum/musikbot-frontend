@@ -30,6 +30,8 @@ import {
 } from "@dnd-kit/sortable";
 import {CSS} from '@dnd-kit/utilities';
 import {restrictToVerticalAxis} from "@dnd-kit/modifiers";
+import {Flipped, Flipper} from "react-flip-toolkit";
+import anime from "animejs";
 
 
 const HomeContainer = withDropSong(Container);
@@ -279,9 +281,58 @@ function Home(props) {
     );
 }
 
+const animateElementIn = (el, i) =>
+    anime({
+        targets: el,
+        opacity: 1,
+        delay: i * 10,
+        easing: "easeOutSine"
+    });
+
+const freezeElements = (tableRef) => {
+    const el = tableRef.current.el;
+
+    if (!el) return;
+
+    const headerCells = Array.from(el.querySelectorAll("thead th")).map(cell => cell.getBoundingClientRect());
+    const cells = el.querySelectorAll("td");
+
+    cells.forEach((cell, index) => {
+        const rect = headerCells[index % headerCells.length];
+
+        cell.style.width = `${rect.width}px`;
+        cell.style.height = `${rect.height}px`;
+    });
+}
+
+const unFreezeElements = (tableRef) => {
+    const el = tableRef.current.el;
+
+    if (!el) return;
+
+    const cells = el.querySelectorAll("td");
+
+    cells.forEach(cell => {
+        cell.style.width = ``;
+        cell.style.height = ``;
+    });
+}
+
+const animateElementOut = (el, i, onComplete) => {
+    anime({
+        targets: el,
+        opacity: 0,
+        delay: i * 10,
+        easing: "easeOutSine",
+        complete: onComplete
+    });
+};
+
 function Playlist(props) {
 
     const user = useUser();
+
+    const tableRef = useRef(null);
 
     const sensors = useSensors(
         useSensor(PointerSensor),
@@ -335,7 +386,25 @@ function Playlist(props) {
                     onDragEnd={props.onDragEnd}
                     modifiers={[restrictToVerticalAxis]}
                 >
-                    <table className="mb-table col-xl-9 col-lg-10 col-md-11 col-11">
+                    <Flipper
+                        ref={tableRef}
+                        flipKey={enhancedSongs.map(s => s.id).join(',') + enhancedPreview.map(s => s.id).join(',')}
+                        element={"table"}
+                        className="mb-table col-xl-9 col-lg-10 col-md-11 col-11"
+                        onStart={() => freezeElements(tableRef)}
+                        onComplete={() => unFreezeElements(tableRef)}
+                        handleEnterUpdateDelete={({
+                                                      hideEnteringElements,
+                                                      animateEnteringElements,
+                                                      animateExitingElements,
+                                                      animateFlippedElements
+                                                  }) => {
+                            hideEnteringElements();
+                            animateExitingElements()
+                                .then(animateFlippedElements)
+                                .then(animateEnteringElements);
+                        }}
+                    >
                         <thead>
                         <tr className="header">
                             <th className="d-none d-sm-table-cell songid">Song ID</th>
@@ -354,10 +423,17 @@ function Playlist(props) {
                         >
                             {enhancedSongs.map((song) => {
                                 return (
-                                    <Song onDelete={props.onDelete}
-                                          key={song.id} id={song.id} {...song}
-                                          user={user}
-                                    />
+                                    <Flipped
+                                        key={song.id}
+                                        flipId={song.id}
+                                        onAppear={animateElementIn}
+                                        onExit={animateElementOut}
+                                    >
+                                        {flippedProps => <Song onDelete={props.onDelete}
+                                                               key={song.id} id={song.id} {...song}
+                                                               user={user} flippedProps={flippedProps}
+                                        />}
+                                    </Flipped>
                                 );
                             })}
                         </SortableContext>
@@ -365,16 +441,24 @@ function Playlist(props) {
                         <tbody className={"preview"}>
                         {enhancedPreview.map((song) => {
                             return (
-                                <Song preview={true}
-                                      key={song.link}
-                                      {...song}
-                                      user={user}
-                                      onDelete={props.onPreviewDelete}
-                                />
+                                <Flipped
+                                    key={song.link}
+                                    flipId={song.link}
+                                    onAppear={animateElementIn}
+                                    onExit={animateElementOut}
+                                >
+                                    {flippedProps => <Song preview={true}
+                                                           key={song.link}
+                                                           {...song}
+                                                           user={user}
+                                                           onDelete={props.onPreviewDelete}
+                                                           flippedProps={flippedProps}
+                                    />}
+                                </Flipped>
                             );
                         })}
                         </tbody>
-                    </table>
+                    </Flipper>
                 </DndContext>
             </Row>
         </section>
@@ -398,7 +482,7 @@ function Song(props) {
     };
 
     return (
-        <tr ref={setNodeRef} style={style} className={`song ${props.preview ? 'preview' : ''}`}>
+        <tr ref={setNodeRef} style={style} className={`song ${props.preview ? 'preview' : ''}`} {...props.flippedProps}>
             <td {...(props.preview || (!props.user || !props.user.admin)) ? {} : attributes} {...listeners}
                 className="d-none d-sm-table-cell"
                 title={!props.preview ? "Eingefügt am " + moment(props.insertedAt).format("DD.MM.YYYY - HH:mm:ss") : ""}>
