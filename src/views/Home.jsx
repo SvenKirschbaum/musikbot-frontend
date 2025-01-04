@@ -21,6 +21,16 @@ import withDropSong from "../components/withDropSong";
 import {useSubscription} from "react-stomp-hooks";
 import moment from "moment/min/moment-with-locales";
 import useDefaultHeaders from "../hooks/defaultHeaders";
+import {closestCenter, DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors} from "@dnd-kit/core";
+import {
+    SortableContext,
+    sortableKeyboardCoordinates,
+    useSortable,
+    verticalListSortingStrategy
+} from "@dnd-kit/sortable";
+import {CSS} from '@dnd-kit/utilities';
+import {restrictToVerticalAxis} from "@dnd-kit/modifiers";
+
 
 const HomeContainer = withDropSong(Container);
 
@@ -41,6 +51,36 @@ function Home(props) {
 
     const statebuffer = useRef(null);
     const isdragging = useRef(false);
+
+    const onDragStart = () => {
+        isdragging.current = true;
+    }
+
+    const onDragEnd = (a) => {
+        isdragging.current = false;
+        if (statebuffer.current) {
+            setState(statebuffer.current);
+            statebuffer.current = null;
+        }
+
+        const sourceIndex = state.playlist.findIndex(value => (value.id === a.active.id));
+        const targetIndex = state.playlist.findIndex(value => (value.id === a.over.id));
+
+        const newList = Array.from(state.playlist);
+
+        newList.splice(sourceIndex, 1);
+        newList.splice(targetIndex, 0, state.playlist[sourceIndex]);
+
+        const id = newList[targetIndex].id;
+        const prevSort = (targetIndex - 1) >= 0 ? newList[targetIndex - 1].sort : 0;
+        const nextSort = (targetIndex + 1) < newList.length ? newList[targetIndex + 1].sort : (prevSort + 200);
+        const newSort = (prevSort + nextSort) / 2
+        newList[targetIndex].sort = newSort;
+        const newState = Object.assign({}, state, {playlist: newList});
+        statebuffer.current = null
+        setState(newState);
+        sendSort(id, newSort);
+    }
 
     const parseUpdate = (message) => {
         const content = JSON.parse(message.body);
@@ -229,7 +269,7 @@ function Home(props) {
                 <ControlElements onStart={sendStart} onPause={sendPause} onStop={sendStop}
                                  onSkip={sendSkip}/>}
                 <Playlist state={state} onDelete={sendDelete} songs={state.playlist} preview={state.preview}
-                          onPreviewDelete={sendPreviewDelete}/>
+                          onPreviewDelete={sendPreviewDelete} onDragStart={onDragStart} onDragEnd={onDragEnd}/>
                 <BottomControl onShuffle={sendShuffle} setVolume={setVolume} onVolume={onVolume}
                                volume={state.volume} admin={props.user && props.user.admin}/>
                 <AddSong handlefetchError={alertContext.handleException} sendSong={sendSong}
@@ -242,6 +282,13 @@ function Home(props) {
 function Playlist(props) {
 
     const user = useUser();
+
+    const sensors = useSensors(
+        useSensor(PointerSensor),
+        useSensor(KeyboardSensor, {
+            coordinateGetter: sortableKeyboardCoordinates,
+        }),
+    );
 
     const startOffset = useMemo(() => {
         //Add the sum of the duration of all previous songs to each song
@@ -281,49 +328,79 @@ function Playlist(props) {
     return (
         <section>
             <Row className="space-top justify-content-center">
-                <table className="mb-table col-xl-9 col-lg-10 col-md-11 col-11">
-                    <thead>
-                    <tr className="header">
-                        <th className="d-none d-sm-table-cell songid">Song ID</th>
-                        <th className="d-none d-sm-table-cell datetime">Startzeit</th>
-                        <th className="d-none d-sm-table-cell author">Eingefügt von</th>
-                        <th className="songtitle">Titel</th>
-                        <th className="d-none d-md-table-cell songlink">Link</th>
-                        {user && user.admin && <th className="delete"/>}
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {enhancedSongs.map((song) => {
-                        return (
-                            <Song onDelete={props.onDelete}
-                                  key={song.id} {...song}
-                                  user={user}
-                            />
-                        );
-                    })}
-                    </tbody>
-                    <tbody className={"preview"}>
-                    {enhancedPreview.map((song) => {
-                        return (
-                            <Song preview={true}
-                                  key={song.link}
-                                  {...song}
-                                  user={user}
-                                  onDelete={props.onPreviewDelete}
-                            />
-                        );
-                    })}
-                    </tbody>
-                </table>
+                <DndContext
+                    sensors={sensors}
+                    collisionDetection={closestCenter}
+                    onDragStart={props.onDragStart}
+                    onDragEnd={props.onDragEnd}
+                    modifiers={[restrictToVerticalAxis]}
+                >
+                    <table className="mb-table col-xl-9 col-lg-10 col-md-11 col-11">
+                        <thead>
+                        <tr className="header">
+                            <th className="d-none d-sm-table-cell songid">Song ID</th>
+                            <th className="d-none d-sm-table-cell datetime">Startzeit</th>
+                            <th className="d-none d-sm-table-cell author">Eingefügt von</th>
+                            <th className="songtitle">Titel</th>
+                            <th className="d-none d-md-table-cell songlink">Link</th>
+                            {user && user.admin && <th className="delete"/>}
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <SortableContext
+                            items={enhancedSongs}
+                            strategy={verticalListSortingStrategy}
+                            disabled={!user || !user.admin}
+                        >
+                            {enhancedSongs.map((song) => {
+                                return (
+                                    <Song onDelete={props.onDelete}
+                                          key={song.id} id={song.id} {...song}
+                                          user={user}
+                                    />
+                                );
+                            })}
+                        </SortableContext>
+                        </tbody>
+                        <tbody className={"preview"}>
+                        {enhancedPreview.map((song) => {
+                            return (
+                                <Song preview={true}
+                                      key={song.link}
+                                      {...song}
+                                      user={user}
+                                      onDelete={props.onPreviewDelete}
+                                />
+                            );
+                        })}
+                        </tbody>
+                    </table>
+                </DndContext>
             </Row>
         </section>
     );
 }
 
 function Song(props) {
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+    } = useSortable({
+        id: props.id
+    });
+
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+    };
+
     return (
-        <tr className={`song ${props.preview ? 'preview' : ''}`}>
-            <td className="d-none d-sm-table-cell"
+        <tr ref={setNodeRef} style={style} className={`song ${props.preview ? 'preview' : ''}`}>
+            <td {...(props.preview || (!props.user || !props.user.admin)) ? {} : attributes} {...listeners}
+                className="d-none d-sm-table-cell"
                 title={!props.preview ? "Eingefügt am " + moment(props.insertedAt).format("DD.MM.YYYY - HH:mm:ss") : ""}>
                 {props.id}
             </td>
