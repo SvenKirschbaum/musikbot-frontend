@@ -1,7 +1,6 @@
 import {useContext, useMemo, useRef, useState} from 'react';
 import Container from 'react-bootstrap/Container';
 import {Link} from "react-router-dom";
-import Moment from 'react-moment';
 
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -32,6 +31,7 @@ import {CSS} from '@dnd-kit/utilities';
 import {restrictToVerticalAxis} from "@dnd-kit/modifiers";
 import {Flipped, Flipper} from "react-flip-toolkit";
 import anime from "animejs";
+import RelativeTime from "../components/RelativeTime.jsx";
 
 
 const HomeContainer = withDropSong(Container);
@@ -494,7 +494,7 @@ function Song(props) {
                     moment.isDuration(props.startTime) ?
                         props.startTime.humanize(true)
                         :
-                        <Moment fromNow>{props.startTime}</Moment>
+                        <RelativeTime>{props.startTime}</RelativeTime>
                 }
             </td>
             <td className="d-none d-sm-table-cell author">

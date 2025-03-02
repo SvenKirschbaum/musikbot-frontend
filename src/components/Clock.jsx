@@ -1,5 +1,5 @@
 import {Component} from 'react';
-import Moment from "react-moment";
+import moment from "moment/min/moment-with-locales";
 
 class Clock extends Component {
   constructor(props) {
@@ -24,7 +24,7 @@ class Clock extends Component {
 
   render() {
     return (
-        <span className={ this.props.className }><Moment format="HH:mm">{ this.state.date }</Moment></span>
+        <span className={this.props.className}>{moment(this.state.date).format("HH:mm")}</span>
     );
   }
 }

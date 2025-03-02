@@ -3,7 +3,6 @@ import Container from 'react-bootstrap/Container';
 import {Link, useNavigate} from "react-router-dom";
 import {TransitionGroup} from "react-transition-group";
 import CSSTransition from "react-transition-group/CSSTransition";
-import Moment from 'react-moment';
 
 import Row from 'react-bootstrap/Row';
 import Header from '../components/Header';
@@ -125,8 +124,9 @@ function Song(props) {
         <tr className={className}>
             <td className="d-none d-sm-table-cell"
                 title={"Eingefügt am " + moment(props.insertedAt).format("DD.MM.YYYY - HH:mm:ss")}>{props.id}</td>
-            <td className=""><span className="d-none d-sm-inline"><Moment format="DD.MM.YYYY">{props.playedAt}</Moment> - </span><Moment
-                format="HH:mm:ss">{props.playedAt}</Moment></td>
+            <td className=""><span
+                className="d-none d-sm-inline">{moment(props.playedAt).format("DD.MM.YYYY")} - </span>{moment(props.playedAt).format("HH:mm:ss")}
+            </td>
             <td className="d-none d-sm-inline-flex author">
                 <GravatarIMG>{props.gravatarId}</GravatarIMG>
                 {Config.enableusers ?

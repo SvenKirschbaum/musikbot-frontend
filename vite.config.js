@@ -43,9 +43,5 @@ export default defineConfig({
                 }
             }
         }
-    },
-    resolve: {
-        // Required for react-moment: https://github.com/vitejs/vite/issues/7376
-        mainFields: []
     }
 });
