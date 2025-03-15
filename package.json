@@ -9,7 +9,7 @@
     "@dnd-kit/sortable": "10.0.0",
     "@dnd-kit/utilities": "3.2.2",
     "animejs": "3.2.2",
-    "autoprefixer": "10.4.20",
+    "autoprefixer": "10.4.21",
     "bootstrap": "5.3.3",
     "downshift": "^9.0.0",
     "md5": "2.3.0",
