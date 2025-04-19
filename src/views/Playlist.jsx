@@ -7,10 +7,10 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Button from "react-bootstrap/Button";
 import TransitionGroup from "react-transition-group/TransitionGroup";
-import CSSTransition from "react-transition-group/CSSTransition";
 import Config from "../components/Configuration";
 import {AlertContext} from "../context/AlertContext";
 import {withDefaultHeaders} from "../hooks/defaultHeaders";
+import CSSTransitionWithRef from "../components/CSSTransitionWithRef.jsx";
 
 class Playlist extends Component {
     static contextType = AlertContext;
@@ -157,9 +157,9 @@ class Playlist extends Component {
                             <tbody>
                                 <TransitionGroup component={null} exit={false}>
                                     {this.state.songs.map((song,key) => (
-                                        <CSSTransition key={song.link} timeout={300} classNames="song-anim">
+                                        <CSSTransitionWithRef key={song.link} timeout={300} classNames="song-anim">
                                             <Song key={song.link + key} checked={this.state.checkboxes[key]} onChange={this.onCheckbox.bind(this,key)} title={song.name} link={song.link} />
-                                        </CSSTransition>
+                                        </CSSTransitionWithRef>
                                     ))}
                                 </TransitionGroup>
                             </tbody>
@@ -184,7 +184,7 @@ class Playlist extends Component {
 
 function Song(props) {
     return (
-        <tr>
+        <tr ref={props.ref}>
             <td><input type="checkbox" checked={props.checked} onChange={props.onChange} /></td>
             <td>{props.title}</td>
             <td><a href={props.link}>{props.link}</a></td>

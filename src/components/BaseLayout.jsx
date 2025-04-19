@@ -2,7 +2,6 @@ import {Component, Fragment, useState} from 'react';
 import {Link} from "react-router-dom";
 import CookieConsent from 'react-cookie-consent';
 import Col from 'react-bootstrap/Col';
-import {CSSTransition} from 'react-transition-group';
 
 import Clock from './Clock';
 import Version from './Version';
@@ -22,6 +21,7 @@ import {FaHome, FaUserCog} from "react-icons/fa";
 import {BsBootstrapReboot} from "react-icons/bs";
 import ConnectionIndicator from "./ConnectionIndicator";
 import {useAuth} from "react-oidc-context";
+import CSSTransitionWithRef from "./CSSTransitionWithRef.jsx";
 
 
 class BaseLayout extends Component {
@@ -56,13 +56,13 @@ function Footer() {
 
     return (
         <Fragment>
-            <CSSTransition
+            <CSSTransitionWithRef
                 classNames="slideup"
                 timeout={300}
                 unmountOnExit
                 in={isMenuOpen}>
                 <Menu onItemClick={() => setIsMenuOpen(false)}/>
-            </CSSTransition>
+            </CSSTransitionWithRef>
             {Config.showfooter &&
                 <footer className="d-flex flex-row justify-content-between g-0">
                     <Col className="text-start">
@@ -115,7 +115,7 @@ function Menu(props) {
     const auth = useAuth();
 
     return (
-        <nav className="menu">
+        <nav ref={props.ref} className="menu">
             <MenuEntry
                 to="/"
                 icon={<FaHome/>}

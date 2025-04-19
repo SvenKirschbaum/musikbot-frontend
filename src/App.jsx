@@ -89,27 +89,27 @@ function AppRouter() {
         prevAlertsRef.current = alerts;
     }, [alerts]);
 
-    let addAlert = (alert) => {
-        let a = [...alerts];
-        a.push(alert);
-        setAlerts(a);
-    }
+    let addAlert = useCallback((alert) => {
+        setAlerts((a) => [...a, alert]);
+    }, []);
 
-    let removeAlert = (alerts, id) => {
-        let a = [...alerts]; // make a separate copy of the array
-        let index = -1;
-        for (const [key, value] of Object.entries(a)) {
-            if (value.id === id) {
-                index = key;
+    let removeAlert = useCallback((alerts, id) => {
+        setAlerts((alerts) => {
+            let a = [...alerts]; // make a separate copy of the array
+            let index = -1;
+            for (const [key, value] of Object.entries(a)) {
+                if (value.id === id) {
+                    index = key;
+                }
             }
-        }
-        if (index !== -1) {
-            a.splice(index, 1);
-            setAlerts(a);
-        }
-    }
+            if (index !== -1) {
+                a.splice(index, 1);
+            }
+            return a;
+        });
+    }, [])
 
-    let handleException = (e) => {
+    let handleException = useCallback((e) => {
         //Ignore AbortController.abort()
         if (e.name === 'AbortError') return;
         addAlert({
@@ -119,7 +119,7 @@ function AppRouter() {
             text: e.message,
             autoclose: false
         });
-    }
+    }, []);
 
     const beforeStompConnect = useCallback(function () {
         if (auth?.user?.access_token) {

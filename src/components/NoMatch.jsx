@@ -1,7 +1,7 @@
 import {Component} from 'react';
 import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
-import {LinkContainer} from 'react-router-bootstrap';
+import {Link} from "react-router-dom";
 
 class NoMatch extends Component {
   render() {
@@ -13,9 +13,9 @@ class NoMatch extends Component {
                     <Card.Text>
                         Die gewünschte Seite existiert leider nicht.
                     </Card.Text>
-                    <LinkContainer to="/">
-                        <Card.Link>Zurück zur Startseite</Card.Link>
-                    </LinkContainer>
+                    <Link to="/">
+                        Zurück zur Startseite
+                    </Link>
                 </Card.Body>
             </Card>
         </Container>

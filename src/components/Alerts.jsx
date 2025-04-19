@@ -2,12 +2,12 @@ import {useContext} from "react";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import {TransitionGroup} from "react-transition-group";
-import CSSTransition from "react-transition-group/CSSTransition";
 import Alert from "react-bootstrap/Alert";
 
 import "./Alerts.css";
 import {AlertContext, AlertRenderContext} from "../context/AlertContext";
 import {useSubscription} from "react-stomp-hooks";
+import CSSTransitionWithRef from "./CSSTransitionWithRef.jsx";
 
 function Alerts() {
 
@@ -31,14 +31,14 @@ function Alerts() {
                 <TransitionGroup component={null}>
                     {alerts.map((alert) => {
                         return (
-                            <CSSTransition key={alert.id} timeout={300} classNames="alert-anim">
+                            <CSSTransitionWithRef key={alert.id} timeout={300} classNames="alert-anim">
                                 <Alert dismissible variant={alert.type} onClose={() => {
                                     alertsFunctions.removeAlert(alerts, alert.id)
                                 }}>
                                     {alert.head && <Alert.Heading>{alert.head}</Alert.Heading>}
                                     {alert.text}
                                 </Alert>
-                            </CSSTransition>
+                            </CSSTransitionWithRef>
                         );
                     })}
                 </TransitionGroup>

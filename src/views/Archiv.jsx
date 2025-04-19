@@ -2,7 +2,6 @@ import {Component} from 'react';
 import Container from 'react-bootstrap/Container';
 import {Link, useNavigate} from "react-router-dom";
 import {TransitionGroup} from "react-transition-group";
-import CSSTransition from "react-transition-group/CSSTransition";
 
 import Row from 'react-bootstrap/Row';
 import Header from '../components/Header';
@@ -16,6 +15,7 @@ import {AlertContext} from "../context/AlertContext";
 import moment from "moment/min/moment-with-locales";
 import {withDefaultHeaders} from "../hooks/defaultHeaders";
 import {useMatch} from "react-router";
+import CSSTransitionWithRef from "../components/CSSTransitionWithRef.jsx";
 
 class Archiv extends Component {
 
@@ -104,9 +104,9 @@ function Archivlist(props) {
                     <tbody>
                         <TransitionGroup component={null} exit={false}>
                             {props.songs.map((song) => (
-                                <CSSTransition key={song.id} timeout={300} classNames="song-anim">
+                                <CSSTransitionWithRef key={song.id} timeout={300} classNames="song-anim">
                                     <Song key={song.id} {...song} />
-                                </CSSTransition>
+                                </CSSTransitionWithRef>
                             ))}
                         </TransitionGroup>
                     </tbody>
@@ -121,7 +121,7 @@ function Song(props) {
         className += " song-skipped";
     }
     return (
-        <tr className={className}>
+        <tr ref={props.ref} className={className}>
             <td className="d-none d-sm-table-cell"
                 title={"Eingefügt am " + moment(props.insertedAt).format("DD.MM.YYYY - HH:mm:ss")}>{props.id}</td>
             <td className=""><span
