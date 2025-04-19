@@ -93,7 +93,7 @@ class UserPage extends Component {
                                         classNames="fade"
                                         unmountOnExit
                                     >
-                                        <GravatarIMG size="250">{this.state.user.gravatarId}</GravatarIMG>
+                                        <div><GravatarIMG size="250">{this.state.user.gravatarId}</GravatarIMG></div>
                                     </CSSTransitionWithRef>
                                 </Card.Body>
                             </Card>
