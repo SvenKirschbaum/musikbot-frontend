@@ -13,6 +13,7 @@ import Config from "../components/Configuration";
 import {AlertContext} from "../context/AlertContext";
 import {withDefaultHeaders} from "../hooks/defaultHeaders";
 import CSSTransitionWithRef from "../components/CSSTransitionWithRef.jsx";
+import {useMatch} from "react-router";
 
 class UserList extends Component {
 
@@ -124,6 +125,7 @@ function User(props) {
 
 export default withDefaultHeaders((props) => {
     const navigate = useNavigate();
+    const match = useMatch("/users/:page?");
 
-    return <UserList navigate={navigate} {...props}></UserList>;
+    return <UserList navigate={navigate} match={match} {...props}></UserList>;
 });
