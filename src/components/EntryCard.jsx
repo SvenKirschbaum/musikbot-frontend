@@ -3,7 +3,7 @@ import {Link} from "react-router-dom";
 import {TransitionGroup} from "react-transition-group";
 
 import '../views/Stats.css';
-import CSSTransition from "react-transition-group/CSSTransition";
+import CSSTransitionWithRef from "./CSSTransitionWithRef.jsx";
 
 export default function EntryCard(props) {
     return (
@@ -20,9 +20,9 @@ export default function EntryCard(props) {
                         <TransitionGroup component="tbody" enter={true} exit={false}>
                             {props.data.map(
                                 (entry, key) => (
-                                    <CSSTransition key={key} timeout={300} classNames="fade">
+                                    <CSSTransitionWithRef key={key} timeout={300} classNames="fade">
                                         {props.mapfunction(entry, key)}
-                                    </CSSTransition>
+                                    </CSSTransitionWithRef>
                                 )
                             )}
                         </TransitionGroup>

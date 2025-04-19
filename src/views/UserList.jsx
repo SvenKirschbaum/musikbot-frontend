@@ -7,12 +7,12 @@ import CustomPagination from '../components/CustomPagination';
 
 import './UserList.css';
 import {TransitionGroup} from "react-transition-group";
-import CSSTransition from "react-transition-group/CSSTransition";
 import GravatarIMG from "../components/GravatarIMG";
 import {Link, useNavigate} from "react-router-dom";
 import Config from "../components/Configuration";
 import {AlertContext} from "../context/AlertContext";
 import {withDefaultHeaders} from "../hooks/defaultHeaders";
+import CSSTransitionWithRef from "../components/CSSTransitionWithRef.jsx";
 
 class UserList extends Component {
 
@@ -34,6 +34,7 @@ class UserList extends Component {
     }
 
     componentDidMount() {
+        console.log(this.props)
         this.load((this.props.match.params.page === undefined ? 1 : this.props.match.params.page));
     }
 
@@ -99,9 +100,9 @@ function List(props) {
                 <tbody>
                 <TransitionGroup component={null} exit={false}>
                     {props.data.map((user) => (
-                        <CSSTransition key={user.id} timeout={300} classNames="song-anim">
+                        <CSSTransitionWithRef key={user.id} timeout={300} classNames="song-anim">
                             <User key={user.id} {...user} />
-                        </CSSTransition>
+                        </CSSTransitionWithRef>
                     ))}
                 </TransitionGroup>
                 </tbody>
@@ -112,7 +113,7 @@ function List(props) {
 
 function User(props) {
     return (
-        <tr>
+        <tr ref={props.ref}>
             <td className="text-center">{ props.id }</td>
             <td className=""><GravatarIMG>{ props.gravatarId }</GravatarIMG><Link to={`/user/${props.name}`}>{ props.name }</Link></td>
             <td className="d-none d-sm-table-cell">{ props.email }</td>
