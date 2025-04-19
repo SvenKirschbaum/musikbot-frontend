@@ -30,7 +30,7 @@ import {
 import {CSS} from '@dnd-kit/utilities';
 import {restrictToVerticalAxis} from "@dnd-kit/modifiers";
 import {Flipped, Flipper} from "react-flip-toolkit";
-import anime from "animejs";
+import {animate} from "animejs";
 import RelativeTime from "../components/RelativeTime.jsx";
 
 
@@ -282,11 +282,10 @@ function Home(props) {
 }
 
 const animateElementIn = (el, i) =>
-    anime({
-        targets: el,
+    animate(el, {
         opacity: 1,
         delay: i * 10,
-        easing: "easeOutSine"
+        ease: "easeOutSine"
     });
 
 const freezeElements = (tableRef) => {
@@ -319,11 +318,10 @@ const unFreezeElements = (tableRef) => {
 }
 
 const animateElementOut = (el, i, onComplete) => {
-    anime({
-        targets: el,
+    animate(el, {
         opacity: 0,
         delay: i * 10,
-        easing: "easeOutSine",
+        ease: "easeOutSine",
         complete: onComplete
     });
 };
