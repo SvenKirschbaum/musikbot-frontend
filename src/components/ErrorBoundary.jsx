@@ -1,7 +1,7 @@
 import React from "react";
 import Container from "react-bootstrap/Container";
 import Card from "react-bootstrap/Card";
-import {LinkContainer} from "react-router-bootstrap";
+import {Link} from "react-router-dom";
 
 class ErrorBoundary extends React.Component {
     constructor(props) {
@@ -28,9 +28,9 @@ class ErrorBoundary extends React.Component {
                             <Card.Text>
                                 An error occured during the rendering of this page. Please report this to the developer.
                             </Card.Text>
-                            <LinkContainer to="/">
-                                <Card.Link>Zurück zur Startseite</Card.Link>
-                            </LinkContainer>
+                            <Link to="/">
+                                Zurück zur Startseite
+                            </Link>
                         </Card.Body>
                     </Card>
                 </Container>
