@@ -265,12 +265,14 @@ class UserPage extends Component {
     }
 }
 
+const UserPageWithUser = withUser(UserPage);
+
 function User() {
     const UserRouteComponent = useMemo(() => (props) => {
-        const Component = withUser(UserPage);
+
         const match = useMatch("/user/:name/*")
 
-        return <Component match={match} {...props} />;
+        return <UserPageWithUser match={match} {...props} />;
     }, []);
 
     return (
