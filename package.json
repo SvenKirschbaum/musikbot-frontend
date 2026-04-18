@@ -9,7 +9,7 @@
     "@dnd-kit/sortable": "10.0.0",
     "@dnd-kit/utilities": "3.2.2",
     "animejs": "4.3.6",
-    "autoprefixer": "10.4.27",
+    "autoprefixer": "10.5.0",
     "bootstrap": "5.3.8",
     "downshift": "^9.0.0",
     "md5": "2.3.0",
@@ -22,7 +22,7 @@
     "react-flip-toolkit": "7.2.4",
     "react-icons": "5.6.0",
     "react-oidc-context": "3.3.1",
-    "react-router-dom": "7.14.0",
+    "react-router-dom": "7.14.1",
     "react-stomp-hooks": "3.0.1",
     "react-transition-group": "4.4.5",
     "source-map-explorer": "2.5.3",
@@ -46,7 +46,7 @@
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-basic-ssl": "2.3.0",
     "@vitejs/plugin-react": "6.0.1",
-    "vite": "8.0.7",
+    "vite": "8.0.8",
     "vite-plugin-svgr": "4.5.0"
   }
 }
