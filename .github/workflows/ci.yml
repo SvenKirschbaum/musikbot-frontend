@@ -59,7 +59,7 @@ jobs:
           pull: true
           push: false
           build-args: |
-            VERSION=v${{ steps.meta.outputs.version }}
+            VERSION=${{ steps.meta.outputs.version }}
           tags: ${{ steps.meta.outputs.primary_tag }}
 
       - name: Scan Docker image with Trivy
